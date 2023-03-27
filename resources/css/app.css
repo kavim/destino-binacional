@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.btn-success {
+    @apply inline-block px-6 py-3 bg-green-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-600 hover:shadow-lg focus:bg-green-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out;
+}
+
+.btn-primary {
+    @apply inline-block px-6 py-2.5 bg-indigo-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-indigo-600 hover:shadow-lg focus:bg-indigo-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-indigo-700 active:shadow-lg transition duration-150 ease-in-out;
+}
+
+.btn-danger {
+    @apply inline-block px-6 py-2.5 bg-red-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out;
+}
+
+.btn-warning {
+    @apply inline-block px-6 py-2.5 bg-yellow-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-yellow-600 hover:shadow-lg focus:bg-yellow-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-yellow-700 active:shadow-lg transition duration-150 ease-in-out;
+}
+
+.btn-round-light {
+    /* @apply inline-block px-1 py-1 bg-gray-100 text-stone-800 font-medium text-xs leading-tight uppercase rounded-full shadow-md hover:bg-gray-300 hover:shadow-lg focus:bg-gray-300 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-400 active:shadow-lg transition duration-150 ease-in-out; */
+    @apply w-7 h-7 flex justify-center items-center rounded-full bg-gray-200 text-stone-800 leading-normal uppercase shadow-md hover:bg-gray-500 hover:text-white hover:shadow-lg focus:bg-stone-800 focus:shadow-lg focus:outline-none focus:ring-0 focus:text-white active:bg-stone-800 active:shadow-lg active:text-white transition duration-200 ease-in-out hover:scale-110 active:scale-95;
+}
+
+.animate-cube {
+    -webkit-animation: float 6s ease-in-out infinite !important;
+    animation: float 6s ease-in-out infinite !important;
+}
+
+@keyframes float {
+    0% {
+        transform: translatey(0px);
+    }
+    50% {
+        transform: translatey(-20px);
+    }
+    100% {
+        transform: translatey(0px);
+    }
+}
+
+.bg-radial-gradient {
+    /* background-image: radial-gradient(50% 50% at 50% 50%, #eb4432 0, hsla(0, 0%, 100%, 0) 100%); */
+    background-image: radial-gradient(
+        50% 50% at 50% 50%,
+        #ffffff75 0,
+        hsla(0, 0%, 100%, 0) 100%
+    );
+}
+
+/*
+    GRADIENTS
+ */
+
+.k-gradient {
+    /* background: linear-gradient(-45deg, #ee7752, #8f0b3e, #07688b, #23d5ab); */
+    background: linear-gradient(-45deg, #4c3d65, #554c9c, #8170b2, #365f7f);
+    background-size: 400% 400%;
+    animation: gradient 5s ease infinite;
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
