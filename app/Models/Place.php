@@ -33,10 +33,6 @@ class Place extends Model implements TranslatableContract
 
     protected $dates = ['deleted_at'];
 
-    protected $casts = [
-        'google_maps_src' => 'array',
-    ];
-
     protected $appends = [
         'image',
         'description_pt',
@@ -58,7 +54,7 @@ class Place extends Model implements TranslatableContract
         return $this->belongsTo(Category::class);
     }
 
-    public function getImageAttribute()
+    public function getImageAttribute(): string
     {
         return is_null($this->featured_image)
             ? 'https://api.lorem.space/image/burger?w=1200&h=720'

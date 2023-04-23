@@ -3,7 +3,7 @@
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\Site\HomeController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -18,14 +18,7 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
@@ -39,5 +32,15 @@ Route::middleware('auth')->group(function () {
     Route::resource('places', PlaceController::class);
     Route::resource('events', EventController::class);
 });
+
+// SITE ROUTES
+Route::get('/c/{CategoryParentIdentifier}', [\App\Http\Controllers\Site\PlaceController::class, 'getByCategoryParentID'])->name('site.categories.show');
+
+Route::get('/p/{PlaceIdentifier}', [\App\Http\Controllers\Site\PlaceController::class, 'getByPlaceIdentifier'])->name('places.byPlaceIdentifier');
+
+Route::get('/eventos', [\App\Http\Controllers\Site\EventController::class, 'index'])->name('site.events.index');
+Route::get('/eventos/{slug}', [\App\Http\Controllers\Site\EventController::class, 'show'])->name('site.events.show');
+
+Route::get('/search', [\App\Http\Controllers\Site\SearchController::class, 'index'])->name('search.index');
 
 require __DIR__.'/auth.php';

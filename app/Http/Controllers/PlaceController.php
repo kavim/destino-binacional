@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\CategoryTranslation;
 use App\Models\City;
 use App\Models\Place;
 use App\Models\PlaceType;
 use App\Services\PlaceService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -99,5 +101,42 @@ class PlaceController extends Controller
 
         return redirect()->route('places.index')
             ->with('success', 'Place created successfully.');
+    }
+
+    public function importPlaces(Request $request): JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'name' => 'required',
+                'address' => 'required',
+                'city_id' => 'required',
+                'place_type_id' => 'required',
+                'category_slug' => 'required',
+                'description_pt' => 'required',
+                'description_es' => 'required',
+                'google_maps_src' => 'required',
+                'featured_image' => 'required',
+            ]);
+
+            $cat = CategoryTranslation::where('slug', $validated['category_slug'])->first();
+
+            if ($cat) {
+                $validated['category_id'] = $cat->category_id;
+            } else {
+                $validated['category_id'] = 5;
+            }
+
+            $this->placeService->store($validated, $request);
+        } catch (\Exception $e) {
+            \Log::error($e->getMessage());
+
+            return response()->json([
+                'message' => 'Error importing places.',
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Places imported successfully.',
+        ]);
     }
 }

@@ -1,5 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, usePage } from '@inertiajs/react';
+import Pagination from '@/Shared/Pagination';
 
 export default function Index() {
 
@@ -68,7 +69,9 @@ export default function Index() {
                         </table>
                     </div>
                 </div>
-
+                <div className="flex justify-center">
+                    <Pagination links={links} />
+                </div>
             </div>
         </AuthenticatedLayout >
     );

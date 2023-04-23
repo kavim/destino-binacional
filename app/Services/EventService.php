@@ -25,6 +25,21 @@ class EventService
         return $this->eventRepository->index();
     }
 
+    public function groupedByStartDate()
+    {
+        return $this->eventRepository->groupedByStartDateLimited();
+    }
+
+    public function filtered(?string $start = null, ?string $end = null, ?int $category_id = null)
+    {
+        return $this->eventRepository->filtered($start, $end, $category_id);
+    }
+
+    public function getBySlug(string $slug)
+    {
+        return $this->eventRepository->getBySlug($slug);
+    }
+
     public function store(array $data): Event
     {
         $event = Event::create([
