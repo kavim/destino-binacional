@@ -41,6 +41,8 @@ Route::get('/p/{PlaceIdentifier}', [\App\Http\Controllers\Site\PlaceController::
 Route::get('/eventos', [\App\Http\Controllers\Site\EventController::class, 'index'])->name('site.events.index');
 Route::get('/eventos/{slug}', [\App\Http\Controllers\Site\EventController::class, 'show'])->name('site.events.show');
 
-Route::get('/search', [\App\Http\Controllers\Site\SearchController::class, 'index'])->name('search.index');
+// Route::get('/search', [\App\Http\Controllers\Site\SearchController::class, 'index'])->name('search.index');
+
+Route::get('change-language/{lang}', [App\Http\Controllers\Site\LocalizationController::class, 'changeLanguage'])->name('change-language');
 
 require __DIR__.'/auth.php';

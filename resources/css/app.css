@@ -71,3 +71,15 @@
         background-position: 0% 50%;
     }
 }
+
+.hide-scroll-bar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.hide-scroll-bar::-webkit-scrollbar {
+    display: none;
+}
+
+.bg-accent {
+    @apply bg-indigo-100;
+}

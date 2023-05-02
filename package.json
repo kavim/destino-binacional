@@ -21,10 +21,12 @@
     "dependencies": {
         "@ckeditor/ckeditor5-build-classic": "^36.0.1",
         "@ckeditor/ckeditor5-react": "^5.1.0",
+        "@inertiajs/progress": "^0.2.7",
         "classnames": "^2.3.2",
         "daisyui": "^2.51.5",
         "dayjs": "^1.11.7",
         "lodash": "^4.17.21",
+        "lottie-react": "^2.4.0",
         "react-easy-crop": "^4.7.4",
         "react-select": "^5.7.1",
         "react-tailwindcss-datepicker": "^1.5.1",

@@ -95,7 +95,7 @@ class EventService
             'end' => Carbon::parse(Arr::get($data, 'end')),
             'is_online' => Arr::get($data, 'is_online'),
             'link' => Arr::get($data, 'link'),
-            'google_maps_src' => extractSrcFromGmapsIframe(Arr::get($data, 'google_maps_src')),
+            'google_maps_src' => extractSrcFromGmapsIframe(Arr::get($data, 'google_maps_src')) ?? $event->google_maps_src,
             'address' => Arr::get($data, 'address'),
             'city_id' => Arr::get($data, 'city_id'),
             'category_id' => Arr::get($data, 'category_id'),
@@ -103,5 +103,10 @@ class EventService
         ]);
 
         return $event;
+    }
+
+    public function destroy(Event $event)
+    {
+        $event->delete();
     }
 }

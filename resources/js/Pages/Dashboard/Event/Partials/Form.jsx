@@ -10,8 +10,9 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import ImagicLoader from '@/Components/ImagicLoader';
 import DataPickerInputStart from '@/Shared/DataPickerInputStart';
 import DataPickerInputEnd from '@/Shared/DataPickerInputEnd';
+import DeleteButton from '@/Shared/DeleteButton';
 
-export default function Form({ handleOnChange, submit, data, errors, processing }) {
+export default function Form({ handleOnChange, submit, data, errors, processing, onDelete }) {
 
     const { categories, cities, grouped_categories } = usePage().props;
 
@@ -219,11 +220,23 @@ export default function Form({ handleOnChange, submit, data, errors, processing 
                 </div>
             )}
 
-            <div className="flex justify-end">
-                <PrimaryButton className="ml-4 m-4" disabled={processing}>
-                    Save
-                </PrimaryButton>
-            </div>
+            {onDelete ? (
+                <div className="flex justify-between mt-5">
+                    <DeleteButton type='button' onDelete={onDelete}>
+                        Delete
+                    </DeleteButton>
+                    <PrimaryButton disabled={processing}>
+                        Save
+                    </PrimaryButton>
+                </div>
+            ) : (
+                <div className="flex justify-end mt-5">
+                    <PrimaryButton disabled={processing}>
+                        Save
+                    </PrimaryButton>
+                </div>
+            )}
+
         </form>
     );
 }

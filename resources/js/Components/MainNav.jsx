@@ -1,16 +1,12 @@
 import { useState } from 'react';
 import ApplicationLogo from '@/Components/ApplicationLogo';
-import Dropdown from '@/Components/Dropdown';
-import NavLink from '@/Components/NavLink';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
-import Categories from '@/Pages/Site/Home/Categories';
+import Flags from '@/Components/Flags';
+import MobileNav from '@/Components/MobileNav';
 
 export default function MainNav() {
-    const { cats, auth } = usePage().props;
+    const { cats } = usePage().props;
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
-
-    console.log(cats);
 
     return (
         <nav className="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
@@ -23,7 +19,7 @@ export default function MainNav() {
                             </Link>
                         </div>
 
-                        <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex sm:align-middle items-center">
+                        <div className="hidden sm:-my-px sm:ml-10 sm:flex sm:align-middle items-center justify-end">
                             <div className="dropdown dropdown-end">
                                 <label tabIndex={0} className="btn btn-ghost rounded-btn">
                                     Destinos
@@ -47,8 +43,20 @@ export default function MainNav() {
                                     )}
                                 </ul>
                             </div>
+                            <div>
+                                <Link href={route('site.events.index')}>
+                                    <label tabIndex={0} className="btn btn-ghost rounded-btn">
+                                        Eventos
+                                    </label>
+                                </Link>
+                            </div>
                         </div>
+                    </div>
 
+                    <div className="hidden sm:flex justify-end items-center mr-5">
+                        <div className="ml-3 relative">
+                            <Flags></Flags>
+                        </div>
                     </div>
 
                     <div className="-mr-2 flex items-center sm:hidden">
@@ -79,34 +87,7 @@ export default function MainNav() {
 
             <div className={(showingNavigationDropdown ? 'block' : 'hidden') + ' sm:hidden'}>
                 <div className="pt-2 pb-3 space-y-1">
-                    {/* <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>
-                        Places
-                    </ResponsiveNavLink> */}
-                    <div tabIndex={0} className="collapse collapse-arrow  border border-base-300 bg-base-100 rounded-box">
-                        <div className="collapse-title text-xl font-medium">
-                            Destinos
-                        </div>
-                        <div className="collapse-content">
-
-                            {cats.categories.map((cat, index) => (
-                                <div key={index} className='w-full p-3 flex justify-between'>
-                                    <Link href={route('site.categories.show', { CategoryParentIdentifier: cat.slug })}
-                                        className="w-full flex justify-between text-gray-800 dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-100"
-                                    >
-                                        <div className='flex items-center'>
-                                            <div className='p-1 rounded-full' style={{ backgroundColor: cat.color }}>
-                                                <img src={cat.icon} alt={cat.name} className="w-8 h-8 rounded-full" />
-                                            </div>
-                                            <span className='ml-2 font-semibold text-2xl'>{cat.name}</span>
-                                        </div>
-
-                                        <i className="fa-solid fa-chevron-right ml-2"></i>
-                                    </Link>
-                                </div>
-                            ))}
-
-                        </div>
-                    </div>
+                    <MobileNav></MobileNav>
                 </div>
             </div>
         </nav>

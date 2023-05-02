@@ -11,6 +11,7 @@ use App\Services\PlaceService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class PlaceController extends Controller
@@ -23,13 +24,20 @@ class PlaceController extends Controller
 
     public function index()
     {
-        $places = Place::orderBy('id', 'DESC')
+        $places = Place::when(request('search'), function ($query, $search) {
+            $query->where('slug', 'LIKE', '%'.Str::slug($search).'%');
+        })
+        ->when(request('category_id'), function ($query, $category_id) {
+            $query->where('category_id', $category_id);
+        })
+        ->orderBy('id', 'DESC')
         ->paginate();
 
         return Inertia::render('Dashboard/Place/Index', [
             'places' => $places,
             'categories' => Category::where('parent_id', null)->get(),
-            'sub_categories' => Category::where('parent_id', '<>', null)->get(),
+            'grouped_categories' => Category::where('parent_id', '<>', null)->get()->groupBy('parent_id'),
+            'filters' => request()->all(['search', 'category_id']),
         ]);
     }
 

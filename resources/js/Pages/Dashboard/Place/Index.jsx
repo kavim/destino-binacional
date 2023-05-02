@@ -1,6 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, usePage } from '@inertiajs/react';
 import Pagination from '@/Shared/Pagination';
+import SearchFilter from './Partials/SearchFilter';
 
 export default function Index() {
 
@@ -24,10 +25,13 @@ export default function Index() {
             <div className='py-12'>
                 <div className="max-w-7xl mx-auto sm:px-2">
                     <div className="overflow-x-auto bg-white rounded-xl shadow mb-3">
+                        <div className='flex justify-end p-2'>
+                            <SearchFilter></SearchFilter>
+                        </div>
                         <table className="table w-full">
                             <thead>
                                 <tr>
-                                    <th className='bg-white'>Image</th>
+                                    <th className='bg-white text-center'>Image</th>
                                     <th className='bg-white'>name</th>
                                     <th className='bg-white'></th>
                                 </tr>
@@ -37,7 +41,7 @@ export default function Index() {
                                     return (
                                         <tr key={id}>
                                             <td>
-                                                <img src={image} alt="logo" className="w-32 mx-auto rounde" />
+                                                <img src={image} alt="logo" className="w-32 mx-auto rounded-lg" />
                                             </td>
                                             <td>
                                                 <Link

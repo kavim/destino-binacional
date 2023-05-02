@@ -1,4 +1,4 @@
-import { Link, Head } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import SiteLayout from '@/Layouts/SiteLayout';
 import Events from '@/Pages/Site/Home/Events';
 import Categories from '@/Pages/Site/Home/Categories';
@@ -8,7 +8,7 @@ export default function Welcome() {
     return (
         <SiteLayout>
             <Head title="Destino Binacional" />
-            <header className="relative flex items-center justify-center h-[25vh] sm:h-[30vh] md:h-[60vh] overflow-hidden">
+            <header className="relative flex items-center justify-center h-[60vh] overflow-hidden">
                 <div className="relative z-30 bg-gradient-to-b from-black to-transparent w-full h-full flex justify-center">
                     <img src="/images/logotipo-blanco.svg" alt="logotipo" className='w-96' />
                 </div>
@@ -17,7 +17,7 @@ export default function Welcome() {
                     <source src="/video/parque.mp4" type="video/mp4" />
                 </video>
             </header>
-            <div className="sm:max-w-full lg:max-w-7xl mx-auto my-5">
+            <div className="sm:max-w-full lg:max-w-7xl mx-auto md:my-5">
                 <Events></Events>
                 <Hero></Hero>
                 <Categories></Categories>

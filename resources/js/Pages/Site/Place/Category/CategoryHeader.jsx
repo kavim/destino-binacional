@@ -12,21 +12,21 @@ export default function CategoryHeader({ category }) {
             'text-white',
             'flex',
             'items-center',
-            "bg-[url('" + category.image + "')]",
             'bg-cover bg-center',
         ],
     );
 
     return (
         <div className="w-full">
-            <div className={className}>
+            <div className={className} style={{ backgroundImage: category.featured_image }}>
+                <img src='https://i.imgur.com/g5fL66rl.jpg' alt="" />
                 <div className='flex justify-center items-center w-full h-full mx-auto px-10 bg-gradient-to-b from-transparent to-stone-800'>
                     <div className="flex flex-col md:flex-row justify-center items-center">
                         <div>
-                            <img src={category.icon} alt="" className='w-10 md:w-24' />
+                            <img src={category.icon} alt="" className='w-20 md:w-24' />
                         </div>
                         <div>
-                            <h2 className='text-5xl font-extrabold'>
+                            <h2 className='text-3xl md:text-5xl font-extrabold break-words'>
                                 {category.name}
                             </h2>
                         </div>

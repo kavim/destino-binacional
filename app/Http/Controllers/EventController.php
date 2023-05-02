@@ -7,6 +7,7 @@ use App\Models\City;
 use App\Models\Event;
 use App\Services\EventService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class EventController extends Controller
@@ -22,12 +23,20 @@ class EventController extends Controller
      */
     public function index()
     {
-        $places = Event::orderBy('id', 'DESC')
+        $places = Event::when(request('search'), function ($query, $search) {
+            $query->where('slug', 'LIKE', '%'.Str::slug($search).'%');
+        })
+        ->when(request('category_id'), function ($query, $category_id) {
+            $query->where('category_id', $category_id);
+        })
+        ->orderBy('id', 'DESC')
         ->paginate();
 
         return Inertia::render('Dashboard/Event/Index', [
             'events' => $places,
             'categories' => Category::where('parent_id', null)->get(),
+            'grouped_categories' => Category::where('parent_id', '<>', null)->get()->groupBy('parent_id'),
+            'filters' => request()->all(['search', 'category_id']),
         ]);
     }
 
@@ -107,6 +116,7 @@ class EventController extends Controller
             'city_id' => ['required_if:is_online,false'],
             'category_id' => ['required'],
             'image' => ['required'],
+            'featured_image' => ['nullable'],
         ]);
 
         $this->eventService->update($validated, $event);
@@ -120,6 +130,9 @@ class EventController extends Controller
      */
     public function destroy(Event $event)
     {
-        //
+        $event->delete();
+
+        return redirect()->route('events.index')
+            ->with('success', 'Evento eliminado con éxito.');
     }
 }

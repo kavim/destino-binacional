@@ -22,12 +22,12 @@ export default function CategoryHeader() {
                 <div className='flex justify-center items-center w-full h-full mx-auto px-10 bg-gradient-to-b from-transparent to-stone-800'>
                     <div className="flex flex-col md:flex-row justify-center items-center">
                         <div>
-                            <img src="/images/icons/eventos.svg" alt="" className='w-10 md:w-24' />
+                            <img src="/images/icons/eventos.svg" alt="" className='w-16 md:w-24' />
                         </div>
                         <div>
-                            <h2 className='text-5xl font-extrabold'>
+                            <span className='text-3xl md:text-5xl font-extrabold break-words'>
                                 Calendario de Eventos
-                            </h2>
+                            </span>
                         </div>
                     </div>
                 </div>
