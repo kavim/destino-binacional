@@ -33,24 +33,24 @@ export default function Show({ event }) {
                                 <img src="/images/icons/eventos.svg" alt="evento" className='w-6 md:w-8' />
                                 <span className='ml-2'>Evento</span>
                             </div> */}
-                            <div className='flex flex-col md:flex-row justify-center items-center break-all whitespace-normal'>
-                                <span className='md:text-5xl text-3xl font-extrabold p-2'>
+                            <div className='flex flex-col md:flex-row justify-center items-center break-words whitespace-normal'>
+                                <span className='md:text-5xl text-3xl font-extrabold'>
                                     {event.title}
                                 </span>
                             </div>
                             <div className='w-full flex items-center justify-center md:justify-start p-2 md:p-0 md:mt-4'>
-                                {event.start_date !== event.end_date ? () => {
+                                {event.start !== event.end ? (
                                     <>
                                         <i className="fa-solid fa-calendar-days mr-2 shadow-sm"></i>
-                                        {dayjs(event.start_date).format('DD MMMM')}
+                                        {dayjs(event.start).format('DD MMMM')}
                                         <i className="fa-solid fa-arrows-left-right mx-2 shadow-sm"></i>
                                         <i className="fa-solid fa-calendar-days mr-2 shadow-sm"></i>
-                                        {dayjs(event.end_date).format('DD MMMM')}
+                                        {dayjs(event.end).format('DD MMMM')}
                                     </>
-                                } : (
+                                ) : (
                                     <>
                                         <i className="fa-solid fa-calendar-days mr-2"></i>
-                                        {dayjs(event.start_date).format('DD MMMM')}
+                                        {dayjs(event.start).format('DD MMMM')}
                                     </>
                                 )}
                             </div>

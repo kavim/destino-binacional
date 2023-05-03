@@ -2,14 +2,12 @@ import { Link, usePage } from '@inertiajs/react';
 
 export default function Categories() {
     const { categories } = usePage().props;
-
-    console.log(categories);
     return (
-        <div className='grid sm:grid-cols-2 sm:gap-2 md:grid-cols-2 gap-4 mt-5 p-2 md:p-0'>
+        <div className='grid sm:grid-cols-2 sm:gap-2 md:grid-cols-2 gap-4 mt-5 p-2 md:p-0 overflow-hidden break-words'>
             {Object.keys(categories).map((key, i) => (
                 <Link href={route('site.categories.show', categories[key].slug)} key={i} className='cursor-pointer'>
                     <div className="card bg-base-100 shadow-xl image-full">
-                        <figure><img src={categories[key].image} alt={categories[key].name} /></figure>
+                        <figure><img src={categories[key].featured_image} alt={categories[key].name} className='aspect-video' /></figure>
                         <div className="card-body">
                             <div className='flex flex-col justify-center align-middle text-center'>
                                 <img src={categories[key].icon} alt={categories[key].name} className='w-24 mx-auto' />

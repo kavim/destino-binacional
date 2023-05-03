@@ -19,18 +19,18 @@ export function EventCard({ event, index }) {
                             </span>
                         </div>
                         <div className='w-full flex items-center justify-start p-2 md:p-0 md:mt-4'>
-                            {event.start_date !== event.end_date ? (
+                            {event.start !== event.end ? (
                                 <>
                                     <i className="fa-solid fa-calendar-days mr-2 shadow-sm"></i>
-                                    {dayjs(event.start_date).format('DD MMMM')}
+                                    {dayjs(event.start).format('DD MMMM')}
                                     <i className="fa-solid fa-arrows-left-right mx-2 shadow-sm"></i>
                                     <i className="fa-solid fa-calendar-days mr-2 shadow-sm"></i>
-                                    {dayjs(event.end_date).format('DD MMMM')}
+                                    {dayjs(event.end).format('DD MMMM')}
                                 </>
                             ) : (
                                 <>
                                     <i className="fa-solid fa-calendar-days mr-2"></i>
-                                    {dayjs(event.start_date).format('DD MMMM')}
+                                    {dayjs(event.start).format('DD MMMM')}
                                 </>
                             )}
                         </div>

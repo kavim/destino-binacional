@@ -17,7 +17,6 @@ export default function Create() {
     });
 
     const onCorte = (image) => {
-        console.log("vai setart imagem");
         setData('featured_image', image);
         setData('image', null);
     }

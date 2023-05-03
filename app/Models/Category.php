@@ -44,6 +44,23 @@ class Category extends Model implements TranslatableContract
         );
     }
 
+    protected function featuredImage(): Attribute
+    {
+        return Attribute::make(
+            get: function (?string $value) {
+                if (is_null($value)) {
+                    return 'https://picsum.photos/1200/720';
+                }
+
+                if (substr($value, 0, 4) === 'http') {
+                    return $value;
+                }
+
+                return asset('/storage/categories/'.$value);
+            },
+        );
+    }
+
     protected function icon(): Attribute
     {
         return Attribute::make(
