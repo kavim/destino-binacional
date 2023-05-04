@@ -18,7 +18,7 @@ export default function CategoryHeader({ category }) {
 
     return (
         <div className="w-full">
-            <div className={className} style={{ backgroundImage: category.featured_image }}>
+            <div className={className} style={{ backgroundImage: `url("` + category.featured_image + `")` }}>
                 <div className='flex justify-center items-center w-full h-full mx-auto px-10 bg-gradient-to-b from-transparent to-stone-800'>
                     <div className="flex flex-col md:flex-row justify-center items-center">
                         <div>
