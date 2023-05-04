@@ -5,7 +5,7 @@ export default function Hero() {
     return (
         <>
             <div className='flex flex-col md:flex-row justify-center items-center bg-white rounded-lg md:m-4'>
-                <div>
+                <div className='flex justify-between'>
                     <LottiePlayer></LottiePlayer>
                 </div>
                 <div className='break-words p-5'>
