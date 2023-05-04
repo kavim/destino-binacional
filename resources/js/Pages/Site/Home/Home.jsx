@@ -3,7 +3,6 @@ import SiteLayout from '@/Layouts/SiteLayout';
 import Events from '@/Pages/Site/Home/Events';
 import Categories from '@/Pages/Site/Home/Categories';
 import Hero from '@/Pages/Site/Home/Hero';
-import Footer from '@/Components/Footer'
 
 export default function Welcome() {
     return (
@@ -35,7 +34,6 @@ export default function Welcome() {
                 <Hero></Hero>
                 <Categories></Categories>
             </div>
-            <Footer></Footer>
         </SiteLayout >
     );
 }

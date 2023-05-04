@@ -1,8 +1,9 @@
 import MainNav from '@/Components/MainNav';
+import Footer from '@/Components/Footer'
 
 export default function Site({ header, children }) {
     return (
-        <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+        <div className="min-h-screen bg-white md:bg-gray-100 dark:bg-gray-900">
             <MainNav></MainNav>
 
             {header && (
@@ -12,6 +13,7 @@ export default function Site({ header, children }) {
             )}
 
             <main>{children}</main>
+            <Footer></Footer>
         </div>
     );
 }

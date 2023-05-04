@@ -23,7 +23,7 @@ export default function Events() {
     }
 
     return (
-        <div className='bg-white rounded-xl md:p-2 sm:p-0 py-3'>
+        <div className='bg-white rounded-xl md:p-2 sm:p-0 py-3 md:mx-4'>
             <div className="text-3xl md:text-4xl font-extrabold text-center">
                 <span className="bg-clip-text text-transparent bg-stone-800">
                     Próximos eventos

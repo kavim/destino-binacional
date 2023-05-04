@@ -12,7 +12,7 @@ export default function Show({ event }) {
         [
             'text-xl text-center whitespace-nowrap align-baseline font-bold',
             'inline-block leading-none',
-            'h-[35vh]',
+            'h-[50vh]',
             'text-sm',
             'text-white',
             'flex',

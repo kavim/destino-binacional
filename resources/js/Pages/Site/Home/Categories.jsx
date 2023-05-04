@@ -3,7 +3,7 @@ import { Link, usePage } from '@inertiajs/react';
 export default function Categories() {
     const { categories } = usePage().props;
     return (
-        <div className='grid sm:grid-cols-2 sm:gap-2 md:grid-cols-2 gap-4 mt-5 p-2 md:p-0 overflow-hidden break-words'>
+        <div className='grid sm:grid-cols-2 sm:gap-2 md:grid-cols-2 gap-4 mt-5 p-2 md:p-0 md:mx-4 overflow-hidden break-words'>
             {Object.keys(categories).map((key, i) => (
                 <Link href={route('site.categories.show', categories[key].slug)} key={i} className='cursor-pointer'>
                     <div className="card bg-base-100 shadow-xl image-full">
