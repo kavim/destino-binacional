@@ -31,7 +31,7 @@ export default function Events() {
             </div>
             {Object.keys(grouped_events).length > 0 ? (
                 <>
-                    <div className='flex max-w-full overflow-x-scroll scroll whitespace-nowrap scroll-smooth scrollbar-hide py-5 px-2'>
+                    <div className='flex max-w-full overflow-x-auto scroll whitespace-nowrap scroll-smooth scrollbar-hide py-5 px-2'>
                         {Object.keys(grouped_events).map((group, index) => {
                             return (
                                 <div
@@ -61,7 +61,7 @@ export default function Events() {
                         })}
                     </div>
 
-                    <div id='slider' className='w-full h-full overflow-x-scroll scroll whitespace-nowrap scroll-smooth scrollbar-hide px-2 py-5 flex flex-row'>
+                    <div id='slider' className='w-full h-full overflow-x-auto scroll whitespace-nowrap scroll-smooth scrollbar-hide px-2 py-5 flex flex-row'>
                         {slectedDate ? (
                             <>
                                 {
@@ -84,18 +84,19 @@ export default function Events() {
                             </>
                         )}
                     </div>
+
+                    <div className='w-full flex justify-center my-5'>
+                        <Link href={route('site.events.index')} className="btn btn-outline">
+                            {trans('see_more')} Eventos <i className="fa-solid fa-arrow-right ml-2"></i>
+                        </Link>
+                    </div>
                 </>
             ) : (
                 <div className='flex justify-center w-full text-center'>
-                    <span>There is no events</span>
+                    <span>No hay eventos registrados</span>
                 </div>
             )}
 
-            <div className='w-full flex justify-center my-5'>
-                <Link href={route('site.events.index')} className="btn btn-outline">
-                    {trans('see_more')} Eventos <i className="fa-solid fa-arrow-right ml-2"></i>
-                </Link>
-            </div>
         </div >
     );
 }
