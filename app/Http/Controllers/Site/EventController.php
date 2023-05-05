@@ -17,7 +17,6 @@ class EventController extends Controller
 
     public function index(Request $request): \Inertia\Response
     {
-        // dd($request->all());
         $start = $request->has('start') && ! is_null($request->input('start')) ? Carbon::parse($request->input('start')) : null;
         $end = $request->has('end') && ! is_null($request->input('end')) ? Carbon::parse($request->input('end')) : null;
 
@@ -26,8 +25,8 @@ class EventController extends Controller
         return Inertia::render('Site/Event/Index', [
             'events' => $events,
             'filters' => [
-                'start' => ! is_null($start) ? $start->format('Y-m-d H:i:s') : null,
-                'end' => ! is_null($end) ? $end->format('Y-m-d H:i:s') : null,
+                'start' => ! is_null($start) ? $start : null,
+                'end' => ! is_null($end) ? $end : null,
             ],
         ]);
     }

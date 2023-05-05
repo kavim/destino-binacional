@@ -83,3 +83,17 @@
 .bg-accent {
     @apply bg-indigo-100;
 }
+
+.degrade {
+    background: linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.8) 100%);
+}
+
+.header-filters {
+    filter: grayscale(50%);
+}
+
+.kimput div {
+    border-radius: 8px;
+    padding: 4px;
+    @apply border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm;
+}

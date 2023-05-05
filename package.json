@@ -27,6 +27,7 @@
         "dayjs": "^1.11.7",
         "lodash": "^4.17.21",
         "lottie-react": "^2.4.0",
+        "react-date-picker": "^10.0.3",
         "react-easy-crop": "^4.7.4",
         "react-select": "^5.7.1",
         "react-tailwindcss-datepicker": "^1.5.1",

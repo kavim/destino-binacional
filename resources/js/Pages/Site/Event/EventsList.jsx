@@ -7,7 +7,7 @@ export default function EventList() {
     dayjs.locale("es");
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 px-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-3 md:gap-8 p-5 md:max-w-4xl mx-auto lg:max-w-6xl">
             {events.map(({ slug, title, image, start, end }, index) => {
                 return (
                     <Link key={index} href={route('site.events.show', slug)}>
