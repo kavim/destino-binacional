@@ -58,17 +58,17 @@ class EventController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => ['required'],
-            'description' => ['required'],
-            'start' => ['required'],
-            'end' => ['required'],
-            'is_online' => ['required'],
-            'link' => ['required_if:is_online,true'],
-            'google_maps_src' => ['required_if:is_online,false'],
-            'address' => ['required_if:is_online,false'],
-            'city_id' => ['required_if:is_online,false'],
-            'category_id' => ['required'],
-            'featured_image' => ['required'],
+            'title' => 'required',
+            'description' => 'required',
+            'start' => 'required',
+            'end' => 'required',
+            'is_online' => 'required',
+            'link' => 'required_if:is_online,true',
+            'google_maps_src' => 'required_if:is_online,false',
+            'address' => 'required_if:is_online,false',
+            'city_id' => 'required_if:is_online,false',
+            'category_id' => 'required',
+            'featured_image' => 'required',
         ]);
 
         $this->eventService->store($validated);

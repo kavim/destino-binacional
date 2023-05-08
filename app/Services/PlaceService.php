@@ -31,9 +31,6 @@ class PlaceService
         // upload image
         $featured_image_src = $this->storeFeaturedImage(Arr::get($data, 'featured_image'));
 
-        // process data here
-        $data['featured_image'] = $featured_image_src;
-
         $place = Place::create([
             'name' => Arr::get($data, 'name'),
             'slug' => Str::slug(Arr::get($data, 'name')),
@@ -41,7 +38,7 @@ class PlaceService
             'city_id' => Arr::get($data, 'city_id'),
             'place_type_id' => Arr::get($data, 'place_type_id'),
             'category_id' => Arr::get($data, 'category_id'),
-            'featured_image' => Arr::get($data, 'featured_image'),
+            'featured_image' => $featured_image_src,
             'google_maps_src' => extractSrcFromGmapsIframe(Arr::get($data, 'google_maps_src')),
         ]);
 
@@ -98,13 +95,6 @@ class PlaceService
             $the_feature_image = $this->storeFeaturedImage(Arr::get($data, 'featured_image'));
         }
 
-        // process data here
-        // if (substr($data['google_maps_src'], 0, 7) === '<iframe') {
-        //     $data['google_maps_src'] = extractSrcFromGmapsIframe($place->google_maps_src);
-        // } else {
-        //     $data['google_maps_src'] = $place->google_maps_src;
-        // }
-
         $place->update([
             'name' => Arr::get($data, 'name'),
             'slug' => Str::slug(Arr::get($data, 'name')),
@@ -113,7 +103,6 @@ class PlaceService
             'place_type_id' => Arr::get($data, 'place_type_id'),
             'category_id' => Arr::get($data, 'category_id'),
             'featured_image' => $the_feature_image ?? $place->featured_image,
-            // 'google_maps_src' => $data['google_maps_src'],
             'google_maps_src' => extractSrcFromGmapsIframe(Arr::get($data, 'google_maps_src')) ?? $place->google_maps_src,
         ]);
 

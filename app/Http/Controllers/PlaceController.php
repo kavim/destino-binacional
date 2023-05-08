@@ -92,7 +92,7 @@ class PlaceController extends Controller
 
     public function update(Request $request, Place $place): RedirectResponse
     {
-        $validated = $request->validate([
+        $request->validate([
             'name' => 'required',
             'address' => 'required',
             'city_id' => 'required',
