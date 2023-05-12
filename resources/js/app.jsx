@@ -6,7 +6,6 @@ import 'react-calendar/dist/Calendar.css';
 import { createRoot } from 'react-dom/client';
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
-import { InertiaProgress } from '@inertiajs/progress';
 
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
 
@@ -17,9 +16,10 @@ createInertiaApp({
         const root = createRoot(el);
         root.render(<App {...props} />);
     },
-});
-
-InertiaProgress.init({
-    color: '#ED8936',
-    showSpinner: true
+    progress: {
+        delay: 0,
+        color: '#6366f1',
+        includeCSS: true,
+        showSpinner: true,
+    },
 });
