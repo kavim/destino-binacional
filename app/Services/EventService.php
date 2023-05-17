@@ -57,6 +57,8 @@ class EventService
             'featured_image' => $this->storeFeaturedImage(Arr::get($data, 'featured_image')),
         ]);
 
+        $event->tags()->sync(Arr::get($data, 'tag_ids'));
+
         return $event;
     }
 
@@ -101,6 +103,8 @@ class EventService
             'category_id' => Arr::get($data, 'category_id'),
             'featured_image' => $the_feature_image ?? $event->featured_image,
         ]);
+
+        $event->tags()->sync(Arr::get($data, 'tag_ids'));
 
         return $event;
     }

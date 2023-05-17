@@ -44,4 +44,19 @@ class Event extends Model
             ? 'https://api.lorem.space/image/house?w=1200&h=720'
             : asset('/storage/events/'.$this->featured_image);
     }
+
+    public function city()
+    {
+        return $this->belongsTo(City::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class)->withDefault();
+    }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
 }

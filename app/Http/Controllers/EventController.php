@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\City;
 use App\Models\Event;
+use App\Models\Tag;
 use App\Services\EventService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -26,11 +27,11 @@ class EventController extends Controller
         $places = Event::when(request('search'), function ($query, $search) {
             $query->where('slug', 'LIKE', '%'.Str::slug($search).'%');
         })
-        ->when(request('category_id'), function ($query, $category_id) {
-            $query->where('category_id', $category_id);
-        })
-        ->orderBy('id', 'DESC')
-        ->paginate();
+            ->when(request('category_id'), function ($query, $category_id) {
+                $query->where('category_id', $category_id);
+            })
+            ->orderBy('id', 'DESC')
+            ->paginate();
 
         return Inertia::render('Dashboard/Event/Index', [
             'events' => $places,
@@ -49,6 +50,8 @@ class EventController extends Controller
             'categories' => Category::where('parent_id', null)->get(),
             'grouped_categories' => Category::where('parent_id', '<>', null)->get()->groupBy('parent_id'),
             'cities' => City::get(['id', 'name']),
+            'parent_tags' => Tag::where('parent_id', null)->get(),
+            'grouped_tags' => Tag::where('parent_id', '<>', null)->get()->groupBy('parent_id'),
         ]);
     }
 
@@ -67,22 +70,15 @@ class EventController extends Controller
             'google_maps_src' => 'required_if:is_online,false',
             'address' => 'required_if:is_online,false',
             'city_id' => 'required_if:is_online,false',
-            'category_id' => 'required',
+            'category_id' => 'nullable',
             'featured_image' => 'required',
+            'tag_ids' => 'required',
         ]);
 
         $this->eventService->store($validated);
 
         return redirect()->route('events.index')
             ->with('success', 'Evento creado con éxito.');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Event $event)
-    {
-        //
     }
 
     /**
@@ -96,6 +92,9 @@ class EventController extends Controller
             'categories' => Category::where('parent_id', null)->get(),
             'grouped_categories' => Category::where('parent_id', '<>', null)->get()->groupBy('parent_id'),
             'cities' => City::get(['id', 'name']),
+            'parent_tags' => Tag::where('parent_id', null)->get(),
+            'grouped_tags' => Tag::where('parent_id', '<>', null)->get()->groupBy('parent_id'),
+            'tag_ids' => $event->tags->pluck('id')->map(fn ($id) => (int) $id),
         ]);
     }
 
@@ -114,10 +113,13 @@ class EventController extends Controller
             'google_maps_src' => ['required_if:is_online,false'],
             'address' => ['required_if:is_online,false'],
             'city_id' => ['required_if:is_online,false'],
-            'category_id' => ['required'],
+            'category_id' => ['nullable'],
             'image' => ['required'],
             'featured_image' => ['nullable'],
+            'tag_ids' => ['nullable'],
         ]);
+
+        // dd($validated);
 
         $this->eventService->update($validated, $event);
 

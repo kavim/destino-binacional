@@ -1,4 +1,3 @@
-import React from 'react';
 import { usePage } from '@inertiajs/react';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
@@ -11,10 +10,10 @@ import ImagicLoader from '@/Components/ImagicLoader';
 import DataPickerInputStart from '@/Shared/DataPickerInputStart';
 import DataPickerInputEnd from '@/Shared/DataPickerInputEnd';
 import DeleteButton from '@/Shared/DeleteButton';
+import Tags from './Tags';
 
 export default function Form({ handleOnChange, submit, data, errors, processing, onDelete }) {
-
-    const { categories, cities, grouped_categories } = usePage().props;
+    const { categories, cities, grouped_categories, parent_tags } = usePage().props;
 
     const onCorte = (image) => {
         handleOnChange({ target: { name: 'featured_image', value: image } });
@@ -23,6 +22,19 @@ export default function Form({ handleOnChange, submit, data, errors, processing,
     const check = () => {
         handleOnChange({ target: { name: 'is_online', value: !data.is_online } });
     }
+
+    const handleCheck = (event) => {
+        let updatedList = [...data.tag_ids];
+        let checkboxId = parseInt(event.target.value);
+
+        if (event.target.checked) {
+            updatedList = [...data.tag_ids, checkboxId];
+        } else {
+            updatedList.splice(data.tag_ids.indexOf(checkboxId), 1);
+        }
+
+        handleOnChange({ target: { name: 'tag_ids', value: updatedList } });
+    };
 
     const getTools = () => {
         return [
@@ -150,6 +162,11 @@ export default function Form({ handleOnChange, submit, data, errors, processing,
                 <InputError message={errors.category_id} className="mt-2" />
             </div>
 
+            <div className="divider mt-10">Tags</div>
+            <div className="my-5">
+                <Tags handleCheck={handleCheck} />
+            </div>
+
             <div className="divider mt-10">Detalles para ubicar el evento</div>
 
             <div className="form-control">
@@ -159,84 +176,88 @@ export default function Form({ handleOnChange, submit, data, errors, processing,
                 </label>
             </div>
 
-            {!data.is_online ? (
-                <>
+            {
+                !data.is_online ? (
+                    <>
+                        <div className="my-3">
+                            <InputLabel htmlFor="google_maps_src" value="Google Maps link" />
+                            <TextInput
+                                type="text"
+                                name="google_maps_src"
+                                value={data.google_maps_src}
+                                className="mt-1 block w-full"
+                                onChange={handleOnChange}
+                            />
+                            <InputError message={errors.google_maps_src} className="mt-2" />
+                        </div>
+
+                        <div className="my-3">
+                            <InputLabel htmlFor="address" value="Dirección" />
+                            <TextInput
+                                type="text"
+                                name="address"
+                                value={data.address}
+                                className="mt-1 block w-full"
+                                placeholder="Address"
+                                onChange={handleOnChange}
+                            />
+                            <InputError message={errors.address} className="mt-2" />
+                        </div>
+
+                        <div className="my-3">
+                            <InputLabel htmlFor="city_id" value="Ciudad" />
+                            <SelectInput
+                                name="city_id"
+                                value={data.city_id}
+                                onChange={handleOnChange}
+                                className="mt-1 block w-full"
+                            >
+                                <option defaultValue hidden>Elige una Ciudad</option>
+                                {Object.keys(cities).map((key, i) => (
+                                    <option key={i} value={cities[key].id}>
+                                        {cities[key].name}
+                                    </option>
+                                ))}
+                            </SelectInput>
+
+                            <InputError message={errors.city_id} className="mt-2" />
+                        </div>
+                    </>
+                ) : (
                     <div className="my-3">
-                        <InputLabel htmlFor="google_maps_src" value="Google Maps link" />
+                        <InputLabel htmlFor="link" value="Web del Evento (opcional)" />
                         <TextInput
                             type="text"
-                            name="google_maps_src"
-                            value={data.google_maps_src}
+                            name="link"
+                            value={data.link}
                             className="mt-1 block w-full"
+                            placeholder="Webinar link"
                             onChange={handleOnChange}
                         />
-                        <InputError message={errors.google_maps_src} className="mt-2" />
+                        <InputError message={errors.link} className="mt-2" />
                     </div>
+                )
+            }
 
-                    <div className="my-3">
-                        <InputLabel htmlFor="address" value="Dirección" />
-                        <TextInput
-                            type="text"
-                            name="address"
-                            value={data.address}
-                            className="mt-1 block w-full"
-                            placeholder="Address"
-                            onChange={handleOnChange}
-                        />
-                        <InputError message={errors.address} className="mt-2" />
+            {
+                onDelete ? (
+                    <div className="flex justify-between mt-5">
+                        <DeleteButton type='button' onDelete={onDelete}>
+                            Delete
+                        </DeleteButton>
+                        <PrimaryButton disabled={processing}>
+                            Save
+                        </PrimaryButton>
                     </div>
-
-                    <div className="my-3">
-                        <InputLabel htmlFor="city_id" value="Ciudad" />
-                        <SelectInput
-                            name="city_id"
-                            value={data.city_id}
-                            onChange={handleOnChange}
-                            className="mt-1 block w-full"
-                        >
-                            <option defaultValue hidden>Elige una Ciudad</option>
-                            {Object.keys(cities).map((key, i) => (
-                                <option key={i} value={cities[key].id}>
-                                    {cities[key].name}
-                                </option>
-                            ))}
-                        </SelectInput>
-
-                        <InputError message={errors.city_id} className="mt-2" />
+                ) : (
+                    <div className="flex justify-end mt-5">
+                        <PrimaryButton disabled={processing}>
+                            Save
+                        </PrimaryButton>
                     </div>
-                </>
-            ) : (
-                <div className="my-3">
-                    <InputLabel htmlFor="link" value="Web del Evento (opcional)" />
-                    <TextInput
-                        type="text"
-                        name="link"
-                        value={data.link}
-                        className="mt-1 block w-full"
-                        placeholder="Webinar link"
-                        onChange={handleOnChange}
-                    />
-                    <InputError message={errors.link} className="mt-2" />
-                </div>
-            )}
+                )
+            }
 
-            {onDelete ? (
-                <div className="flex justify-between mt-5">
-                    <DeleteButton type='button' onDelete={onDelete}>
-                        Delete
-                    </DeleteButton>
-                    <PrimaryButton disabled={processing}>
-                        Save
-                    </PrimaryButton>
-                </div>
-            ) : (
-                <div className="flex justify-end mt-5">
-                    <PrimaryButton disabled={processing}>
-                        Save
-                    </PrimaryButton>
-                </div>
-            )}
-
-        </form>
+        </form >
     );
 }

@@ -19,6 +19,7 @@ export default function Create() {
         is_online: false,
         link: '',
         featured_image: '',
+        tag_ids: [],
     });
 
     const onCorte = (image) => {

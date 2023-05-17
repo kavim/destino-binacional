@@ -1,8 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Inertia } from '@inertiajs/inertia';
+import React, { useState, useEffect } from 'react';
 import { usePage } from '@inertiajs/react';
 import { usePrevious } from 'react-use';
-import SelectInput from '@/Shared/SelectInput';
 import pickBy from 'lodash/pickBy';
 
 export default () => {

@@ -1,10 +1,9 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Inertia } from '@inertiajs/inertia';
-import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 import Form from './Partials/Form';
 
 export default function Edit() {
-    const { auth, event } = usePage().props;
+    const { auth, event, tag_ids } = usePage().props;
 
     const { data, setData, errors, put, reset, processing, recentlySuccessful } = useForm({
         title: event.title,
@@ -21,6 +20,7 @@ export default function Edit() {
         link: event.link ? event.link : '',
         featured_image: '',
         image: event.image ? event.image : '',
+        tag_ids: tag_ids ? tag_ids : [],
     });
 
     const onCorte = (image) => {
@@ -29,6 +29,8 @@ export default function Edit() {
     }
 
     const handleOnChange = event => {
+        console.log(event.target.name);
+        console.log(event.target.value);
         if (event.target.name === 'is_online') {
             setData('address', '');
             setData('city_id', '');
