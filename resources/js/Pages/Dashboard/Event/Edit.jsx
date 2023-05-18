@@ -11,7 +11,7 @@ export default function Edit() {
         google_maps_src: event.google_maps_src ? event.google_maps_src : '',
         address: event.address ? event.address : '',
         city_id: event.city_id ? event.city_id : '',
-        category_id: event.category_id ? event.category_id : '',
+        category_id: null,
         price: event.price ? event.price : '',
         door_time: event.door_time ? event.door_time : '',
         start: event.start ? event.start : '',

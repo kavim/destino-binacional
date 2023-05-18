@@ -11,7 +11,7 @@ export default function Create() {
         google_maps_src: '',
         address: '',
         city_id: '',
-        category_id: '',
+        category_id: null,
         price: '',
         door_time: '',
         start: '',

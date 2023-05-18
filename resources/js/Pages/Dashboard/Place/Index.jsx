@@ -13,15 +13,16 @@ export default function Index() {
             <div className="flex justify-between mt-2" >
                 <div className="">
                     <i className="fa-solid fa-location-dot fa-fw"></i>
-                    <span className="">Places</span>
+                    <span className="">Locales</span>
                 </div>
                 <div className='px-2'>
                     <Link href={route('places.create')} className="btn-success">
-                        Create new
+                        Crear nuevo
                     </Link>
                 </div>
             </div>
         }>
+            <Head title="Locales" />
             <div className='py-12'>
                 <div className="max-w-7xl mx-auto sm:px-2">
                     <div className="overflow-x-auto bg-white rounded-xl shadow mb-3">

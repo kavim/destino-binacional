@@ -4,6 +4,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Site\HomeController;
+use App\Http\Controllers\TagController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -31,6 +32,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('places', PlaceController::class);
     Route::resource('events', EventController::class);
+    Route::resource('tags', TagController::class);
 });
 
 // SITE ROUTES

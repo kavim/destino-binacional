@@ -27,11 +27,20 @@ export default function Authenticated({ header, children }) {
                                 <NavLink href={route('dashboard')} active={route().current('dashboard')}>
                                     Dashboard
                                 </NavLink>
-                                <NavLink href={route('places.index')} active={route().current('places.index')}>
-                                    Places
+                                <NavLink href={route('places.index')} active={
+                                    route().current('places.index') || route().current('places.edit')
+                                }>
+                                    Locales
                                 </NavLink>
-                                <NavLink href={route('events.index')} active={route().current('events.index')}>
+                                <NavLink href={route('events.index')} active={
+                                    route().current('events.index') || route().current('events.edit')
+                                }>
                                     Eventos
+                                </NavLink>
+                                <NavLink href={route('tags.index')} active={
+                                    route().current('tags.index') || route().current('tags.edit')
+                                }>
+                                    Tags
                                 </NavLink>
                             </div>
                         </div>
@@ -105,10 +114,19 @@ export default function Authenticated({ header, children }) {
                             Dashboard
                         </ResponsiveNavLink>
                         <ResponsiveNavLink href={route('places.index')} active={route().current('places.index')}>
-                            Place
+                            Locales
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink href={route('events.index')} active={route().current('events.index')}>
+                        <ResponsiveNavLink href={route('events.index')} active={
+                            route().current('events.index') ||
+                            route().current('events.edit')
+                        }>
                             Eventos
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink href={route('tags.index')} active={
+                            route().current('tags.index') ||
+                            route().current('tags.edit')
+                        }>
+                            Tags
                         </ResponsiveNavLink>
                     </div>
 

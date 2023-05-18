@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { router } from '@inertiajs/react'
 import { usePage } from '@inertiajs/react';
 import { usePrevious } from 'react-use';
 import pickBy from 'lodash/pickBy';
@@ -29,7 +30,7 @@ export default () => {
                 const query = Object.keys(pickBy(values)).length
                     ? pickBy(values)
                     : { remember: 'forget' };
-                Inertia.get(route(route().current()), query, {
+                router.get(route(route().current()), query, {
                     replace: true,
                     preserveState: true
                 });

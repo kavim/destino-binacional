@@ -135,7 +135,7 @@ export default function Form({ handleOnChange, submit, data, errors, processing,
                 <InputError message={errors.end} className="mt-2" />
             </div>
 
-            <div className="my-5">
+            {/* <div className="my-5">
                 <InputLabel htmlFor="category_id" value="Category" />
                 <SelectInput
                     name="category_id"
@@ -160,7 +160,7 @@ export default function Form({ handleOnChange, submit, data, errors, processing,
                 </SelectInput>
 
                 <InputError message={errors.category_id} className="mt-2" />
-            </div>
+            </div> */}
 
             <div className="divider mt-10">Tags</div>
             <div className="my-5">
