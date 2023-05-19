@@ -74,7 +74,8 @@ class EventService
         try {
             $file = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $image));
             $featured_image_src = 'event_'.time().'.'.explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
-            Image::make($file)->resize($width, $height)->save(storage_path('app/public/'.'events/'.$featured_image_src));
+            // Image::make($file)->resize($width, $height)->save(storage_path('app/public/'.'events/'.$featured_image_src));
+            Image::make($file)->save(storage_path('app/public/'.'events/'.$featured_image_src));
         } catch (Exception $e) {
             Log::error($e);
         }
