@@ -22,7 +22,7 @@ export default function MainNav() {
                         <div className="hidden sm:-my-px sm:ml-10 sm:flex sm:align-middle items-center justify-end">
                             <div className="dropdown dropdown-end">
                                 <label tabIndex={0} className="btn btn-ghost rounded-btn">
-                                    Destinos
+                                    Categorias
                                     <i className="fa-solid fa-chevron-down ml-2"></i>
                                 </label>
                                 <ul tabIndex={0} className="menu dropdown-content p-2 shadow bg-base-100 rounded-box w-72 mt-4">
