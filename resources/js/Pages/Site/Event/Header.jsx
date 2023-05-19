@@ -27,7 +27,7 @@ export default function CategoryHeader() {
                         </div>
                         <div>
                             <span className='text-3xl md:text-5xl font-extrabold break-words ml-2'>
-                                Calendario de Eventos
+                                Calendario binacional de Eventos
                             </span>
                         </div>
                     </div>
