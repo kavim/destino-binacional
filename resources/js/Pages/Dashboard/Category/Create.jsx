@@ -26,13 +26,12 @@ export default function Create() {
     });
 
     const handleOnChange = event => {
-        console.log(event.target.name, event.target.value)
         setData(event.target.name, event.target.type === 'checkbox' ? event.target.checked : event.target.value);
     };
 
-    const onCorte = (image) => {
-        setData('image', image);
-        setData('image', null);
+    const onIconChange = e => {
+        let img = e.target.files[0];
+        setData('icon_image', img);
     }
 
     const submit = e => {
@@ -66,7 +65,7 @@ export default function Create() {
                                 <h2 className='font-bold text-lg'>Agregando una categoria principal</h2>
                             </div>
                         )}
-                        <Form handleOnChange={handleOnChange} submit={submit} data={data} errors={errors} onCorte={onCorte} processing={processing} parent={parent}></Form>
+                        <Form handleOnChange={handleOnChange} submit={submit} data={data} errors={errors} onIconChange={onIconChange} processing={processing} parent={parent}></Form>
                     </div>
                 </div>
             </div>

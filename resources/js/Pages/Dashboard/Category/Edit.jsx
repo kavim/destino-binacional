@@ -17,10 +17,7 @@ export default function Create() {
         parent_id: parent ? parent.id : '',
     });
 
-    console.log(category);
-
     const handleOnChange = event => {
-        console.log(event.target.name, event.target.value)
         setData(event.target.name, event.target.type === 'checkbox' ? event.target.checked : event.target.value);
     };
 
