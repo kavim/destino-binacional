@@ -25,7 +25,7 @@ export default function Authenticated({ header, children }) {
 
                             <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                                 <NavLink href={route('dashboard')} active={route().current('dashboard')}>
-                                    Dashboard
+                                    <i className="fa-solid fa-house"></i>
                                 </NavLink>
                                 <NavLink href={route('places.index')} active={
                                     route().current('places.index') || route().current('places.edit')
@@ -41,6 +41,11 @@ export default function Authenticated({ header, children }) {
                                     route().current('tags.index') || route().current('tags.edit')
                                 }>
                                     Tags
+                                </NavLink>
+                                <NavLink href={route('categories.index')} active={
+                                    route().current('categories.index') || route().current('categories.edit')
+                                }>
+                                    Categorias
                                 </NavLink>
                             </div>
                         </div>

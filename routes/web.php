@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\ProfileController;
@@ -33,6 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('places', PlaceController::class);
     Route::resource('events', EventController::class);
     Route::resource('tags', TagController::class);
+    Route::resource('categories', CategoryController::class);
 });
 
 // SITE ROUTES

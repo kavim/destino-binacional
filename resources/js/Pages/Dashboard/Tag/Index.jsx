@@ -9,7 +9,7 @@ export default function Index() {
         <AuthenticatedLayout header={
             <div className="flex justify-between mt-2" >
                 <div className="">
-                    <i className="fa-solid fa-location-dot fa-fw"></i>
+                    <i className="fa-solid fa-tags mr-2"></i>
                     <span className="">Tags</span>
                 </div>
                 <div className='px-2'>

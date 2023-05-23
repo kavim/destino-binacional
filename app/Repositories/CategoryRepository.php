@@ -37,4 +37,9 @@ class CategoryRepository
     {
         return Category::whereTranslation('slug', $slug)->firstOrFail();
     }
+
+    public function groupedByParentId(): Collection
+    {
+        return Category::where('parent_id', '<>', null)->get()->groupBy('parent_id');
+    }
 }

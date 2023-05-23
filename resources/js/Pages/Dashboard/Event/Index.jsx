@@ -12,7 +12,7 @@ export default function Index() {
         <AuthenticatedLayout header={
             <div className="flex justify-between mt-2" >
                 <div className="">
-                    <i className="fa-solid fa-location-dot fa-fw"></i>
+                    <i className="fa-solid fa-calendar-days mr-2"></i>
                     <span className="">Eventos</span>
                 </div>
                 <div className='px-2'>

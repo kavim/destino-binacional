@@ -39,7 +39,7 @@ function ImagicLoader({ onCorte }) {
                 imgCroppedArea.height
             );
 
-            const dataURL = canvasEle.toDataURL("image/jpeg");
+            const dataURL = canvasEle.toDataURL("image/webp");
 
             setImgAfterCrop(dataURL);
             setCurrentPage("img-cropped");
