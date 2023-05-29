@@ -27,11 +27,16 @@ class PlaceController extends Controller
         $places = Place::when(request('search'), function ($query, $search) {
             $query->where('slug', 'LIKE', '%'.Str::slug($search).'%');
         })
-        ->when(request('category_id'), function ($query, $category_id) {
-            $query->where('category_id', $category_id);
-        })
-        ->orderBy('id', 'DESC')
-        ->paginate();
+            ->when(request('sub_category_id'), function ($query, $sub_category_id) {
+                return $query->where('category_id', $sub_category_id);
+            })
+            ->when(request('category_id'), function ($query, $category_id) {
+                return $query->whereHas('category', function ($query) use ($category_id) {
+                    return $query->where('parent_id', $category_id);
+                });
+            })
+            ->orderBy('id', 'DESC')
+            ->paginate();
 
         return Inertia::render('Dashboard/Place/Index', [
             'places' => $places,
