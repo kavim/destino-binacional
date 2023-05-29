@@ -20,7 +20,7 @@ class Translate
             $locale = Session::get('locale');
         }
 
-        if (! in_array($locale, ['en', 'pt', 'es'])) {
+        if (! in_array($locale, ['pt', 'es'])) {
             return;
         }
 
