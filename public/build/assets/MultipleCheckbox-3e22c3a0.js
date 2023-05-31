@@ -1,1 +1,0 @@
-import{q as i,a,F as l}from"./app-e07c1b45.js";import{C as p}from"./Checkbox-2879fa1c.js";function h({tagId:r,handleCheck:o}){const{grouped_tags:n,tag_ids:s=[]}=i().props;return a(l,{children:n[r].map((e,t)=>a("div",{children:a(p,{onChange:o,label:e.name,value:e.id,isChecked:s.some(d=>d===e.id)})},t))})}export{h as default};
