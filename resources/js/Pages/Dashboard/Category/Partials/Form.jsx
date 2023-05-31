@@ -16,7 +16,7 @@ export default function Form({ handleOnChange, submit, data, errors, onDelete, p
     const onIconImageChange = (event) => {
         const file = event.target.files[0];
         setIconImage(URL.createObjectURL(file));
-        onIconChange(file);
+        onIconChange(event);
     };
 
     useEffect(() => {
@@ -100,9 +100,14 @@ export default function Form({ handleOnChange, submit, data, errors, onDelete, p
                             <div>
                                 <InputLabel htmlFor="icon" value="Icono:" />
                                 {iconImage && (
-                                    <img src={iconImage} alt="icon" className="w-12 my-2" />
+
+                                    <div className='flex justify-start items-center my-2'>
+                                        <div className='p-2 rounded-full' style={{ backgroundColor: data.color }}>
+                                            <img src={iconImage} alt="icon" className="w-10 h-10 rounded-full" />
+                                        </div>
+                                    </div>
                                 )}
-                                {/* {data.icon} */}
+
                                 <input type="file" name="icon_image" onChange={onIconImageChange} />
 
                                 <div className="my-5 p-2 border rounded-md">
