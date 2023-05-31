@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
@@ -6,9 +7,24 @@ import ImagicLoader from '@/Components/ImagicLoader';
 import DeleteButton from '@/Shared/DeleteButton';
 
 export default function Form({ handleOnChange, submit, data, errors, onDelete, parent = null, processing, onIconChange }) {
+    const [iconImage, setIconImage] = useState(null);
+
     const onCorte = (image) => {
         handleOnChange({ target: { name: 'image', value: image } });
     }
+
+    const onIconImageChange = (event) => {
+        const file = event.target.files[0];
+        setIconImage(URL.createObjectURL(file));
+        onIconChange(file);
+    };
+
+    useEffect(() => {
+        // Set the iconImage when editing a category
+        if (data.icon) {
+            setIconImage(data.icon);
+        }
+    }, [data.icon]);
 
     return (
         <>
@@ -81,12 +97,18 @@ export default function Form({ handleOnChange, submit, data, errors, onDelete, p
                             <InputError message={errors.color} className="mt-2" />
                         </div>
                         <div>
-                            <InputLabel htmlFor="icon" value="Icono:" />
-                            <img src={data.icon} alt="icon" className='w-12 my-2' />
-                            {data.icon}
-                            <input type="file" name="icon_image" onChange={onIconChange} />
+                            <div>
+                                <InputLabel htmlFor="icon" value="Icono:" />
+                                {iconImage && (
+                                    <img src={iconImage} alt="icon" className="w-12 my-2" />
+                                )}
+                                {/* {data.icon} */}
+                                <input type="file" name="icon_image" onChange={onIconImageChange} />
 
-                            <InputError message={errors.icon} className="mt-2" />
+                                <div className="my-5 p-2 border rounded-md">
+                                    <p>Recomendamos descargar los iconos SVG <a href="https://www.svgrepo.com/" className="text-blue-500 underline">de este catálogo</a></p>
+                                </div>
+                            </div>
                         </div>
                     </>
                 )}
