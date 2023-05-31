@@ -1,0 +1,1 @@
+import{j as s,a as o}from"./app-e07c1b45.js";function l(a){return s("div",{className:"flex",children:[o("img",{src:"/images/logotipo-negro.svg",alt:"logotipo",className:"w-24"}),o("img",{src:"/images/logo_mesa_dark.svg",alt:"logotipo",className:"w-20 ml-4"})]})}export{l as A};
