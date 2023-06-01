@@ -1,4 +1,4 @@
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 
 export default function Index({ places }) {
     return (
@@ -18,7 +18,7 @@ export default function Index({ places }) {
             ))}
             {places.length === 0 && (
                 <div className='flex justify-center w-full text-center'>
-                    <span>There is no places</span>
+                    <span>{trans('places.no_places')}</span>
                 </div>
             )}
         </div>

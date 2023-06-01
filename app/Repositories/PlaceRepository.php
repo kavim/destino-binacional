@@ -12,13 +12,13 @@ class PlaceRepository
             ->paginate();
     }
 
-    public function getByCategoryParentID(int $parent_id = null, string $slug = null)
+    public function getByCategoryParentID(int $parent_id = null)
     {
         return Place::whereHas('category', function ($query) use ($parent_id) {
             return $query->where('parent_id', $parent_id);
         })
-        ->orderBy('name')
-        ->paginate();
+            ->orderBy('order', 'DESC')
+            ->paginate();
     }
 
     public function getByPlaceIdentifier(string $slug)

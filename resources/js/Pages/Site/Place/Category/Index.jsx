@@ -21,8 +21,6 @@ export default function Index() {
                 </div>
             </div>
 
-            {/* <Filter category={category}></Filter> */}
-
             <div className="sm:max-w-full lg:max-w-7xl mx-auto my-5">
                 <PlaceCardList places={data} />
                 <Pagination links={links} />
