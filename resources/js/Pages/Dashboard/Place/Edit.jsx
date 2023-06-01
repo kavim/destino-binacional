@@ -16,6 +16,7 @@ export default function Edit() {
         featured_image: '',
         image: place.image,
         google_maps_src: place.google_maps_src || '',
+        order: place.order || '',
     });
 
     const handleOnChange = event => {

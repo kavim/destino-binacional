@@ -197,6 +197,23 @@ export default function Form({ handleOnChange, submit, data, errors, processing 
                 <InputError message={errors.type_id} className="mt-2" />
             </div>
 
+
+            <div className="my-3">
+                <InputLabel htmlFor="order" value="Ordem" />
+                <TextInput
+                    type="number"
+                    name="order"
+                    value={data.order}
+                    className="mt-1 block w-full"
+                    onChange={handleOnChange}
+                    placeholder="Order number (0, 1, 2, 3...)"
+                    min="0"
+                    max="9999"
+                />
+
+                <InputError message={errors.order} className="mt-2" />
+            </div>
+
             <div className="flex justify-end">
                 <PrimaryButton className="ml-4 m-4" disabled={processing}>
                     Save

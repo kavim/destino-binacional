@@ -40,6 +40,7 @@ class PlaceService
             'category_id' => Arr::get($data, 'category_id'),
             'featured_image' => $featured_image_src,
             'google_maps_src' => extractSrcFromGmapsIframe(Arr::get($data, 'google_maps_src')),
+            'order' => Arr::get($data, 'order') ? (int) Arr::get($data, 'order') : 0,
         ]);
 
         if (! $place) {
@@ -104,6 +105,7 @@ class PlaceService
             'category_id' => Arr::get($data, 'category_id'),
             'featured_image' => $the_feature_image ?? $place->featured_image,
             'google_maps_src' => extractSrcFromGmapsIframe(Arr::get($data, 'google_maps_src')) ?? $place->google_maps_src,
+            'order' => Arr::get($data, 'order') ?? 0,
         ]);
 
         PlaceTranslation::updateOrCreate(

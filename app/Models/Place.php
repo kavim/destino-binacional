@@ -29,6 +29,7 @@ class Place extends Model implements TranslatableContract
         'description_es',
         'google_maps_src',
         'featured_image',
+        'order',
     ];
 
     protected $dates = ['deleted_at'];

@@ -66,15 +66,16 @@ class PlaceController extends Controller
     public function store(Request $request): mixed
     {
         $validated = $request->validate([
-            'name' => 'required',
-            'address' => 'required',
-            'city_id' => 'required',
-            'place_type_id' => 'required',
-            'category_id' => 'required',
-            'description_pt' => 'required',
-            'description_es' => 'required',
+            'name' => 'required|max:255',
+            'address' => 'required|max:255',
+            'city_id' => 'required|exists:cities,id',
+            'place_type_id' => 'required|exists:place_types,id',
+            'category_id' => 'required|exists:categories,id',
+            'description_pt' => 'required|max:9999',
+            'description_es' => 'required|max:9999',
             'google_maps_src' => 'required',
             'featured_image' => 'required',
+            'order' => 'required|numeric|min:0|max:9999',
         ]);
 
         $this->placeService->store($request->all(), $request);
