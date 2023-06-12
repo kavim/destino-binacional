@@ -31,6 +31,7 @@
         "react-easy-crop": "^4.7.4",
         "react-select": "^5.7.1",
         "react-tailwindcss-datepicker": "^1.5.1",
+        "react-toastify": "^9.1.3",
         "react-use": "^17.4.0"
     }
 }
