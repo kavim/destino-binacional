@@ -28,14 +28,17 @@ class PlaceController extends Controller
             $query->where('slug', 'LIKE', '%'.Str::slug($search).'%');
         })
             ->when(request('sub_category_id'), function ($query, $sub_category_id) {
-                return $query->where('category_id', $sub_category_id);
-            })
-            ->when(request('category_id'), function ($query, $category_id) {
-                return $query->whereHas('category', function ($query) use ($category_id) {
-                    return $query->where('parent_id', $category_id);
+                return $query->whereHas('categories', function ($query) use ($sub_category_id) {
+                    return $query->whereIn('categories.id', [$sub_category_id]);
+                    // Specify the table name or alias for the 'id' column in the whereIn clause
                 });
             })
-            ->orderBy('id', 'DESC')
+            ->when(request('category_id'), function ($query, $category_id) {
+                return $query->whereHas('categories', function ($query) use ($category_id) {
+                    return $query->whereIn('parent_id', [$category_id]);
+                });
+            })
+            ->orderBy('places.id', 'DESC')
             ->paginate();
 
         return Inertia::render('Dashboard/Place/Index', [
@@ -56,26 +59,28 @@ class PlaceController extends Controller
     public function create()
     {
         return Inertia::render('Dashboard/Place/Create', [
-            'categories' => Category::where('parent_id', null)->get(),
+            'parent_categories' => Category::where('parent_id', null)->get(),
             'grouped_categories' => Category::where('parent_id', '<>', null)->get()->groupBy('parent_id'),
             'cities' => City::get(['id', 'name']),
             'place_types' => PlaceType::get(['id', 'name']),
+            'category_ids' => [],
         ]);
     }
 
     public function store(Request $request): mixed
     {
-        $validated = $request->validate([
+        dd($request->all());
+        $request->validate([
             'name' => 'required|max:255',
             'address' => 'required|max:255',
             'city_id' => 'required|exists:cities,id',
             'place_type_id' => 'required|exists:place_types,id',
-            'category_id' => 'required|exists:categories,id',
             'description_pt' => 'required|max:9999',
             'description_es' => 'required|max:9999',
             'google_maps_src' => 'required',
             'featured_image' => 'required',
             'order' => 'required|numeric|min:0|max:9999',
+            'category_ids' => ['nullable'],
         ]);
 
         $this->placeService->store($request->all(), $request);
@@ -89,10 +94,11 @@ class PlaceController extends Controller
         return Inertia::render('Dashboard/Place/Edit', [
             'place' => $place,
             'current_image' => $place->image,
-            'categories' => Category::where('parent_id', null)->get(),
+            'parent_categories' => Category::where('parent_id', null)->get(),
             'grouped_categories' => Category::where('parent_id', '<>', null)->get()->groupBy('parent_id'),
             'cities' => City::get(['id', 'name']),
             'place_types' => PlaceType::get(['id', 'name']),
+            'category_ids' => $place->categories->pluck('id')->map(fn ($id) => (int) $id),
         ]);
     }
 
@@ -103,12 +109,13 @@ class PlaceController extends Controller
             'address' => 'required',
             'city_id' => 'required',
             'place_type_id' => 'required',
-            'category_id' => 'required',
             'description_pt' => 'required',
             'description_es' => 'required',
             'google_maps_src' => 'required',
             'featured_image' => 'required_if:current_image,==,null',
             'image' => 'required_if:featured_image,==,null',
+            'category_ids' => ['required', 'array', 'min:1'],
+            'category_ids.*' => ['required', 'exists:categories,id'],
         ]);
 
         $this->placeService->update($request->all(), $request, $place);

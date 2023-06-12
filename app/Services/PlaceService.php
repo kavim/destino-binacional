@@ -61,6 +61,8 @@ class PlaceService
             'description' => $data['description_es'],
         ]);
 
+        $place->categories()->sync(Arr::get($data, 'category_ids'));
+
         return $place;
     }
 
@@ -117,6 +119,8 @@ class PlaceService
             ['place_id' => $place->id, 'locale' => 'es'],
             ['description' => $data['description_es']]
         );
+
+        $place->categories()->sync(Arr::get($data, 'category_ids'));
 
         return $place;
     }

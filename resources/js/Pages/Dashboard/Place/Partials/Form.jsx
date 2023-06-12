@@ -8,10 +8,11 @@ import InputError from '@/Components/InputError';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import ImagicLoader from '@/Components/ImagicLoader';
+import Categories from './Categories';
 
 export default function Form({ handleOnChange, submit, data, errors, processing }) {
 
-    const { categories, cities, place_types, grouped_categories } = usePage().props;
+    const { cities, place_types } = usePage().props;
 
     const onCorte = (image) => {
         handleOnChange({ target: { name: 'featured_image', value: image } });
@@ -38,6 +39,19 @@ export default function Form({ handleOnChange, submit, data, errors, processing 
         ];
     }
 
+    const handleCheck = (event) => {
+        let updatedList = [...data.category_ids];
+        let checkboxId = parseInt(event.target.value);
+
+        if (event.target.checked) {
+            updatedList = [...data.category_ids, checkboxId];
+        } else {
+            updatedList.splice(data.category_ids.indexOf(checkboxId), 1);
+        }
+
+        handleOnChange({ target: { name: 'category_ids', value: updatedList } });
+    };
+
     return (
         <form onSubmit={submit}>
             <div className='mb-5 bg-stone-200 rounded-2xl p-2'>
@@ -62,9 +76,8 @@ export default function Form({ handleOnChange, submit, data, errors, processing 
                 <InputError message={errors.featured_image} className="mt-2" />
                 <InputError message={errors.image} className="mt-2" />
             </div>
-
             <div className="my-3">
-                <InputLabel htmlFor="name" value="name" />
+                <InputLabel htmlFor="name" value="Nombre" />
                 <TextInput
                     type="text"
                     name="name"
@@ -118,7 +131,6 @@ export default function Form({ handleOnChange, submit, data, errors, processing 
                 />
                 <InputError message={errors.google_maps_src} className="mt-2" />
             </div>
-
             <div className="my-3">
                 <InputLabel htmlFor="address" value="Dirección" />
                 <TextInput
@@ -131,34 +143,10 @@ export default function Form({ handleOnChange, submit, data, errors, processing 
                 />
                 <InputError message={errors.address} className="mt-2" />
             </div>
-
-            <div className="my-3">
-                <InputLabel htmlFor="category_id" value="Categoría" />
-                <SelectInput
-                    name="category_id"
-                    value={data.category_id}
-                    onChange={handleOnChange}
-                    className="mt-1 block w-full"
-                >
-                    <option defaultValue hidden>Elige una categoría</option>
-                    {Object.keys(grouped_categories).map((group, index) => {
-                        return (
-                            <optgroup key={index} label={categories[index].name}>
-                                {grouped_categories[group].map((option, index) => {
-                                    return (
-                                        <option key={index} value={option.id}>
-                                            {option.name}
-                                        </option>
-                                    );
-                                })}
-                            </optgroup>
-                        );
-                    })}
-                </SelectInput>
-
-                <InputError message={errors.category_id} className="mt-2" />
+            <div className="divider mt-10">Categorias</div>
+            <div className="my-5">
+                <Categories handleCheck={handleCheck} />
             </div>
-
             <div className="my-3">
                 <InputLabel htmlFor="city_id" value="Ciudad" />
                 <SelectInput
@@ -177,7 +165,6 @@ export default function Form({ handleOnChange, submit, data, errors, processing 
 
                 <InputError message={errors.city_id} className="mt-2" />
             </div>
-
             <div className="my-3">
                 <InputLabel htmlFor="place_type_id" value="Tipo" />
                 <SelectInput
@@ -196,8 +183,6 @@ export default function Form({ handleOnChange, submit, data, errors, processing 
 
                 <InputError message={errors.type_id} className="mt-2" />
             </div>
-
-
             <div className="my-3">
                 <InputLabel htmlFor="order" value="Ordem" />
                 <TextInput
@@ -213,7 +198,6 @@ export default function Form({ handleOnChange, submit, data, errors, processing 
 
                 <InputError message={errors.order} className="mt-2" />
             </div>
-
             <div className="flex justify-end">
                 <PrimaryButton className="ml-4 m-4" disabled={processing}>
                     Save

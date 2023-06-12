@@ -91,4 +91,9 @@ class Category extends Model implements TranslatableContract
     {
         return $this->translate('es')?->name;
     }
+
+    public function places()
+    {
+        return $this->belongsToMany(Place::class);
+    }
 }

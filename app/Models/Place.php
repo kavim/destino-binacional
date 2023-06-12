@@ -50,9 +50,14 @@ class Place extends Model implements TranslatableContract
         return $this->belongsTo(PlaceType::class);
     }
 
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class);
+    }
+
     public function category()
     {
-        return $this->belongsTo(Category::class);
+        return $this->categories()->first();
     }
 
     public function getImageAttribute(): string

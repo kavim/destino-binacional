@@ -3,14 +3,14 @@ import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import Form from './Partials/Form';
 
 export default function Edit() {
-    const { auth, place } = usePage().props;
+    const { auth, place, category_ids } = usePage().props;
 
     const { data, setData, errors, put, reset, processing, recentlySuccessful } = useForm({
         name: place.name,
         description_es: place.description_es || '',
         description_pt: place.description_pt || '',
         address: place.address || '',
-        category_id: place.category_id,
+        category_ids: category_ids ? category_ids : [],
         city_id: place.city_id,
         place_type_id: place.place_type_id,
         featured_image: '',

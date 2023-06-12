@@ -15,6 +15,7 @@ export default function Create() {
         featured_image: '',
         google_maps_src: '',
         order: '',
+        category_ids: [],
     });
 
     const onCorte = (image) => {

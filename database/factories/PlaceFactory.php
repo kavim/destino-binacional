@@ -52,6 +52,7 @@ class PlaceFactory extends Factory
 
             $city = City::inRandomOrder()->first();
             $place->city()->associate($city);
+            $place->categories()->attach([Category::where('parent_id', '<>', null)->inRandomOrder()->first('id')->id]);
         });
     }
 }
