@@ -119,8 +119,6 @@ class EventController extends Controller
             'tag_ids' => ['nullable'],
         ]);
 
-        // dd($validated);
-
         $this->eventService->update($validated, $event);
 
         return redirect()->route('events.index')

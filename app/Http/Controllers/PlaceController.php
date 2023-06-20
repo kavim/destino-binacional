@@ -69,7 +69,6 @@ class PlaceController extends Controller
 
     public function store(Request $request): mixed
     {
-        dd($request->all());
         $request->validate([
             'name' => 'required|max:255',
             'address' => 'required|max:255',
