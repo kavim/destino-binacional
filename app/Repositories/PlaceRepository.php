@@ -14,8 +14,8 @@ class PlaceRepository
 
     public function getByCategoryParentID(int $parent_id = null)
     {
-        return Place::whereHas('category', function ($query) use ($parent_id) {
-            return $query->where('parent_id', $parent_id);
+        return Place::whereHas('categories', function ($query) use ($parent_id) {
+            return $query->whereIn('parent_id', [$parent_id]);
         })
             ->orderBy('order', 'DESC')
             ->paginate();
