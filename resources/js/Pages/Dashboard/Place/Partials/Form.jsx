@@ -9,8 +9,9 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import ImagicLoader from '@/Components/ImagicLoader';
 import Categories from './Categories';
+import DeleteButton from '@/Shared/DeleteButton';
 
-export default function Form({ handleOnChange, submit, data, errors, processing }) {
+export default function Form({ handleOnChange, submit, data, errors, processing, onDelete = null }) {
 
     const { cities, place_types } = usePage().props;
 
@@ -198,10 +199,25 @@ export default function Form({ handleOnChange, submit, data, errors, processing 
 
                 <InputError message={errors.order} className="mt-2" />
             </div>
-            <div className="flex justify-end">
-                <PrimaryButton className="ml-4 m-4" disabled={processing}>
-                    Save
-                </PrimaryButton>
+            <div>
+                {
+                    onDelete ? (
+                        <div className="flex justify-between mt-5">
+                            <DeleteButton type='button' onDelete={onDelete}>
+                                Delete
+                            </DeleteButton>
+                            <PrimaryButton disabled={processing}>
+                                Save
+                            </PrimaryButton>
+                        </div>
+                    ) : (
+                        <div className="flex justify-end mt-5">
+                            <PrimaryButton disabled={processing}>
+                                Save
+                            </PrimaryButton>
+                        </div>
+                    )
+                }
             </div>
         </form>
     );

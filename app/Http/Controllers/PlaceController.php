@@ -161,4 +161,12 @@ class PlaceController extends Controller
             'message' => 'Places imported successfully.',
         ]);
     }
+
+    public function destroy(Place $place): RedirectResponse
+    {
+        $place->delete();
+
+        return redirect()->route('places.index')
+            ->with('success', 'Place deleted successfully.');
+    }
 }

@@ -1,5 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { useForm, usePage, router } from '@inertiajs/react';
 import Form from './Partials/Form';
 
 export default function Edit() {
@@ -28,6 +28,15 @@ export default function Edit() {
         put(route('places.update', place.id), { preserveScroll: true });
     };
 
+    function onDelete() {
+        if (confirm('Borrar este Local? ' + place.name)) {
+            // router.delete();
+            router.visit(route('places.destroy', place.id), {
+                method: 'delete',
+            })
+        }
+    }
+
     return (
         <AuthenticatedLayout
             auth={auth}
@@ -36,7 +45,7 @@ export default function Edit() {
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                     <div className="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                        <Form handleOnChange={handleOnChange} submit={submit} data={data} errors={errors} processing={processing}></Form>
+                        <Form handleOnChange={handleOnChange} submit={submit} data={data} errors={errors} processing={processing} onDelete={onDelete}></Form>
                     </div>
                 </div>
             </div>

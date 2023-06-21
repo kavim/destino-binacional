@@ -1,5 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { useForm, usePage } from '@inertiajs/react';
+import { useForm, usePage, router } from '@inertiajs/react';
 import Form from './Partials/Form';
 
 export default function Edit() {
@@ -45,7 +45,9 @@ export default function Edit() {
 
     function onDelete() {
         if (confirm('Borrar este evento? ' + event.title)) {
-            Inertia.delete(route('events.destroy', event.id));
+            router.visit(route('events.destroy', event.id), {
+                method: 'delete',
+            })
         }
     }
 
