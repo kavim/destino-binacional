@@ -24,6 +24,8 @@ class PlaceController extends Controller
 
     public function index()
     {
+        $hasAnyFilter = request()->has('search') || request()->has('sub_category_id') || request()->has('category_id');
+
         $places = Place::when(request('search'), function ($query, $search) {
             $query->where('slug', 'LIKE', '%'.Str::slug($search).'%');
         })
@@ -39,7 +41,7 @@ class PlaceController extends Controller
                 });
             })
             ->orderBy('places.id', 'DESC')
-            ->paginate();
+            ->paginate($hasAnyFilter ? 100 : 10);
 
         return Inertia::render('Dashboard/Place/Index', [
             'places' => $places,
@@ -76,7 +78,7 @@ class PlaceController extends Controller
             'place_type_id' => 'required|exists:place_types,id',
             'description_pt' => 'required|max:9999',
             'description_es' => 'required|max:9999',
-            'google_maps_src' => 'required',
+            'google_maps_src' => 'nullable',
             'featured_image' => 'required',
             'order' => 'required|numeric|min:0|max:9999',
             'category_ids' => ['nullable'],
@@ -110,7 +112,7 @@ class PlaceController extends Controller
             'place_type_id' => 'required',
             'description_pt' => 'required',
             'description_es' => 'required',
-            'google_maps_src' => 'required',
+            'google_maps_src' => 'nullable',
             'featured_image' => 'required_if:current_image,==,null',
             'image' => 'required_if:featured_image,==,null',
             'category_ids' => ['required', 'array', 'min:1'],
