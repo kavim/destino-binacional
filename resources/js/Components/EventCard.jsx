@@ -9,7 +9,7 @@ export function EventCard({ event, index }) {
                 <div className='min-w-[260px] max-w-[260px] min-h-[300px] flex flex-col mr-5 cursor-pointer hover:scale-105 ease-in-out duration-300 rounded-lg shadow-md bg-white'>
                     <div>
                         <figure>
-                            <img src={event.image} alt={event.image} className='w-full rounded-t-lg' />
+                            <img src={event.image} alt={event.image} className='w-full rounded-t-lg aspect-square' loading='lazy' />
                         </figure>
                     </div>
                     <div className='whitespace-normal p-2 break-all flex flex-col justify-between grow rounded-b-lg'>

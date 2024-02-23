@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { router } from '@inertiajs/react'
 import { usePage } from '@inertiajs/react';
-import { usePrevious } from 'react-use';
+import { usePrevious } from 'reafiltersct-use';
 import pickBy from 'lodash/pickBy';
 
 export default () => {
