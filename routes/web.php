@@ -21,6 +21,7 @@ use Inertia\Inertia;
 */
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
@@ -48,5 +49,8 @@ Route::get('/eventos/{slug}', [\App\Http\Controllers\Site\EventController::class
 // Route::get('/search', [\App\Http\Controllers\Site\SearchController::class, 'index'])->name('search.index');
 
 Route::get('change-language/{lang}', [App\Http\Controllers\Site\LocalizationController::class, 'changeLanguage'])->name('change-language');
+
+//privacyPolicy
+Route::get('/privacy-policy', [HomeController::class, 'privacyPolicy'])->name('privacy-policy');
 
 require __DIR__.'/auth.php';

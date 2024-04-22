@@ -25,4 +25,9 @@ class HomeController extends Controller
             'categories' => $categories,
         ]);
     }
+
+    public function privacyPolicy()
+    {
+        return Inertia::render('Site/Home/PrivacyPolicy');
+    }
 }
