@@ -14,7 +14,7 @@ export default function SiteLayout({ header, children }) {
                 </header>
             )}
             <main>{children}</main>
-            <CookieConsent></CookieConsent>
+            {/* <CookieConsent></CookieConsent> */}
             <Footer></Footer>
         </div>
     );
