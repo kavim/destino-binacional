@@ -186,15 +186,13 @@ return [
          * Package Service Providers...
          */
         Intervention\Image\ImageServiceProvider::class,
-        // PragmaRX\Tracker\Vendor\Laravel\ServiceProvider::class,
-        // PragmaRX\Tracker\Vendor\Laravel\ServiceProvider::class,
+        PragmaRX\Tracker\Vendor\Laravel\ServiceProvider::class,
 
         /*
          * Application Service Providers...
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
@@ -212,9 +210,8 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
-        // 'ExampleClass' => App\Example\ExampleClass::class,
         'Image' => Intervention\Image\Facades\Image::class,
-        // 'Tracker' => 'PragmaRX\Tracker\Vendor\Laravel\Facade',
+        'Tracker' => 'PragmaRX\Tracker\Vendor\Laravel\Facade',
     ])->toArray(),
 
 ];
