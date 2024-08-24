@@ -93,6 +93,25 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
+        'tracker' => [
+            'driver' => 'mysql',
+            'url' => env('TRACKER_DATABASE_URL'),
+            'host' => env('TRACKER_DB_HOST', '127.0.0.1'),
+            'port' => env('TRACKER_DB_PORT', '3306'),
+            'database' => env('TRACKER_DB_DATABASE', 'forge'),
+            'username' => env('TRACKER_DB_USERNAME', 'forge'),
+            'password' => env('TRACKER_DB_PASSWORD', ''),
+            'unix_socket' => env('TRACKER_DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
     ],
 
     /*
