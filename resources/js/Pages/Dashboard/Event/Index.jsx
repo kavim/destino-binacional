@@ -11,11 +11,13 @@ export default function Index() {
     return (
         <AuthenticatedLayout header={
             <div className="flex justify-between mt-2" >
-                <div className="">
-                    <i className="fa-solid fa-calendar-days mr-2"></i>
-                    <span className="">Eventos</span>
+                <div>
+                    <div className="flex">
+                        <img src="/images/icons/eventos_dark.svg" alt="" className='w-6' />
+                        <span className="ml-2">Eventos</span>
+                    </div>
                 </div>
-                <div className='px-2'>
+                <div>
                     <Link href={route('events.create')} className="btn-success">
                         Crear nuevo
                     </Link>

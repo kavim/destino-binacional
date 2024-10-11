@@ -9,7 +9,6 @@ export default function Events() {
     dayjs.locale("es");
     const { grouped_events } = usePage().props;
 
-    // const [slectedDate, setSlectedDate] = useState(Object.keys(grouped_events)[0]);
     const [slectedDate, setSlectedDate] = useState(null);
 
     const slideToStart = () => {
@@ -38,10 +37,10 @@ export default function Events() {
                                     key={index}
                                     label={index}
                                     onClick={() => goToDate(group)}
-                                    className="min-w-32 min-h-48 font-medium mr-5 shadow-md border border-stone-800 rounded-lg cursor-pointer active:opacity-5 ease-in-out duration-200">
-                                    <div className="w-32 md:w-24 flex-none text-center">
-                                        <div className="block rounded-t-lg overflow-hidden text-center ">
-                                            <div className="bg-red-900 bg- text-white py-1">
+                                    className="m-2">
+                                    <div className="w-32 md:w-24 flex-none text-center border border-stone-800 active:opacity-5 rounded-lg">
+                                        <div className="flex flex-col overflow-hidden text-center">
+                                            <div className="bg-red-800 rounded-t-lg text-white py-1">
                                                 {dayjs(group).format('MMM')}
                                             </div>
                                             <div className="pt-1 border-l border-r border-white bg-white">

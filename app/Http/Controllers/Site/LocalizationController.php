@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Site;
 
 use App\Helpers\Translate;
 use App\Http\Controllers\Controller;
-use URL;
+use Illuminate\Support\Facades\URL;
 
 class LocalizationController extends Controller
 {

@@ -59,6 +59,11 @@ export default function Authenticated({ header, children }) {
                                 }>
                                     Categorias
                                 </NavLink>
+                                <NavLink href={route('tours.index')} active={
+                                    route().current('tours.index') || route().current('tours.edit')
+                                }>
+                                    Tours
+                                </NavLink>
                             </div>
                         </div>
 

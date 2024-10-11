@@ -18,7 +18,7 @@ export function EventCard({ event, index }) {
                                 {event.title}
                             </span>
                         </div>
-                        <div className='w-full flex items-center justify-start p-2 md:p-0 md:mt-4'>
+                        <div className='w-full flex items-center justify-start p-2 md:p-0 md:mt-4 font-light text-sm'>
                             {event.start !== event.end ? (
                                 <>
                                     <i className="fa-solid fa-calendar-days mr-2 shadow-sm"></i>

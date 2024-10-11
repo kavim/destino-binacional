@@ -22,7 +22,7 @@ class PlaceController extends Controller
         $this->placeService = new PlaceService();
     }
 
-    public function index()
+    public function index(): \Inertia\Response
     {
         $hasAnyFilter = request()->has('search') || request()->has('sub_category_id') || request()->has('category_id');
 
@@ -51,14 +51,14 @@ class PlaceController extends Controller
         ]);
     }
 
-    public function show(Place $place)
+    public function show(Place $place): \Inertia\Response
     {
         return Inertia::render('Dashboard/Place/Show', [
             'place' => $place,
         ]);
     }
 
-    public function create()
+    public function create(): \Inertia\Response
     {
         return Inertia::render('Dashboard/Place/Create', [
             'parent_categories' => Category::where('parent_id', null)->get(),

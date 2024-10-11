@@ -11,4 +11,8 @@ return [
     'places' => [
         'no_places' => 'No hay lugares para mostrar',
     ],
+    'dashboard' => [
+        'welcome' => 'Bienvenido a tu panel de control',
+        'you_are_logged_in' => 'Estás conectado!',
+    ]
 ];

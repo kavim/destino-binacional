@@ -50,6 +50,13 @@ export default function MainNav() {
                                     </label>
                                 </Link>
                             </div>
+                            <div>
+                                <Link href={route('site.tours.index')}>
+                                    <label tabIndex={0} className="btn btn-ghost rounded-btn">
+                                        Tours
+                                    </label>
+                                </Link>
+                            </div>
                         </div>
                     </div>
 

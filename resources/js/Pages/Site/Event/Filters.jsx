@@ -13,11 +13,7 @@ export default function Filters({ filters }) {
     });
 
     const handleOnChange = event => {
-
         setData(event.target.name, event.target.value);
-
-        console.log("start " + data.start);
-        console.log("end " + data.end);
     };
 
     const submit = e => {
@@ -36,17 +32,12 @@ export default function Filters({ filters }) {
     const startDataChange = (date) => {
         let a = new Date(date);
         setData('start', a);
-
-        console.log("start " + data.start);
     }
 
     const endDataChange = (date) => {
         // let a = new Date(date).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', }).replace(/(\d+)\/(\d+)\/(\d+)/, '$1/$2/$3');
         let a = new Date(date);
         setData('end', a);
-
-        console.log("a " + a);
-        console.log("end " + data.end);
     }
 
     return (

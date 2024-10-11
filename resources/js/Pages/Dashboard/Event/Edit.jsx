@@ -29,8 +29,6 @@ export default function Edit() {
     }
 
     const handleOnChange = event => {
-        console.log(event.target.name);
-        console.log(event.target.value);
         if (event.target.name === 'is_online') {
             setData('address', '');
             setData('city_id', '');

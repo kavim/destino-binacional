@@ -19,7 +19,6 @@ class EventController extends Controller
     {
         $start = $request->has('start') && ! is_null($request->input('start')) ? Carbon::parse($request->input('start')) : null;
         $end = $request->has('end') && ! is_null($request->input('end')) ? Carbon::parse($request->input('end')) : null;
-
         $events = $this->eventService->filtered($start, $end);
 
         return Inertia::render('Site/Event/Index', [

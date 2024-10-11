@@ -11,9 +11,11 @@ export default function Index() {
     return (
         <AuthenticatedLayout header={
             <div className="flex justify-between mt-2" >
-                <div className="">
-                    <i className="fa-solid fa-location-dot fa-fw mr-2"></i>
-                    <span className="">Locales</span>
+                <div>
+                    <div className="flex">
+                        <img src="/images/icons/locale.svg" alt="" className='w-6' />
+                        <span className="ml-2">Locales</span>
+                    </div>
                 </div>
                 <div className='px-2'>
                     <Link href={route('places.create')} className="btn-success">
