@@ -18,9 +18,15 @@ export default function Edit() {
         start: tour.start || '',
         end: tour.end || '',
         category_ids: category_ids ? category_ids : [],
+        recurrence_day_hour: tour.recurrence_day_hour || [],
+        recurrence_enabled: tour.recurrence_enabled || '',
     });
 
     const handleOnChange = event => {
+
+        console.log(event.target.name);
+        console.log(event.target.value);
+
         setData(event.target.name, event.target.type === 'checkbox' ? event.target.checked : event.target.value);
     };
 

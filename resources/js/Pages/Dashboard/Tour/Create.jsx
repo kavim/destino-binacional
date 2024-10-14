@@ -3,7 +3,7 @@ import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import Form from './Partials/Form';
 
 export default function Create() {
-    const { auth } = usePage().props;
+    const { auth, recurrence_day_hour } = usePage().props;
 
     const { data, setData, errors, post, processing } = useForm({
         title: '',
@@ -18,6 +18,8 @@ export default function Create() {
         start: '',
         end: '',
         category_ids: [],
+        recurrence_day_hour: recurrence_day_hour,
+        recurrence_enabled: false,
     });
 
     const onCorte = (image) => {

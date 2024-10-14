@@ -31,14 +31,13 @@ class TourService
         return $this->tourRepository->filtered($start, $end, $category_id);
     }
 
-    public function store(array $data, Request $request)
+    public function store(array $data)
     {
         // upload image
         $featured_image_src = $this->storeFeaturedImage(Arr::get($data, 'featured_image'));
         $google_maps_src = Arr::get($data, 'google_maps_src');
         $google_maps_src = extractSrcFromGmapsIframe($google_maps_src);
         $google_maps_src = $google_maps_src ?? config('custom.default_map_src');
-
 
         $tour = Tour::create([
             'title' => Arr::get($data, 'title'),
@@ -52,6 +51,8 @@ class TourService
             'currency' => Arr::get($data, 'currency', 'BRL'),
             'guide' => Arr::get($data, 'guide'),
             'meeting_point' => Arr::get($data, 'meeting_point'),
+            'recurrence_enabled' => Arr::get($data, 'recurrence_enabled', false),
+            'recurrence_day_hour' => Arr::get($data, 'recurrence_day_hour'),
         ]);
 
         if (! $tour) {
@@ -106,10 +107,12 @@ class TourService
             'google_maps_src' => extractSrcFromGmapsIframe(Arr::get($data, 'google_maps_src')) ?? $tour->google_maps_src,
             'start' => $start,
             'end' => $end,
-            'price' => convert_to_cents(Arr::get($data, 'price')),
+            'price' => Arr::get($data, 'price') ? convert_to_cents(Arr::get($data, 'price')) : 0,
             'currency' => Arr::get($data, 'currency'),
             'guide' => Arr::get($data, 'guide'),
             'meeting_point' => Arr::get($data, 'meeting_point'),
+            'recurrence_enabled' => Arr::get($data, 'recurrence_enabled'),
+            'recurrence_day_hour' => Arr::get($data, 'recurrence_day_hour'),
         ]);
 
         $tour->categories()->sync(Arr::get($data, 'category_ids'));

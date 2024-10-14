@@ -10,6 +10,8 @@ import Categories from './Categories';
 import DeleteButton from '@/Shared/DeleteButton';
 import TimeInput  from '@/Components/TimeInput';
 import { CurrencyInput } from 'react-currency-mask';
+import WorkingHours from '@/Components/WorkingHours';
+import Checkbox from "@/Components/Checkbox";
 
 export default function Form({handleOnChange, submit, data, errors, processing, onDelete = null}) {
     const onCorte = (image) => {
@@ -200,18 +202,30 @@ export default function Form({handleOnChange, submit, data, errors, processing, 
                 />
                 <InputError message={errors.meeting_point} className="mt-2"/>
             </div>
-            <div>
-                <div className="my-5">
-                    <InputLabel htmlFor="start" value="Fecha de inicio"/>
-                    <TimeInput value={data.start} onChange={startDataChange}></TimeInput>
-                    <InputError message={errors.start} className="mt-2"/>
-                </div>
-                <div className="my-5">
-                    <InputLabel htmlFor="end" value="Fecha de cierre"/>
-                    <TimeInput value={data.end} onChange={endDataChange}></TimeInput>
-                    <InputError message={errors.end} className="mt-2"/>
-                </div>
+
+            <div className="divider mt-10">Recorrencia</div>
+
+            <div className="my-5">
+                <Checkbox label="Ativar recorrencia" name="recurrence_enabled" isChecked={data.recurrence_enabled} onChange={handleOnChange} />
+
+                {data.recurrence_enabled ? (
+                    <WorkingHours workingHours={data.recurrence_day_hour} handleOnChange={handleOnChange} />
+                ) : (
+                    <div>
+                        <div className="my-5">
+                            <InputLabel htmlFor="start" value="Fecha de inicio"/>
+                            <TimeInput value={data.start} onChange={startDataChange}></TimeInput>
+                            <InputError message={errors.start} className="mt-2"/>
+                        </div>
+                        <div className="my-5">
+                            <InputLabel htmlFor="end" value="Fecha de cierre"/>
+                            <TimeInput value={data.end} onChange={endDataChange}></TimeInput>
+                            <InputError message={errors.end} className="mt-2"/>
+                        </div>
+                    </div>
+                )}
             </div>
+
             <div className="divider mt-10">Categorias</div>
             <div className="my-5">
                 <Categories handleCheck={handleCheck}/>

@@ -53,6 +53,7 @@ class TourController extends Controller
             'parent_categories' => Category::where('parent_id', null)->get(),
             'grouped_categories' => Category::where('parent_id', '<>', null)->get()->groupBy('parent_id'),
             'category_ids' => [],
+            'recurrence_day_hour' => config('custom.working_hours'),
         ]);
     }
 
@@ -87,6 +88,7 @@ class TourController extends Controller
     public function edit(Tour $tour): \Inertia\Response
     {
         $tour->price = $tour->price / 100;
+        $tour->recurrence_day_hour = $tour->recurrence_day_hour ?? config('custom.working_hours');
 
         return Inertia::render('Dashboard/Tour/Edit', [
             'tour' => $tour,
@@ -111,6 +113,8 @@ class TourController extends Controller
             'google_maps_src' => 'nullable',
             'featured_image' => 'nullable',
             'category_ids' => 'nullable',
+            'recurrence_enabled' => 'nullable|boolean',
+            'recurrence_day_hour' => 'nullable|array',
         ]);
 
         $this->tourService->update($validated, $tour);

@@ -22,12 +22,15 @@ class Tour extends Model
         'google_maps_src',
         'price',
         'currency',
+        'recurrence_enabled',
+        'recurrence_day_hour',
     ];
 
     protected $casts = [
         'google_maps_src' => 'array',
         'start' => 'datetime:Y-m-d H:i:s',
         'end' => 'datetime:Y-m-d H:i:s',
+        'recurrence_day_hour' => 'array',
     ];
 
     protected $appends = [

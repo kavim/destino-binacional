@@ -35,20 +35,24 @@ export default function Show({ tour }) {
                                 </span>
                             </div>
                             <div className='w-full flex items-center justify-center md:justify-start p-2 md:p-0 md:mt-4'>
-                                {tour.start !== tour.end ? (
-                                    <>
-                                        <i className="fa-solid fa-calendar-days mr-2 shadow-sm"></i>
-                                        {dayjs(tour.start).format('DD MMMM')}
-                                        <i className="fa-solid fa-arrows-left-right mx-2 shadow-sm"></i>
-                                        <i className="fa-solid fa-calendar-days mr-2 shadow-sm"></i>
-                                        {dayjs(tour.end).format('DD MMMM')}
-                                    </>
-                                ) : (
-                                    <>
-                                        <i className="fa-solid fa-calendar-days mr-2"></i>
-                                        {dayjs(tour.start).format('DD MMMM')}
-                                    </>
-                                )}
+                                {
+                                    tour.start && (
+                                        tour.start !== tour.end ? (
+                                            <>
+                                                <i className="fa-solid fa-calendar-days mr-2 shadow-sm"></i>
+                                                {dayjs(tour.start).format('DD MMMM')}
+                                                <i className="fa-solid fa-arrows-left-right mx-2 shadow-sm"></i>
+                                                <i className="fa-solid fa-calendar-days mr-2 shadow-sm"></i>
+                                                {dayjs(tour.end).format('DD MMMM')}
+                                            </>
+                                        ) : (
+                                            <>
+                                                <i className="fa-solid fa-calendar-days mr-2"></i>
+                                                {dayjs(tour.start).format('DD MMMM')}
+                                            </>
+                                        )
+                                    )
+                                }
                             </div>
                         </div>
                     </div>

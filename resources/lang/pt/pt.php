@@ -14,5 +14,14 @@ return [
     'dashboard' => [
         'welcome' => 'Bem vindo ao seu painel de controle',
         'you_are_logged_in' => 'Você está conectado!',
-    ]
+    ],
+    'working_days' => [
+        'mon' => 'Segunda-feira',
+        'tue' => 'Terça-feira',
+        'wed' => 'Quarta-feira',
+        'thu' => 'Quinta-feira',
+        'fri' => 'Sexta-feira',
+        'sat' => 'Sábado',
+        'sun' => 'Domingo',
+    ],
 ];

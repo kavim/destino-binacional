@@ -25,6 +25,8 @@ return new class extends Migration
             $table->timestamp('end')->nullable();
             $table->string('meeting_point')->nullable();
             $table->text('google_maps_src')->nullable();
+            $table->boolean('recurrence_enabled')->default(false);
+            $table->json('recurrence_day_hour')->nullable();
 
             $table->timestamps();
         });
