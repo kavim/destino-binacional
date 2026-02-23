@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\ObservabilityController;
 use App\Http\Controllers\PlaceController;
+use App\Http\Controllers\TrackerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Site\HomeController;
 use App\Http\Controllers\Site\LocalizationController;
@@ -22,6 +24,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/observability', [ObservabilityController::class, 'index'])->name('observability.index');
+    Route::get('/tracker', [TrackerController::class, 'index'])->name('tracker.index');
 
     Route::resource('places', PlaceController::class);
     Route::resource('events', EventController::class);

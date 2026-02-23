@@ -1,0 +1,90 @@
+# Prod: Nginx + PHP-FPM + MySQL
+# Use: docker compose -f docker-compose.prod.yml up -d
+# Antes: npm run build (assets) e definir .env com APP_KEY, DB_PASSWORD, etc.
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    image: destino-binacional-app:prod
+    container_name: destino-binacional-app-prod
+    restart: unless-stopped
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - LOG_CHANNEL=stack
+      - DB_CONNECTION=mysql
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=${DB_DATABASE:-destino}
+      - DB_USERNAME=${DB_USERNAME:-destino}
+      - DB_PASSWORD=${DB_PASSWORD}
+      # Tracker: banco "tracker" no mesmo MySQL
+      - TRACKER_DB_HOST=mysql
+      - TRACKER_DB_PORT=3306
+      - TRACKER_DB_DATABASE=tracker
+      - TRACKER_DB_USERNAME=tracker
+      - TRACKER_DB_PASSWORD=${TRACKER_DB_PASSWORD:-${DB_PASSWORD}}
+    volumes:
+      - destino_storage:/var/www/storage
+      - destino_bootstrap_cache:/var/www/bootstrap/cache
+      - destino_public:/var/www/public
+    entrypoint: ["/bin/sh", "-c", "cp -r /var/www/public_dist/. /var/www/public/; exec php-fpm"]
+    depends_on:
+      init_tracker:
+        condition: service_completed_successfully
+
+  init_tracker:
+    image: mysql:8.0
+    container_name: destino-binacional-init-tracker-prod
+    restart: "no"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      TRACKER_DB: ${TRACKER_DB_DATABASE:-tracker}
+      TRACKER_USER: ${TRACKER_DB_USERNAME:-tracker}
+      TRACKER_PASS: ${TRACKER_DB_PASSWORD:-${DB_PASSWORD}}
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        until mysqladmin ping -h mysql -u root -p"$$MYSQL_ROOT_PASSWORD" --silent; do sleep 2; done
+        mysql -h mysql -u root -p"$$MYSQL_ROOT_PASSWORD" -e "CREATE DATABASE IF NOT EXISTS $$TRACKER_DB; CREATE USER IF NOT EXISTS '$$TRACKER_USER'@'%' IDENTIFIED BY '$$TRACKER_PASS'; GRANT ALL PRIVILEGES ON \`$$TRACKER_DB\`.* TO '$$TRACKER_USER'@'%'; FLUSH PRIVILEGES;"
+        echo "Banco tracker criado/verificado."
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  nginx:
+    image: nginx:alpine
+    container_name: destino-binacional-nginx-prod
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - destino_public:/var/www/public:ro
+    depends_on:
+      - app
+
+  mysql:
+    image: mysql:8.0
+    container_name: destino-binacional-mysql-prod
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-destino}
+      MYSQL_USER: ${DB_USERNAME:-destino}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+    volumes:
+      - destino_mysql_data_prod:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  destino_storage:
+  destino_bootstrap_cache:
+  destino_public:
+  destino_mysql_data_prod:

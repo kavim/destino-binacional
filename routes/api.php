@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\PlaceController;
+use App\Services\ObservabilityService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Validator;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,3 +22,27 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('import-places', [PlaceController::class, 'importPlaces']);
+
+// Observabilidade: erros do frontend (throttle para evitar abuso)
+Route::post('observability/errors', function (Request $request) {
+    $v = Validator::make($request->all(), [
+        'message' => 'required|string|max:65535',
+        'url' => 'nullable|string|max:1000',
+        'file' => 'nullable|string|max:500',
+        'line' => 'nullable|integer',
+        'stack' => 'nullable|string|max:10000',
+        'level' => 'nullable|string|max:50',
+    ]);
+    if ($v->fails()) {
+        return response()->json(['message' => 'Invalid payload'], 422);
+    }
+    $data = $v->validated();
+    ObservabilityService::recordError('frontend', $data['message'], [
+        'url' => $data['url'] ?? null,
+        'file' => $data['file'] ?? null,
+        'line' => $data['line'] ?? null,
+        'stack' => $data['stack'] ?? null,
+        'level' => $data['level'] ?? 'error',
+    ]);
+    return response()->json(['ok' => true], 201);
+})->middleware('throttle:60,1'); // 60 por minuto

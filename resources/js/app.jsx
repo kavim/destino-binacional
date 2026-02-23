@@ -1,4 +1,5 @@
 import './bootstrap';
+import './observability';
 import '../css/app.css';
 import 'react-date-picker/dist/DatePicker.css';
 import 'react-calendar/dist/Calendar.css';
