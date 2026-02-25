@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Opcodes\LogViewer\Facades\LogViewer;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +20,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Log Viewer: apenas usuários autenticados podem acessar
+        LogViewer::auth(fn ($request) => $request->user() !== null);
+
         $migrationsPath = database_path('migrations');
         $paths = $this->getAllSubdirectoriesOptimized($migrationsPath);
 

@@ -55,6 +55,22 @@ export default function Dashboard(props) {
                                         <p>Tours</p>
                                     </div>
                             </Link>
+                            <Link href={route('observability.index')} active={route().current('observability.index')}>
+                                    <div className="flex flex-col align-middle justify-center border border-stone-700 rounded-lg p-2 my-2 mx-4 hover:border-gray-500">
+                                        <div>
+                                            <span className="text-3xl">📊</span>
+                                        </div>
+                                        <p>Insights</p>
+                                    </div>
+                            </Link>
+                            <Link href={route('tracker.index')} active={route().current('tracker.index')}>
+                                    <div className="flex flex-col align-middle justify-center border border-stone-700 rounded-lg p-2 my-2 mx-4 hover:border-gray-500">
+                                        <div>
+                                            <span className="text-3xl">📈</span>
+                                        </div>
+                                        <p>Tracker</p>
+                                    </div>
+                            </Link>
 
                         </div>
                     </div>

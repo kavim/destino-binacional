@@ -64,6 +64,12 @@ export default function Authenticated({ header, children }) {
                                 }>
                                     Tours
                                 </NavLink>
+                                <NavLink href={route('observability.index')} active={route().current('observability.index')}>
+                                    Insights
+                                </NavLink>
+                                <NavLink href={route('tracker.index')} active={route().current('tracker.index')}>
+                                    Tracker
+                                </NavLink>
                             </div>
                         </div>
 
@@ -149,6 +155,12 @@ export default function Authenticated({ header, children }) {
                             route().current('tags.edit')
                         }>
                             Tags
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink href={route('observability.index')} active={route().current('observability.index')}>
+                            Insights
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink href={route('tracker.index')} active={route().current('tracker.index')}>
+                            Tracker
                         </ResponsiveNavLink>
                     </div>
 

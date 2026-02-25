@@ -1,0 +1,84 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: destino-binacional-app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - APP_URL=http://localhost:8000
+      - DB_CONNECTION=mysql
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=destino
+      - DB_USERNAME=destino
+      - DB_PASSWORD=secret
+      # Tracker: banco "tracker" no mesmo MySQL
+      - TRACKER_DB_HOST=mysql
+      - TRACKER_DB_PORT=3306
+      - TRACKER_DB_DATABASE=tracker
+      - TRACKER_DB_USERNAME=tracker
+      - TRACKER_DB_PASSWORD=secret
+    depends_on:
+      init_tracker:
+        condition: service_completed_successfully
+
+  init_tracker:
+    image: mysql:8.0
+    container_name: destino-binacional-init-tracker
+    restart: "no"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        until mysqladmin ping -h mysql -u root -proot --silent; do sleep 2; done
+        mysql -h mysql -u root -proot -e "CREATE DATABASE IF NOT EXISTS tracker; CREATE USER IF NOT EXISTS 'tracker'@'%' IDENTIFIED BY 'secret'; GRANT ALL PRIVILEGES ON tracker.* TO 'tracker'@'%'; FLUSH PRIVILEGES;"
+        echo "Banco tracker criado/verificado."
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  mysql:
+    image: mysql:8.0
+    container_name: destino-binacional-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: destino
+      MYSQL_USER: destino
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - destino_mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: destino-binacional-phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: root
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+volumes:
+  destino_mysql_data:
