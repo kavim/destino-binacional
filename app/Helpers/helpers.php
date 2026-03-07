@@ -1,16 +1,22 @@
 <?php
 
 if (! function_exists('extractSrcFromGmapsIframe')) {
+
     function extractSrcFromGmapsIframe(?string $google_maps_src): ?string
     {
         if (is_null($google_maps_src)) {
             return null;
         }
 
+        if (str_starts_with($google_maps_src, 'http')) {
+            return $google_maps_src;
+        }
+
         preg_match('~iframe.*src="([^"]*)"~', $google_maps_src, $result);
 
         return is_array($result) && count($result) > 0 && $result[1] ? $result[1] : null;
     }
+
 }
 
 if (! function_exists('parse_money')) {

@@ -29,7 +29,6 @@ class Event extends Model
     protected $dates = ['deleted_at'];
 
     protected $casts = [
-        'google_maps_src' => 'array',
         'start' => 'date:Y/m/d',
         'end' => 'date:Y/m/d',
     ];
