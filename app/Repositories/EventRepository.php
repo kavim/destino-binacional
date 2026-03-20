@@ -34,15 +34,15 @@ class EventRepository
     public function filtered(?string $start = null, ?string $end = null, ?int $category_id = null): Collection
     {
         if (is_null($start)) {
-            $start = now();
+            $start = today();
         }
 
         return Event::orderBy('start')
         ->when($start, function ($query, $start) {
-            $query->where('start', '>=', $start);
+            $query->whereDate('end', '>=', $start);
         })
         ->when($end, function ($query, $end) {
-            $query->where('end', '<=', $end);
+            $query->whereDate('start', '<=', $end);
         })
         ->when($category_id, function ($query, $category_id) {
             $query->where('category_id', $category_id);
