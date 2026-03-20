@@ -1,0 +1,87 @@
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Head, Link, usePage } from '@inertiajs/react';
+import SearchFilter from './Partials/SearchFilter';
+import Pagination from '@/Shared/Pagination';
+
+export default function Index() {
+
+    const { events } = usePage().props;
+    const { data, links } = events;
+
+    return (
+        <AuthenticatedLayout header={
+            <div className="flex justify-between mt-2" >
+                <div>
+                    <div className="flex">
+                        <img src="/images/icons/eventos_dark.svg" alt="" className='w-6' />
+                        <span className="ml-2">Eventos</span>
+                    </div>
+                </div>
+                <div>
+                    <Link href={route('events.create')} className="inline-flex items-center justify-center rounded-md bg-success px-6 py-3 text-sm font-medium text-success-foreground shadow hover:bg-success/90 transition-colors">
+                        Crear nuevo
+                    </Link>
+                </div>
+            </div>
+        }>
+            <Head title="Eventos" />
+            <div className='py-12'>
+                <div className="max-w-7xl mx-auto sm:px-2">
+                    <div className="overflow-x-auto bg-card rounded-xl shadow mb-3">
+                        <div className='flex justify-end p-2'>
+                            <SearchFilter></SearchFilter>
+                        </div>
+                        <table className="table w-full">
+                            <thead>
+                                <tr>
+                                    <th className='bg-card text-center'>Image</th>
+                                    <th className='bg-card'>Titulo</th>
+                                    <th className='bg-card'></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {data.map(({ id, image, title }) => {
+                                    return (
+                                        <tr key={id}>
+                                            <td className="border-t">
+                                                <div className='flex flex-col justify-middle align-center'>
+                                                    <img src={image} alt="logo" className="w-32 mx-auto rounded" />
+                                                </div>
+                                            </td>
+                                            <td className="border-t">
+                                                <Link
+                                                    href={route('events.edit', id)}
+                                                    className="flex items-center px-4 py-2 focus:text-primary focus:outline-none"
+                                                >
+                                                    {title}
+                                                </Link>
+                                            </td>
+                                            <td className="border-t">
+                                                <Link
+                                                    href={route('events.edit', id)}
+                                                    className="flex items-center px-4 py-2 focus:text-primary focus:outline-none"
+                                                >
+                                                    <i className="fa-solid fa-chevron-right"></i>
+                                                </Link>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                                {data.length === 0 && (
+                                    <tr>
+                                        <td className="px-6 py-4 border-t text-center" colSpan="3">
+                                            ☹️ No events found.
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div className="flex justify-center">
+                    <Pagination links={links} />
+                </div>
+            </div>
+        </AuthenticatedLayout >
+    );
+}

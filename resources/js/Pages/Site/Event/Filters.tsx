@@ -1,0 +1,90 @@
+import React, { useState } from 'react';
+import { useForm } from '@inertiajs/react';
+import PrimaryButton from '@/Components/PrimaryButton';
+import { trans } from '@/utils';
+import DatePicker from 'react-date-picker'
+
+export default function Filters({ filters }) {
+    const [showFilters, setShowFilters] = useState(false);
+
+    const { data, setData, errors, get, reset, processing, recentlySuccessful } = useForm({
+        start: filters.start ? filters.start : '',
+        end: filters.end ? filters.end : '',
+    });
+
+    const handleOnChange = event => {
+        setData(event.target.name, event.target.value);
+    };
+
+    const submit = e => {
+        e.preventDefault();
+        get(route('site.events.index'), { onSuccess: () => reset() });
+    };
+
+    const limpar = () => {
+        console.log('limpar');
+    };
+
+    const toggleFilters = () => {
+        setShowFilters(!showFilters);
+    };
+
+    const startDataChange = (date) => {
+        let a = new Date(date);
+        setData('start', a);
+    }
+
+    const endDataChange = (date) => {
+        // let a = new Date(date).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', }).replace(/(\d+)\/(\d+)\/(\d+)/, '$1/$2/$3');
+        let a = new Date(date);
+        setData('end', a);
+    }
+
+    return (
+        <div className='flex justify-center flex-col bg-card p-4' >
+            {
+                showFilters ? (
+                    <div>
+                        <form onSubmit={submit}>
+                            <div className="">
+                                <DatePicker
+                                    onChange={startDataChange}
+                                    value={data.start}
+                                    className="mt-2 block w-full text-stone-800 font-bold kimput"
+                                    calendarClassName="bg-red-200"
+                                    locale="pt-BR"
+                                />
+                            </div>
+
+                            <div className="">
+                                <DatePicker
+                                    onChange={endDataChange}
+                                    value={data.end}
+                                    className="mt-2 block w-full text-stone-800 font-bold kimput"
+                                    calendarClassName="bg-red-200"
+                                    locale="pt-BR"
+                                />
+                                {/* <DataPickerInputEnd
+                                    end={data.end}
+                                    handleOnChange={handleOnChange}
+                                    className="mt-2 block w-full text-stone-800 font-bold"
+                                    placeholder="Hasta"
+                                /> */}
+                            </div>
+                            <div className='flex justify-between mt-4 mb-6'>
+                                <a className='border border-border inline-flex items-center px-4 py-2 rounded-md text-xs uppercase tracking-widest' href={route('site.events.index')} onClick={limpar}>reset</a>
+                                <PrimaryButton>{trans('buscar')}</PrimaryButton>
+                            </div>
+                        </form>
+                    </div >
+                ) : (
+                    <div className='w-full flex justify-end bg-card'>
+                        <button className='inline-flex items-center px-4 py-2 bg-primary border border-transparent rounded-md text-xs text-primary-foreground uppercase tracking-widest hover:bg-primary/90 focus:bg-primary/90 active:bg-primary/80 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-background transition ease-in-out duration-150' onClick={toggleFilters}>
+                            <i className="fa-solid fa-filter mr-2"></i> Filtros
+                        </button>
+                    </div>
+                )
+            }
+        </div >
+    );
+}
