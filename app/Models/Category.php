@@ -31,6 +31,27 @@ class Category extends Model implements TranslatableContract
         return $this->belongsTo(Category::class, 'parent_id');
     }
 
+    /**
+     * Static SVGs and defaults live under public/images/ (e.g. public/images/icons/*.svg).
+     * Uploaded category photos live under storage/app/public/categories/.
+     */
+    protected function publicImagesFileUrl(?string $value): ?string
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+            return $value;
+        }
+
+        if (str_starts_with($value, 'icons/')) {
+            return asset('images/'.$value);
+        }
+
+        return null;
+    }
+
     protected function image(): Attribute
     {
         return Attribute::make(
@@ -52,32 +73,34 @@ class Category extends Model implements TranslatableContract
     {
         return Attribute::make(
             get: function (?string $value) {
-                if (is_null($value)) {
-                    return 'https://picsum.photos/1200/720';
+                $public = $this->publicImagesFileUrl($value);
+                if ($public !== null) {
+                    return $public;
                 }
 
-                if (substr($value, 0, 4) === 'http') {
-                    return $value;
+                if (is_null($value) || $value === '') {
+                    return asset('images/icons/default.svg');
                 }
 
-                return asset('/storage/categories/'.$value);
+                return asset('storage/categories/'.$value);
             },
         );
     }
 
-    public function icon(): Attribute
+    protected function icon(): Attribute
     {
         return Attribute::make(
             get: function (?string $value) {
-                if (is_null($value)) {
-                    return 'https://picsum.photos/500/500';
+                $public = $this->publicImagesFileUrl($value);
+                if ($public !== null) {
+                    return $public;
                 }
 
-                if (substr($value, 0, 4) === 'http') {
-                    return $value;
+                if (is_null($value) || $value === '') {
+                    return asset('images/icons/default.svg');
                 }
 
-                return asset('/storage/icons/'.$value);
+                return asset('storage/icons/'.$value);
             }
         );
     }

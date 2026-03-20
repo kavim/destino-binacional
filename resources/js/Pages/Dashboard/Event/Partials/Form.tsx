@@ -4,13 +4,13 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import SelectInput from '@/Shared/SelectInput';
 import InputError from '@/Components/InputError';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import CmsRichTextEditor from '@/Components/CmsRichTextEditor';
 import ImagicLoader from '@/Components/ImagicLoader';
 import DataPickerInputStart from '@/Shared/DataPickerInputStart';
 import DataPickerInputEnd from '@/Shared/DataPickerInputEnd';
 import DeleteButton from '@/Shared/DeleteButton';
 import Tags from './Tags';
+import { Card, CardContent } from '@/Components/ui/card';
 
 export default function Form({ handleOnChange, submit, data, errors, processing, onDelete }) {
     const { categories, cities, grouped_categories, parent_tags } = usePage().props;
@@ -36,51 +36,32 @@ export default function Form({ handleOnChange, submit, data, errors, processing,
         handleOnChange({ target: { name: 'tag_ids', value: updatedList } });
     };
 
-    const getTools = () => {
-        return [
-            "heading",
-            "|",
-            "bold",
-            "italic",
-            "link",
-            "bulletedList",
-            "numberedList",
-            "|",
-            "outdent",
-            "indent",
-            "|",
-            "blockQuote",
-            "insertTable",
-            "mediaEmbed",
-            "undo",
-            "redo"
-        ];
-    }
-
     return (
         <form onSubmit={submit}>
-            <div className='mb-5 bg-stone-200 rounded-2xl p-2'>
-                <div className='flex justify-center'>
+            <Card className="mb-5 overflow-hidden">
+                <CardContent className="space-y-3 p-4 sm:p-5">
+                    <div className="flex justify-center">
                     {data.featured_image ? (
-                        <div className="mb-3">
-                            <img src={data.featured_image} alt="featured_image" className='w-96 rounded-2xl' />
+                        <div className="mb-1">
+                            <img src={data.featured_image} alt="featured_image" className='max-h-96 w-full max-w-md rounded-xl object-contain' />
                         </div>
                     ) : (
                         <>
                             {(data.image) && (
-                                <div className="mb-3">
-                                    <img src={data.image} alt="current_image" className='w-96 rounded-2xl' />
+                                <div className="mb-1">
+                                    <img src={data.image} alt="current_image" className='max-h-96 w-full max-w-md rounded-xl object-contain' />
                                 </div>
                             )}
                         </>
                     )}
-                </div>
+                    </div>
 
-                <ImagicLoader onCorte={onCorte}></ImagicLoader>
+                    <ImagicLoader onCorte={onCorte}></ImagicLoader>
 
-                <InputError message={errors.featured_image} className="mt-2" />
-                <InputError message={errors.image} className="mt-2" />
-            </div>
+                    <InputError message={errors.featured_image} className="mt-2" />
+                    <InputError message={errors.image} className="mt-2" />
+                </CardContent>
+            </Card>
 
             <div className="divider mt-10">Identificación</div>
 
@@ -99,18 +80,14 @@ export default function Form({ handleOnChange, submit, data, errors, processing,
             </div>
             <div className="my-5">
                 <InputLabel htmlFor="description" value="Descripción del Evento" className="mb-1" />
-                <CKEditor
-                    editor={ClassicEditor}
-                    config={{
-                        toolbar: getTools()
-                    }}
-                    data={data.description}
+                <CmsRichTextEditor
+                    id="description"
                     name="description"
-                    value={data.description}
-                    onChange={(event, editor) => {
-                        const data = editor.getData();
-                        handleOnChange({ target: { name: 'description', value: data } });
-                    }}
+                    value={data.description ?? ''}
+                    onChange={handleOnChange}
+                    placeholder="Descripción del evento…"
+                    invalid={!!errors.description}
+                    className="mt-1"
                 />
                 <InputError message={errors.description} className="mt-2" />
             </div>

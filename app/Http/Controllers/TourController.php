@@ -65,6 +65,7 @@ class TourController extends Controller
             'start' => 'nullable',
             'end' => 'nullable',
             'price' => 'nullable',
+            'currency' => 'nullable|in:BRL,UYU',
             'description' => 'required|max:9999',
             'guide' => 'required|max:255',
             'google_maps_src' => 'nullable',

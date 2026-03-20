@@ -22,9 +22,9 @@ export default function Events() {
     }
 
     return (
-        <div className='bg-card rounded-xl md:p-2 sm:p-0 py-3 md:mx-4'>
+        <div className='rounded-xl border border-border/70 bg-card/95 py-3 shadow-md shadow-black/[0.06] ring-1 ring-black/[0.03] dark:border-border dark:shadow-black/25 dark:ring-white/[0.05] md:mx-4 md:p-2 sm:p-0'>
             <div className="text-3xl md:text-4xl font-extrabold text-center">
-                <span className="bg-clip-text text-transparent bg-stone-800">
+                <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
                     Próximos eventos
                 </span>
             </div>
@@ -38,7 +38,7 @@ export default function Events() {
                                     label={index}
                                     onClick={() => goToDate(group)}
                                     className="m-2">
-                                    <div className="w-32 md:w-24 flex-none text-center border border-stone-800 active:opacity-5 rounded-lg">
+                                    <div className="w-32 md:w-24 flex-none text-center rounded-lg border border-border shadow-sm active:opacity-90">
                                         <div className="flex flex-col overflow-hidden text-center">
                                             <div className="bg-red-800 rounded-t-lg text-white py-1">
                                                 {dayjs(group).format('MMM')}

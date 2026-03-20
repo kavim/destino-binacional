@@ -27,7 +27,7 @@ export default function Show({ event }) {
             <Head title={event.title} />
             <div className="w-full overflow-hidden">
                 <div className={className} style={{ backgroundImage: `url("` + event.image + `")` }}>
-                    <div className='flex justify-center items-center w-full h-full mx-auto md:px-10 bg-gradient-to-b from-transparent to-stone-800'>
+                    <div className='flex justify-center items-center w-full h-full mx-auto md:px-10 bg-gradient-to-b from-black/30 via-black/50 to-background'>
                         <div className="flex flex-col justify-center items-center">
                             {/* <div className='flex flex-row items-center w-full p-2 md:p-0 md:py-2'>
                                 <img src="/images/icons/eventos.svg" alt="evento" className='w-6 md:w-8' />

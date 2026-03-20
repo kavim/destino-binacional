@@ -1,1 +1,0 @@
-import{a as e}from"./app-f4fae337.js";import{S as r}from"./SelectInput-216c23d8.js";function o({category:a}){return e("div",{className:"w-full",children:e("div",{children:e(r,{placeholder:"Select",name:"category"})})})}export{o as default};

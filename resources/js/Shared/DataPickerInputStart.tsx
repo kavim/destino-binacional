@@ -23,7 +23,7 @@ export default function DataPickerInputStart({ start, handleOnChange, className 
                 value={value}
                 locale="es-UY"
                 format="dd/MM/yyyy"
-                className="mt-1 block w-full text-stone-800 font-bold kimput"
+                className="mt-1 block w-full font-semibold text-foreground kimput"
                 calendarClassName="bg-card border border-border rounded-lg shadow-lg"
                 clearIcon={null}
             />

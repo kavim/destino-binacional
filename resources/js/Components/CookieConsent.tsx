@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Button } from "@/Components/ui/button";
 
 const CookieConsent = () => {
     const [showCookieConsent, setShowCookieConsent] = useState(false);
@@ -9,11 +10,10 @@ const CookieConsent = () => {
             cookie.includes("cookies_accepted=true")
         );
 
-        // Se o cookie de aceitação de cookies não existe, exibe o aviso de consentimento.
         if (!hasAcceptedCookies) {
             setShowCookieConsent(true);
         }
-    }, []); // Executa apenas uma vez no carregamento do componente.
+    }, []);
 
     const acceptCookies = () => {
         document.cookie =
@@ -32,28 +32,32 @@ const CookieConsent = () => {
     }
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 bg-gray-900/75 p-4">
-            <div className="max-w-screen-xl mx-auto">
-                <div className="flex justify-between items-center">
-                    <p className="text-white">
-                        Este site utiliza cookies para garantir a melhor
-                        experiência possível. Ao continuar utilizando o site,
-                        você concorda com a nossa{" "}
-                        <button
-                            className="underline"
-                            onClick={openPrivacyPolicy}
-                        >
-                            Política de Privacidade
-                        </button>
-                        .
-                    </p>
+        <div
+            className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-popover/95 p-4 text-popover-foreground shadow-lg backdrop-blur-md supports-[backdrop-filter]:bg-popover/85"
+            role="dialog"
+            aria-label="Consentimento de cookies"
+        >
+            <div className="mx-auto flex max-w-screen-xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-sm leading-relaxed">
+                    Este site utiliza cookies para garantir a melhor experiência
+                    possível. Ao continuar utilizando o site, você concorda com a
+                    nossa{" "}
                     <button
-                        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
-                        onClick={acceptCookies}
+                        type="button"
+                        className="font-medium text-primary underline-offset-4 transition-colors hover:underline"
+                        onClick={openPrivacyPolicy}
                     >
-                        Aceitar cookies
+                        Política de Privacidade
                     </button>
-                </div>
+                    .
+                </p>
+                <Button
+                    type="button"
+                    onClick={acceptCookies}
+                    className="shrink-0 sm:min-w-[10rem]"
+                >
+                    Aceitar cookies
+                </Button>
             </div>
         </div>
     );

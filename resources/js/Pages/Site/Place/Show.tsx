@@ -23,7 +23,7 @@ export default function Show({ place }) {
             <Head title={place.name} />
             <div className="w-full overflow-hidden">
                 <div className={className} style={{ backgroundImage: `url("` + place.image + `")` }}>
-                    <div className='flex justify-center items-center w-full h-full mx-auto md:px-10 bg-gradient-to-b from-transparent to-stone-800'>
+                    <div className='flex justify-center items-center w-full h-full mx-auto md:px-10 bg-gradient-to-b from-black/30 via-black/50 to-background'>
                         <div className="flex flex-col md:flex-row justify-center items-center break-words whitespace-normal">
                             <h2 className='md:text-5xl text-3xl font-extrabold'>
                                 {place.name}

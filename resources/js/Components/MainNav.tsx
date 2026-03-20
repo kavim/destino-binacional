@@ -10,7 +10,7 @@ export default function MainNav() {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 
     return (
-        <nav className="bg-card border-b border-border">
+        <nav className="sticky top-0 z-40 border-b border-border/80 bg-card/80 shadow-sm shadow-black/5 backdrop-blur-md backdrop-saturate-150 dark:bg-card/85 dark:shadow-black/20">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16">
                     <div className="flex">

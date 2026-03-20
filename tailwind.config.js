@@ -58,6 +58,12 @@ module.exports = {
                     DEFAULT: 'hsl(var(--success))',
                     foreground: 'hsl(var(--success-foreground))',
                 },
+                footer: {
+                    DEFAULT: 'hsl(var(--footer))',
+                    foreground: 'hsl(var(--footer-foreground))',
+                    muted: 'hsl(var(--footer-muted))',
+                    border: 'hsl(var(--footer-border))',
+                },
             },
             borderRadius: {
                 lg: 'var(--radius)',

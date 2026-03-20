@@ -27,7 +27,7 @@ export default function Show({ tour }) {
             <Head title={tour.title} />
             <div className="w-full overflow-hidden">
                 <div className={className} style={{ backgroundImage: `url("` + tour.image + `")` }}>
-                    <div className='flex justify-center items-center w-full h-full mx-auto md:px-10 bg-gradient-to-b from-transparent to-stone-800'>
+                    <div className='flex justify-center items-center w-full h-full mx-auto md:px-10 bg-gradient-to-b from-black/30 via-black/50 to-background'>
                         <div className="flex flex-col justify-center items-center">
                             <div className='flex flex-col md:flex-row justify-center items-center break-words whitespace-normal'>
                                 <span className='md:text-5xl text-3xl font-extrabold'>

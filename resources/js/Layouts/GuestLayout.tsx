@@ -1,5 +1,6 @@
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import { Link } from '@inertiajs/react';
+import { Card, CardContent } from '@/Components/ui/card';
 
 interface Props {
     children: React.ReactNode;
@@ -7,16 +8,19 @@ interface Props {
 
 export default function Guest({ children }: Props) {
     return (
-        <div className="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-background">
-            <div>
+        <div className="flex min-h-screen flex-col items-center bg-transparent pt-6 sm:justify-center sm:pt-0">
+            <div className="relative z-[1]">
                 <Link href="/">
-                    <ApplicationLogo className="w-20 h-20 fill-current text-muted-foreground" />
+                    <ApplicationLogo
+                        size="md"
+                        className="h-20 w-20 text-muted-foreground drop-shadow-sm"
+                    />
                 </Link>
             </div>
 
-            <div className="w-full sm:max-w-md mt-6 px-6 py-4 bg-card shadow-md overflow-hidden sm:rounded-lg">
-                {children}
-            </div>
+            <Card className="relative z-[1] mt-6 w-full overflow-hidden shadow-md shadow-black/10 dark:shadow-black/30 sm:max-w-md">
+                <CardContent className="p-6 sm:p-8">{children}</CardContent>
+            </Card>
         </div>
     );
 }

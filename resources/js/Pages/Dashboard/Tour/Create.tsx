@@ -1,5 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { Card, CardContent } from '@/Components/ui/card';
 import Form from './Partials/Form';
 
 export default function Create() {
@@ -8,7 +9,7 @@ export default function Create() {
     const { data, setData, errors, post, processing } = useForm({
         title: '',
         description : '',
-        price: '00',
+        price: '0',
         currency: 'BRL',
         featured_image: '',
         google_maps_src: '',
@@ -43,9 +44,11 @@ export default function Create() {
         >
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                    <div className="p-4 sm:p-8 bg-card shadow sm:rounded-lg">
-                        <Form handleOnChange={handleOnChange} submit={submit} data={data} errors={errors} processing={processing} onCorte={onCorte}></Form>
-                    </div>
+                    <Card className="shadow-sm">
+                        <CardContent className="p-4 sm:p-8">
+                            <Form handleOnChange={handleOnChange} submit={submit} data={data} errors={errors} processing={processing} onCorte={onCorte}></Form>
+                        </CardContent>
+                    </Card>
                 </div>
             </div>
         </AuthenticatedLayout>

@@ -3,8 +3,7 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import InputError from '@/Components/InputError';
-import {CKEditor} from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import CmsRichTextEditor from '@/Components/CmsRichTextEditor';
 import ImagicLoader from '@/Components/ImagicLoader';
 import Categories from './Categories';
 import DeleteButton from '@/Shared/DeleteButton';
@@ -12,31 +11,13 @@ import TimeInput  from '@/Components/TimeInput';
 import { CurrencyInput } from 'react-currency-mask';
 import WorkingHours from '@/Components/WorkingHours';
 import Checkbox from "@/Components/Checkbox";
+import { Card, CardContent } from '@/Components/ui/card';
+import { Input } from '@/Components/ui/input';
+import { cn } from '@/lib/utils';
 
 export default function Form({handleOnChange, submit, data, errors, processing, onDelete = null}) {
     const onCorte = (image) => {
         handleOnChange({target: {name: 'featured_image', value: image}});
-    }
-
-    const getTools = () => {
-        return [
-            "heading",
-            "|",
-            "bold",
-            "italic",
-            "link",
-            "bulletedList",
-            "numberedList",
-            "|",
-            "outdent",
-            "indent",
-            "|",
-            "blockQuote",
-            "insertTable",
-            "mediaEmbed",
-            "undo",
-            "redo"
-        ];
     }
 
     const startDataChange = (date) => {
@@ -71,8 +52,14 @@ export default function Form({handleOnChange, submit, data, errors, processing, 
         handleOnChange({target: {name: 'end', value: formattedDate}});
     };
 
-    const handleMoneyChange = (event, originalValue, maskedValue) => {
-        handleOnChange({target: {name: 'price', value: maskedValue}});
+    const handleMoneyChange = (_event, originalValue) => {
+        const n =
+            typeof originalValue === 'number' && Number.isFinite(originalValue)
+                ? originalValue
+                : 0;
+        handleOnChange({
+            target: { name: 'price', value: n.toFixed(2) },
+        });
     };
 
     const handleCheck = (event) => {
@@ -90,28 +77,30 @@ export default function Form({handleOnChange, submit, data, errors, processing, 
 
     return (
         <form onSubmit={submit}>
-            <div className='mb-5 bg-stone-200 rounded-2xl p-2'>
-                <div className='flex justify-center'>
+            <Card className="mb-5 overflow-hidden">
+                <CardContent className="space-y-3 p-4 sm:p-5">
+                    <div className="flex justify-center">
                     {data.featured_image ? (
-                        <div className="mb-3">
-                            <img src={data.featured_image} alt="featured_image" className='w-96 rounded-2xl'/>
+                        <div className="mb-1">
+                            <img src={data.featured_image} alt="featured_image" className='max-h-96 w-full max-w-md rounded-xl object-contain'/>
                         </div>
                     ) : (
                         <>
                             {(data.image) && (
-                                <div className="mb-3">
-                                    <img src={data.image} alt="current_image" className='w-96 rounded-2xl'/>
+                                <div className="mb-1">
+                                    <img src={data.image} alt="current_image" className='max-h-96 w-full max-w-md rounded-xl object-contain'/>
                                 </div>
                             )}
                         </>
                     )}
-                </div>
+                    </div>
 
-                <ImagicLoader onCorte={onCorte}></ImagicLoader>
+                    <ImagicLoader onCorte={onCorte}></ImagicLoader>
 
-                <InputError message={errors.featured_image} className="mt-2"/>
-                <InputError message={errors.image} className="mt-2"/>
-            </div>
+                    <InputError message={errors.featured_image} className="mt-2"/>
+                    <InputError message={errors.image} className="mt-2"/>
+                </CardContent>
+            </Card>
             <div className="my-5">
                 <InputLabel htmlFor="title" value="Titulo"/>
                 <TextInput
@@ -126,25 +115,34 @@ export default function Form({handleOnChange, submit, data, errors, processing, 
             </div>
             <div className="my-5">
                 <InputLabel htmlFor="price" value="Price"/>
-                <div className="flex items-center space-x-2">
+                <div className="flex min-w-0 max-w-full items-stretch">
                     <select
+                        id="currency"
+                        name="currency"
                         value={data.currency}
                         onChange={handleOnChange}
-                        className="border border-border rounded-l-md"
-                        name="currency"
+                        className={cn(
+                            'h-10 shrink-0 rounded-l-md rounded-r-none border border-input bg-background px-3 text-sm shadow-sm',
+                            'ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
+                        )}
                     >
-                        <option defaultValue={data.currency} value="UYU">UYU</option>
-                        <option defaultValue={data.currency} value="BRL">BRL</option>
+                        <option value="UYU">UYU</option>
+                        <option value="BRL">BRL</option>
                     </select>
                     <CurrencyInput
+                        className="min-w-0 flex-1"
                         currency={data.currency}
+                        locale={data.currency === 'UYU' ? 'es-UY' : 'pt-BR'}
                         name="price"
-                        value={data.price || '00'}
-                        className="border border-border w-full ml-0 rounded-r-md"
-                        autoComplete="price"
-                        onChangeValue={(event, originalValue, maskedValue) => {
-                          handleMoneyChange(event, originalValue, maskedValue);
-                        }}
+                        value={data.price === '' || data.price == null ? '0' : data.price}
+                        autoComplete="off"
+                        InputElement={
+                            <Input
+                                id="price"
+                                className="rounded-l-none border-l-0 shadow-sm"
+                            />
+                        }
+                        onChangeValue={handleMoneyChange}
                     />
                 </div>
                 <InputError message={errors.price} className="mt-2"/>
@@ -164,18 +162,14 @@ export default function Form({handleOnChange, submit, data, errors, processing, 
             </div>
             <div className="my-3">
                 <InputLabel htmlFor="description" value="Descripción en Español"/>
-                <CKEditor
-                    editor={ClassicEditor}
-                    config={{
-                        toolbar: getTools()
-                    }}
-                    data={data.description || "<p>Descripción</p>"}
+                <CmsRichTextEditor
+                    id="description"
                     name="description"
-                    value={data.description}
-                    onChange={(event, editor) => {
-                        const data = editor.getData();
-                        handleOnChange({target: {name: 'description', value: data}});
-                    }}
+                    value={data.description ?? ''}
+                    onChange={handleOnChange}
+                    placeholder="Descripción del tour…"
+                    invalid={!!errors.description}
+                    className="mt-1"
                 />
                 <InputError message={errors.description} className="mt-2"/>
             </div>

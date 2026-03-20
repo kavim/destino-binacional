@@ -5,11 +5,11 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import SelectInput from '@/Shared/SelectInput';
 import InputError from '@/Components/InputError';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import CmsRichTextEditor from '@/Components/CmsRichTextEditor';
 import ImagicLoader from '@/Components/ImagicLoader';
 import Categories from './Categories';
 import DeleteButton from '@/Shared/DeleteButton';
+import { Card, CardContent } from '@/Components/ui/card';
 
 export default function Form({ handleOnChange, submit, data, errors, processing, onDelete = null }) {
 
@@ -17,27 +17,6 @@ export default function Form({ handleOnChange, submit, data, errors, processing,
 
     const onCorte = (image) => {
         handleOnChange({ target: { name: 'featured_image', value: image } });
-    }
-
-    const getTools = () => {
-        return [
-            "heading",
-            "|",
-            "bold",
-            "italic",
-            "link",
-            "bulletedList",
-            "numberedList",
-            "|",
-            "outdent",
-            "indent",
-            "|",
-            "blockQuote",
-            "insertTable",
-            "mediaEmbed",
-            "undo",
-            "redo"
-        ];
     }
 
     const handleCheck = (event) => {
@@ -55,28 +34,30 @@ export default function Form({ handleOnChange, submit, data, errors, processing,
 
     return (
         <form onSubmit={submit}>
-            <div className='mb-5 bg-stone-200 rounded-2xl p-2'>
-                <div className='flex justify-center'>
+            <Card className="mb-5 overflow-hidden">
+                <CardContent className="space-y-3 p-4 sm:p-5">
+                    <div className="flex justify-center">
                     {data.featured_image ? (
-                        <div className="mb-3">
-                            <img src={data.featured_image} alt="featured_image" className='w-96 rounded-2xl' />
+                        <div className="mb-1">
+                            <img src={data.featured_image} alt="featured_image" className='max-h-96 w-full max-w-md rounded-xl object-contain' />
                         </div>
                     ) : (
                         <>
                             {(data.image) && (
-                                <div className="mb-3">
-                                    <img src={data.image} alt="current_image" className='w-96 rounded-2xl' />
+                                <div className="mb-1">
+                                    <img src={data.image} alt="current_image" className='max-h-96 w-full max-w-md rounded-xl object-contain' />
                                 </div>
                             )}
                         </>
                     )}
-                </div>
+                    </div>
 
-                <ImagicLoader onCorte={onCorte}></ImagicLoader>
+                    <ImagicLoader onCorte={onCorte}></ImagicLoader>
 
-                <InputError message={errors.featured_image} className="mt-2" />
-                <InputError message={errors.image} className="mt-2" />
-            </div>
+                    <InputError message={errors.featured_image} className="mt-2" />
+                    <InputError message={errors.image} className="mt-2" />
+                </CardContent>
+            </Card>
             <div className="my-3">
                 <InputLabel htmlFor="name" value="Nombre" />
                 <TextInput
@@ -91,32 +72,27 @@ export default function Form({ handleOnChange, submit, data, errors, processing,
             </div>
             <div className="my-3">
                 <InputLabel htmlFor="description_es" value="Descripción en Español" />
-                <CKEditor
-                    editor={ClassicEditor}
-                    config={{
-                        toolbar: getTools()
-                    }}
-                    data={data.description_es || "<p>Descripción en Español</p>"}
+                <CmsRichTextEditor
+                    id="description_es"
                     name="description_es"
-                    value={data.description_es}
-                    onChange={(event, editor) => {
-                        const data = editor.getData();
-                        handleOnChange({ target: { name: 'description_es', value: data } });
-                    }}
+                    value={data.description_es ?? ''}
+                    onChange={handleOnChange}
+                    placeholder="Descripción en español…"
+                    invalid={!!errors.description_es}
+                    className="mt-1"
                 />
                 <InputError message={errors.description_es} className="mt-2" />
             </div>
             <div className="my-3">
                 <InputLabel htmlFor="description_pt" value="Descripción en Portugués" />
-                <CKEditor
-                    editor={ClassicEditor}
-                    data={data.description_pt || "<p>Descripción en Portugués</p>"}
+                <CmsRichTextEditor
+                    id="description_pt"
                     name="description_pt"
-                    onChange={(event, editor) => {
-                        const data = editor.getData();
-                        handleOnChange({ target: { name: 'description_pt', value: data } });
-                    }}
-                    className="rounded"
+                    value={data.description_pt ?? ''}
+                    onChange={handleOnChange}
+                    placeholder="Descrição em português…"
+                    invalid={!!errors.description_pt}
+                    className="mt-1"
                 />
                 <InputError message={errors.description_pt} className="mt-2" />
             </div>

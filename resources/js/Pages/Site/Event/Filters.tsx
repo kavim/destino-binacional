@@ -41,7 +41,7 @@ export default function Filters({ filters }) {
     }
 
     return (
-        <div className='flex justify-center flex-col bg-card p-4' >
+        <div className='flex flex-col justify-center rounded-lg border border-border bg-card p-4 shadow-sm' >
             {
                 showFilters ? (
                     <div>
@@ -50,8 +50,8 @@ export default function Filters({ filters }) {
                                 <DatePicker
                                     onChange={startDataChange}
                                     value={data.start}
-                                    className="mt-2 block w-full text-stone-800 font-bold kimput"
-                                    calendarClassName="bg-red-200"
+                                    className="mt-2 block w-full font-semibold text-foreground kimput"
+                                    calendarClassName="rounded-md border border-border bg-popover text-popover-foreground shadow-md"
                                     locale="pt-BR"
                                 />
                             </div>
@@ -60,14 +60,14 @@ export default function Filters({ filters }) {
                                 <DatePicker
                                     onChange={endDataChange}
                                     value={data.end}
-                                    className="mt-2 block w-full text-stone-800 font-bold kimput"
-                                    calendarClassName="bg-red-200"
+                                    className="mt-2 block w-full font-semibold text-foreground kimput"
+                                    calendarClassName="rounded-md border border-border bg-popover text-popover-foreground shadow-md"
                                     locale="pt-BR"
                                 />
                                 {/* <DataPickerInputEnd
                                     end={data.end}
                                     handleOnChange={handleOnChange}
-                                    className="mt-2 block w-full text-stone-800 font-bold"
+                                    className="mt-2 block w-full font-bold text-foreground"
                                     placeholder="Hasta"
                                 /> */}
                             </div>

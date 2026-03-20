@@ -1,5 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, useForm, usePage } from '@inertiajs/react';
+import { Card, CardContent } from '@/Components/ui/card';
 import Form from './Partials/Form';
 
 export default function Create() {
@@ -47,7 +48,8 @@ export default function Create() {
             <Head title="Crear Categoria" />
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                    <div className="p-4 sm:p-8 bg-card shadow sm:rounded-lg">
+                    <Card className="shadow-sm">
+                        <CardContent className="space-y-6 p-4 sm:p-8">
                         {parent ? (
                             <div>
                                 <div>
@@ -66,7 +68,8 @@ export default function Create() {
                             </div>
                         )}
                         <Form handleOnChange={handleOnChange} submit={submit} data={data} errors={errors} onIconChange={onIconChange} processing={processing} parent={parent}></Form>
-                    </div>
+                        </CardContent>
+                    </Card>
                 </div>
             </div>
         </AuthenticatedLayout>

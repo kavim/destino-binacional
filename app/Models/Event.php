@@ -31,6 +31,7 @@ class Event extends Model
     protected $casts = [
         'start' => 'date:Y/m/d',
         'end' => 'date:Y/m/d',
+        'is_online' => 'boolean',
     ];
 
     protected $appends = [

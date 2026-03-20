@@ -40,6 +40,7 @@ class PlaceController extends Controller
                     return $query->whereIn('parent_id', [$category_id]);
                 });
             })
+            ->with('city')
             ->orderBy('places.id', 'DESC')
             ->paginate($hasAnyFilter ? 100 : 10);
 

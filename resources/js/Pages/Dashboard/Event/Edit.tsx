@@ -1,5 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { useForm, usePage, router } from '@inertiajs/react';
+import { Card, CardContent } from '@/Components/ui/card';
 import Form from './Partials/Form';
 
 export default function Edit() {
@@ -7,7 +8,7 @@ export default function Edit() {
 
     const { data, setData, errors, put, reset, processing, recentlySuccessful } = useForm({
         title: event.title,
-        description: event.description ? event.description : "<p>Descripción del Evento</p>",
+        description: event.description ?? '',
         google_maps_src: event.google_maps_src ? event.google_maps_src : '',
         address: event.address ? event.address : '',
         city_id: event.city_id ? event.city_id : '',
@@ -58,9 +59,11 @@ export default function Edit() {
         >
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                    <div className="p-4 sm:p-8 bg-card shadow sm:rounded-lg">
-                        <Form handleOnChange={handleOnChange} submit={submit} data={data} errors={errors} processing={processing} onCorte={onCorte} onDelete={onDelete}></Form>
-                    </div>
+                    <Card className="shadow-sm">
+                        <CardContent className="p-4 sm:p-8">
+                            <Form handleOnChange={handleOnChange} submit={submit} data={data} errors={errors} processing={processing} onCorte={onCorte} onDelete={onDelete}></Form>
+                        </CardContent>
+                    </Card>
                 </div>
             </div>
         </AuthenticatedLayout>

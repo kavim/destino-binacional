@@ -45,7 +45,7 @@ export default function Filters({ filters }) {
     }
 
     return (
-        <div className='flex justify-center flex-col bg-card p-4' >
+        <div className='flex flex-col justify-center rounded-lg border border-border bg-card p-4 shadow-sm' >
             {
                 showFilters ? (
                     <div>
@@ -54,8 +54,8 @@ export default function Filters({ filters }) {
                                 <DatePicker
                                     onChange={startDataChange}
                                     value={data.start}
-                                    className="mt-2 block w-full text-stone-800 font-bold kimput"
-                                    calendarClassName="bg-red-200"
+                                    className="mt-2 block w-full font-semibold text-foreground kimput"
+                                    calendarClassName="rounded-md border border-border bg-popover text-popover-foreground shadow-md"
                                     locale="pt-BR"
                                 />
                             </div>
@@ -64,8 +64,8 @@ export default function Filters({ filters }) {
                                 <DatePicker
                                     onChange={endDataChange}
                                     value={data.end}
-                                    className="mt-2 block w-full text-stone-800 font-bold kimput"
-                                    calendarClassName="bg-red-200"
+                                    className="mt-2 block w-full font-semibold text-foreground kimput"
+                                    calendarClassName="rounded-md border border-border bg-popover text-popover-foreground shadow-md"
                                     locale="pt-BR"
                                 />
                             </div>
@@ -77,7 +77,7 @@ export default function Filters({ filters }) {
                     </div >
                 ) : (
                     <div className='w-full flex justify-end bg-card'>
-                        <button className='inline-flex items-center px-4 py-2 bg-primary border border-transparent rounded-md text-xs text-primary-foreground uppercase tracking-widest hover:bg-primary/90 focus:bg-primary/90 active:bg-primary/80 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-background transition ease-in-out duration-150' onClick={toggleFilters}>
+                        <button type="button" className='inline-flex items-center rounded-md border border-transparent bg-primary px-4 py-2 text-xs font-medium uppercase tracking-widest text-primary-foreground shadow-sm transition hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background' onClick={toggleFilters}>
                             <i className="fa-solid fa-filter mr-2"></i> Filtros
                         </button>
                     </div>

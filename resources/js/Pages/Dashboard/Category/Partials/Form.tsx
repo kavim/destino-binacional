@@ -5,6 +5,7 @@ import TextInput from '@/Components/TextInput';
 import InputError from '@/Components/InputError';
 import ImagicLoader from '@/Components/ImagicLoader';
 import DeleteButton from '@/Shared/DeleteButton';
+import { Card, CardContent } from '@/Components/ui/card';
 
 export default function Form({ handleOnChange, submit, data, errors, onDelete, parent = null, processing, onIconChange }) {
     const [iconImage, setIconImage] = useState(null);
@@ -61,28 +62,30 @@ export default function Form({ handleOnChange, submit, data, errors, onDelete, p
                 {!parent && (
                     <>
                         <div className="divider mt-10">Estilo</div>
-                        <div className='mb-5 bg-stone-200 rounded-2xl p-2'>
-                            <div className='flex justify-center'>
+                        <Card className="mb-5 overflow-hidden">
+                            <CardContent className="space-y-3 p-4 sm:p-5">
+                                <div className="flex justify-center">
                                 {data.featured_image && !data.image ? (
-                                    <div className="mb-3">
-                                        <img src={data.featured_image} alt="featured_image" className='w-96 rounded-2xl' />
+                                    <div className="mb-1">
+                                        <img src={data.featured_image} alt="featured_image" className='max-h-96 w-full max-w-md rounded-xl object-contain' />
                                     </div>
                                 ) : (
                                     <>
                                         {(data.image) && (
-                                            <div className="mb-3">
-                                                <img src={data.image} alt="current_image" className='w-96 rounded-2xl' />
+                                            <div className="mb-1">
+                                                <img src={data.image} alt="current_image" className='max-h-96 w-full max-w-md rounded-xl object-contain' />
                                             </div>
                                         )}
                                     </>
                                 )}
-                            </div>
+                                </div>
 
-                            <ImagicLoader onCorte={onCorte}></ImagicLoader>
+                                <ImagicLoader onCorte={onCorte}></ImagicLoader>
 
-                            <InputError message={errors.featured_image} className="mt-2" />
-                            <InputError message={errors.image} className="mt-2" />
-                        </div>
+                                <InputError message={errors.featured_image} className="mt-2" />
+                                <InputError message={errors.image} className="mt-2" />
+                            </CardContent>
+                        </Card>
                         <div className="my-5">
                             <InputLabel htmlFor="color" value="Color" />
                             <TextInput

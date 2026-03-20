@@ -1,52 +1,40 @@
-import { Link } from '@inertiajs/react';
-import { cn } from '@/lib/utils';
+import { Link } from "@inertiajs/react";
+import { cn } from "@/lib/utils";
 
 const PageLink = ({ active, label, url }) => {
-    const className = cn(
-        [
-            'mr-1 mb-1',
-            'px-4 py-2',
-            'border border-solid border-gray-300 rounded',
-            'text-sm',
-            'text-white',
-            'bg-stone-700',
-            'hover:bg-stone-800',
-            'focus:outline-none focus:border-primary focus:text-primary bg-stone-900',
-        ],
-        {
-            'bg-stone-900': active,
-        },
-    );
-    return (
-        <Link className={className} href={url}>
-            <span dangerouslySetInnerHTML={{ __html: label }}></span>
-        </Link>
-    );
+  const className = cn(
+    "mr-1 mb-1 inline-flex rounded-md border px-4 py-2 text-sm font-medium transition-colors",
+    "border-border bg-muted text-foreground",
+    "hover:bg-accent hover:text-accent-foreground",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+    active && "border-primary bg-primary text-primary-foreground hover:bg-primary/90"
+  );
+  return (
+    <Link className={className} href={url}>
+      <span dangerouslySetInnerHTML={{ __html: label }}></span>
+    </Link>
+  );
 };
 
-// Previous, if on first page
-// Next, if on last page
-// and dots, if exists (...)
 const PageInactive = ({ label }) => {
-    const className = cn(
-        'mr-1 mb-1 px-4 py-2 text-sm border rounded border-solid border-stone-700 bg-stone-700 text-white opacity-25',
-    );
-    return <div className={className} dangerouslySetInnerHTML={{ __html: label }} />;
+  const className = cn(
+    "mr-1 mb-1 inline-flex rounded-md border border-border bg-muted px-4 py-2 text-sm text-muted-foreground opacity-50"
+  );
+  return <div className={className} dangerouslySetInnerHTML={{ __html: label }} />;
 };
 
 export default ({ links = [] }) => {
-    // dont render, if there's only 1 page (previous, 1, next)
-    if (links.length === 3) return null;
+  if (links.length === 3) return null;
 
-    return (
-        <div className="flex flex-wrap mt-6 -mb-1">
-            {links.map(({ active, label, url }) => {
-                return url === null ? (
-                    <PageInactive key={label} label={label} />
-                ) : (
-                    <PageLink key={label} label={label} active={active} url={url} />
-                );
-            })}
-        </div>
-    );
+  return (
+    <div className="-mb-1 mt-6 flex flex-wrap">
+      {links.map(({ active, label, url }) => {
+        return url === null ? (
+          <PageInactive key={label} label={label} />
+        ) : (
+          <PageLink key={label} label={label} active={active} url={url} />
+        );
+      })}
+    </div>
+  );
 };

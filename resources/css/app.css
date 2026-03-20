@@ -4,52 +4,62 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Cinzas neutros (baixa saturação); primário mais contido */
+    --background: 0 0% 97%;
+    --foreground: 0 0% 13%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 0 0% 13%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 234 89% 74%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --success: 142 76% 36%;
-    --success-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 234 89% 74%;
+    --popover-foreground: 0 0% 13%;
+    --primary: 234 48% 62%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 93%;
+    --secondary-foreground: 0 0% 13%;
+    --muted: 0 0% 93%;
+    --muted-foreground: 0 0% 44%;
+    --accent: 0 0% 91%;
+    --accent-foreground: 0 0% 13%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --success: 142 38% 38%;
+    --success-foreground: 0 0% 98%;
+    --border: 0 0% 87%;
+    --input: 0 0% 89%;
+    --ring: 234 48% 58%;
     --radius: 0.5rem;
+    --footer: 0 0% 16%;
+    --footer-foreground: 0 0% 98%;
+    --footer-muted: 0 0% 62%;
+    --footer-border: 0 0% 24%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 234 89% 74%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --success: 142 76% 36%;
-    --success-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 234 89% 74%;
+    /* Neutro zinc (240 3–4%), sem fundo azulado pesado nem mistura “stone” */
+    --background: 240 4% 6%;
+    --foreground: 0 0% 96%;
+    --card: 240 3% 9%;
+    --card-foreground: 0 0% 96%;
+    --popover: 240 3% 10%;
+    --popover-foreground: 0 0% 96%;
+    --primary: 234 42% 72%;
+    --primary-foreground: 240 6% 10%;
+    --secondary: 240 3% 14%;
+    --secondary-foreground: 0 0% 96%;
+    --muted: 240 3% 12%;
+    --muted-foreground: 240 4% 58%;
+    --accent: 240 3% 16%;
+    --accent-foreground: 0 0% 96%;
+    --destructive: 0 55% 38%;
+    --destructive-foreground: 0 0% 98%;
+    --success: 142 32% 42%;
+    --success-foreground: 0 0% 98%;
+    --border: 240 3% 17%;
+    --input: 240 3% 15%;
+    --ring: 234 42% 68%;
+    --footer: 240 4% 5%;
+    --footer-foreground: 0 0% 96%;
+    --footer-muted: 240 4% 55%;
+    --footer-border: 240 3% 14%;
   }
 }
 
@@ -57,8 +67,32 @@
   * {
     @apply border-border;
   }
+
+  html {
+    @apply bg-background;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply min-h-screen bg-background text-foreground antialiased;
+    background-image: radial-gradient(
+        ellipse 120% 80% at 50% -40%,
+        hsl(var(--primary) / 0.045),
+        transparent 58%
+      ),
+      radial-gradient(
+        ellipse 55% 45% at 100% 0%,
+        hsl(0 0% 45% / 0.04),
+        transparent 52%
+      );
+    background-attachment: fixed;
+  }
+
+  .dark body {
+    background-image: radial-gradient(
+        ellipse 100% 65% at 50% -30%,
+        hsl(var(--primary) / 0.055),
+        transparent 52%
+      );
   }
 }
 
@@ -122,11 +156,20 @@
 }
 
 .btn-round-light {
-    @apply w-7 h-7 flex justify-center items-center rounded-full bg-muted text-foreground leading-normal uppercase shadow-md hover:bg-gray-500 hover:text-white hover:shadow-lg focus:bg-stone-800 focus:shadow-lg focus:outline-none focus:ring-0 focus:text-white active:bg-stone-800 active:shadow-lg active:text-white transition duration-200 ease-in-out hover:scale-110 active:scale-95;
+    @apply flex h-7 w-7 items-center justify-center rounded-full bg-muted text-foreground uppercase leading-normal shadow-sm transition duration-200 ease-in-out hover:scale-110 hover:bg-accent hover:text-accent-foreground hover:shadow-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background active:scale-95 active:bg-accent;
 }
 
 .kimput div {
     border-radius: 8px;
     padding: 4px;
-    @apply border-border bg-background text-foreground focus:border-indigo-500 focus:ring-indigo-500 focus:ring-offset-background rounded-md shadow-sm;
+    @apply rounded-md border border-border/90 bg-background text-foreground shadow-sm shadow-black/[0.03] focus:border-primary focus:ring-2 focus:ring-ring/30 focus:ring-offset-2 focus:ring-offset-background dark:bg-card/40 dark:shadow-black/15;
+}
+
+/* TipTap placeholder (CMS rich text editor) */
+.cms-rich-text-editor .tiptap p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    color: hsl(var(--muted-foreground));
+    float: left;
+    height: 0;
+    pointer-events: none;
 }

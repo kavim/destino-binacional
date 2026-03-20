@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import ApplicationLogo from '@/Components/ApplicationLogo';
 import { Link, usePage } from '@inertiajs/react';
 import Flags from '@/Components/Flags';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
