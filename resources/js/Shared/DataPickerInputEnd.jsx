@@ -1,22 +1,31 @@
 import DatePicker from 'react-date-picker';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function DataPickerInputEnd({ end, handleOnChange, className }) {
-    const parseDate = (dateStr) => {
-        if (!dateStr || typeof dateStr !== 'string') return null;
-        return new Date(dateStr.replace(/-/g, '\/'));
+    const [value, setValue] = useState(end ? new Date(end) : null);
+
+    const onChange = (date) => {
+        setValue(date);
     };
+
+    useEffect(() => {
+        const formattedDate = value instanceof Date
+            ? value.toLocaleDateString('en-CA') 
+            : value;
+
+        handleOnChange({ target: { name: 'end', value: formattedDate } });
+    }, [value]);
 
     return (
         <div className={className}>
             <DatePicker
-                onChange={handleOnChange}
-                value={parseDate(end)}
+                onChange={onChange}
+                value={value}
                 locale="es-UY"
                 format="dd/MM/yyyy"
                 className="mt-1 block w-full text-stone-800 font-bold kimput"
                 calendarClassName="bg-white border rounded-lg shadow-lg"
-                clearIcon={end ? undefined : null}
+                clearIcon={null}
             />
         </div>
     );
