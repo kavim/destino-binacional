@@ -114,7 +114,7 @@ export default function Form({ handleOnChange, submit, data, errors, onDelete, p
                                 <input type="file" name="icon_image" onChange={onIconImageChange} />
 
                                 <div className="my-5 p-2 border rounded-md">
-                                    <p>Recomendamos descargar los iconos SVG <a href="https://www.svgrepo.com/" className="text-blue-500 underline">de este catálogo</a></p>
+                                    <p>Recomendamos descargar los iconos SVG <a href="https://www.svgrepo.com/" className="text-primary underline underline-offset-2 hover:text-primary/80">de este catálogo</a></p>
                                 </div>
                             </div>
                         </div>

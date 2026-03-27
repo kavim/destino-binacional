@@ -10,7 +10,7 @@ export default function MainNav() {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 
     return (
-        <nav className="sticky top-0 z-40 border-b border-border/80 bg-card/80 shadow-sm shadow-black/5 backdrop-blur-md backdrop-saturate-150 dark:bg-card/85 dark:shadow-black/20">
+        <nav className="sticky top-0 z-40 border-b border-border bg-card/80 shadow-sm shadow-black/5 backdrop-blur-md backdrop-saturate-150 dark:bg-card/85 dark:shadow-black/20">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16">
                     <div className="flex">
@@ -27,7 +27,7 @@ export default function MainNav() {
                                     <i className="fa-solid fa-chevron-down ml-2"></i>
                                 </button>
                                 <div className="absolute left-0 pt-2 w-72 z-50 hidden group-hover:block">
-                                    <ul className="w-full rounded-md border bg-popover p-2 text-popover-foreground shadow-md">
+                                    <ul className="w-full rounded-lg border border-border bg-popover p-2 text-popover-foreground shadow-md dark:shadow-black/35">
                                         {cats.categories.map((cat: any, index: number) => (
                                             <li key={index}>
                                                 <Link href={route('site.categories.show', { CategoryParentIdentifier: cat.slug })}

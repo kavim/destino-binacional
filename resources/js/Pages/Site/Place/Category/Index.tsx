@@ -16,7 +16,7 @@ export default function Index() {
             <CategoryHeader category={category} />
 
             <div className='w-full'>
-                <div className='shadow-sm text-white p-6 bg-cyan-800 text-center'>
+                <div className="border-y border-border bg-primary px-6 py-6 text-center text-primary-foreground shadow-sm">
                     {category.description}
                 </div>
             </div>

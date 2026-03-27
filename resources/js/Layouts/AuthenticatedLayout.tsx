@@ -7,6 +7,7 @@ import { Link, usePage } from '@inertiajs/react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ThemeToggle } from '@/Components/ThemeToggle';
+import { useTheme } from '@/Components/ThemeProvider';
 
 interface Props {
     header?: React.ReactNode;
@@ -16,6 +17,7 @@ interface Props {
 export default function Authenticated({ header, children }: Props) {
 
     const { auth, flash } = usePage().props as any;
+    const { resolvedTheme } = useTheme();
 
     useEffect(() => {
         if (flash.success) {
@@ -30,8 +32,8 @@ export default function Authenticated({ header, children }: Props) {
 
     return (
         <div className="flex min-h-screen flex-col bg-transparent">
-            <ToastContainer autoClose={2500} position="bottom-right" closeOnClick theme="colored" />
-            <nav className="sticky top-0 z-40 shrink-0 border-b border-border/80 bg-card/85 shadow-sm shadow-black/5 backdrop-blur-md backdrop-saturate-150 dark:shadow-black/20">
+            <ToastContainer autoClose={2500} position="bottom-right" closeOnClick theme={resolvedTheme} />
+            <nav className="sticky top-0 z-40 shrink-0 border-b border-border bg-card/85 shadow-sm shadow-black/5 backdrop-blur-md backdrop-saturate-150 dark:shadow-black/20">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
                         <div className="flex">
@@ -190,7 +192,7 @@ export default function Authenticated({ header, children }: Props) {
             </nav>
 
             {header && (
-                <header className="shrink-0 border-b border-border/80 bg-card/90 shadow-sm shadow-black/[0.04] backdrop-blur-sm dark:bg-card/80 dark:shadow-black/15">
+                <header className="shrink-0 border-b border-border bg-card/90 shadow-sm shadow-black/[0.04] backdrop-blur-sm dark:bg-card/85 dark:shadow-black/20">
                     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                         {header}
                     </div>

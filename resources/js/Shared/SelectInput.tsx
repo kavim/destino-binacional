@@ -19,7 +19,7 @@ export default ({
         id={name}
         name={name}
         {...props}
-        className={`mt-1 form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-foreground bg-background bg-clip-padding bg-no-repeat border border-solid border-border rounded transition ease-in-out m-0 focus:text-foreground focus:bg-background focus:border-indigo-100 focus:outline-none ${errors.length ? 'error' : ''}`}
+        className={`form-select m-0 mt-1 block w-full appearance-none rounded-md border border-solid border-input bg-background bg-clip-padding bg-no-repeat px-3 py-1.5 text-base font-normal text-foreground transition ease-in-out focus:border-primary focus:bg-background focus:text-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 focus:ring-offset-2 focus:ring-offset-background dark:border-input ${errors.length ? 'error' : ''}`}
       >
         {children}
       </select>

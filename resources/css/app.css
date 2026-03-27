@@ -23,10 +23,10 @@
     --destructive-foreground: 0 0% 98%;
     --success: 142 38% 38%;
     --success-foreground: 0 0% 98%;
-    --border: 0 0% 87%;
-    --input: 0 0% 89%;
+    --border: 0 0% 88%;
+    --input: 0 0% 90%;
     --ring: 234 48% 58%;
-    --radius: 0.5rem;
+    --radius: 0.625rem;
     --footer: 0 0% 16%;
     --footer-foreground: 0 0% 98%;
     --footer-muted: 0 0% 62%;
@@ -53,8 +53,8 @@
     --destructive-foreground: 0 0% 98%;
     --success: 142 32% 42%;
     --success-foreground: 0 0% 98%;
-    --border: 240 3% 17%;
-    --input: 240 3% 15%;
+    --border: 240 4% 22%;
+    --input: 240 3% 18%;
     --ring: 234 42% 68%;
     --footer: 240 4% 5%;
     --footer-foreground: 0 0% 96%;
@@ -70,6 +70,11 @@
 
   html {
     @apply bg-background;
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
   }
 
   body {
@@ -81,17 +86,23 @@
       ),
       radial-gradient(
         ellipse 55% 45% at 100% 0%,
-        hsl(0 0% 45% / 0.04),
+        hsl(var(--primary) / 0.035),
         transparent 52%
       );
     background-attachment: fixed;
   }
 
   .dark body {
-    background-image: radial-gradient(
+    background-image:
+      radial-gradient(
         ellipse 100% 65% at 50% -30%,
-        hsl(var(--primary) / 0.055),
+        hsl(var(--primary) / 0.06),
         transparent 52%
+      ),
+      radial-gradient(
+        ellipse 50% 40% at 100% 0%,
+        hsl(240 5% 40% / 0.06),
+        transparent 55%
       );
   }
 }
@@ -148,7 +159,17 @@
 }
 
 .degrade {
-    background: linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.8) 100%);
+    background: linear-gradient(
+        rgba(0, 0, 0, 0.12) 0%,
+        rgba(0, 0, 0, 0.72) 100%
+    );
+}
+
+.dark .degrade {
+    background: linear-gradient(
+        rgba(0, 0, 0, 0.35) 0%,
+        rgba(0, 0, 0, 0.88) 100%
+    );
 }
 
 .header-filters {
@@ -162,7 +183,7 @@
 .kimput div {
     border-radius: 8px;
     padding: 4px;
-    @apply rounded-md border border-border/90 bg-background text-foreground shadow-sm shadow-black/[0.03] focus:border-primary focus:ring-2 focus:ring-ring/30 focus:ring-offset-2 focus:ring-offset-background dark:bg-card/40 dark:shadow-black/15;
+    @apply rounded-md border border-border bg-background text-foreground shadow-sm shadow-black/[0.04] focus:border-primary focus:ring-2 focus:ring-ring/35 focus:ring-offset-2 focus:ring-offset-background dark:border-border dark:bg-card/50 dark:shadow-black/20;
 }
 
 /* TipTap placeholder (CMS rich text editor) */

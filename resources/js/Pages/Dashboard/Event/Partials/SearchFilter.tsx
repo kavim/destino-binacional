@@ -53,16 +53,16 @@ export default () => {
 
     return (
         <div className="flex items-center w-full max-w-md mr-4">
-            <div className="relative flex w-full bg-card rounded shadow">
+            <div className="relative flex w-full overflow-hidden rounded-xl border border-border bg-card shadow-sm dark:shadow-black/20">
                 <div
                     style={{ top: "100%" }}
                     className={`absolute ${opened ? "" : "hidden"}`}
                 >
                     <div
                         onClick={() => setOpened(false)}
-                        className="fixed inset-0 z-20 bg-black opacity-25"
+                        className="fixed inset-0 z-20 bg-black/40 dark:bg-black/55"
                     ></div>
-                    <div className="relative z-30 w-64 px-4 py-6 mt-2 bg-card rounded shadow-lg">
+                    <div className="relative z-30 mt-2 w-64 rounded-xl border border-border bg-popover px-4 py-6 text-popover-foreground shadow-lg dark:shadow-black/35">
                         <select
                             className="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm w-36"
                             value={values.category_id}
@@ -100,7 +100,7 @@ export default () => {
                 </div>
                 <button
                     onClick={() => setOpened(true)}
-                    className="px-4 border-r rounded-l md:px-6 hover:bg-muted focus:outline-none focus:border-background focus:ring-2 focus:ring-indigo-400 focus:z-10"
+                    className="z-10 border-r border-border rounded-l px-4 hover:bg-muted focus:z-10 focus:border-border focus:outline-none focus:ring-2 focus:ring-ring md:px-6"
                 >
                     <div className="flex items-baseline">
                         <span className="hidden text-foreground md:inline">
@@ -116,7 +116,7 @@ export default () => {
                     </div>
                 </button>
                 <input
-                    className="relative w-full px-6 py-3 rounded-r focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                    className="relative w-full rounded-r border-0 bg-background px-6 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-0"
                     autoComplete="off"
                     type="text"
                     name="search"
@@ -127,7 +127,7 @@ export default () => {
             </div>
             <button
                 onClick={reset}
-                className="ml-3 text-sm text-muted-foreground hover:text-foreground focus:text-indigo-700 focus:outline-none"
+                className="ml-3 text-sm text-muted-foreground hover:text-foreground focus:text-primary focus:outline-none"
                 type="button"
             >
                 Reset

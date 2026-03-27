@@ -22,7 +22,7 @@ export default function Events() {
     }
 
     return (
-        <div className='rounded-xl border border-border/70 bg-card/95 py-3 shadow-md shadow-black/[0.06] ring-1 ring-black/[0.03] dark:border-border dark:shadow-black/25 dark:ring-white/[0.05] md:mx-4 md:p-2 sm:p-0'>
+        <div className="rounded-xl border border-border bg-card/95 py-3 shadow-md shadow-black/[0.06] dark:bg-card dark:shadow-black/25 md:mx-4 md:p-2 sm:p-0">
             <div className="text-3xl md:text-4xl font-extrabold text-center">
                 <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
                     Próximos eventos
@@ -38,9 +38,9 @@ export default function Events() {
                                     label={index}
                                     onClick={() => goToDate(group)}
                                     className="m-2">
-                                    <div className="w-32 md:w-24 flex-none text-center rounded-lg border border-border shadow-sm active:opacity-90">
-                                        <div className="flex flex-col overflow-hidden text-center">
-                                            <div className="bg-red-800 rounded-t-lg text-white py-1">
+                                    <div className="flex w-32 flex-none cursor-pointer rounded-xl border border-border bg-card text-center shadow-sm active:opacity-90 md:w-24">
+                                        <div className="flex w-full flex-col overflow-hidden text-center">
+                                            <div className="rounded-t-xl bg-primary py-1 text-sm font-medium uppercase tracking-wide text-primary-foreground">
                                                 {dayjs(group).format('MMM')}
                                             </div>
                                             <div className="pt-1 border-l border-r border-border bg-card">
@@ -48,7 +48,7 @@ export default function Events() {
                                                     {dayjs(group).format('DD')}
                                                 </span>
                                             </div>
-                                            <div className="border-l border-r border-b rounded-b-lg text-center border-border bg-card -pt-2 mb-1">
+                                            <div className="mb-1 rounded-b-xl border-x border-b border-border bg-card pb-1 pt-0 text-center text-muted-foreground">
                                                 <span className="text-sm">
                                                     {dayjs(group).format('dddd')}
                                                 </span>

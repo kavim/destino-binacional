@@ -16,7 +16,7 @@ createInertiaApp({
     setup({ el, App, props }) {
         const root = createRoot(el);
         root.render(
-            <ThemeProvider defaultTheme="light" storageKey="destino-ui-theme">
+            <ThemeProvider defaultTheme="system" storageKey="destino-ui-theme">
                 <App {...props} />
             </ThemeProvider>
         );

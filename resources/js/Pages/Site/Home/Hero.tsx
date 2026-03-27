@@ -4,7 +4,7 @@ import { trans } from '@/utils';
 export default function Hero() {
     return (
         <>
-            <div className='flex flex-col md:flex-row justify-center items-center bg-card rounded-lg md:m-4'>
+            <div className="mx-0 mt-5 flex flex-col items-center justify-center rounded-xl border border-border bg-card shadow-sm dark:shadow-black/20 md:mx-4 md:flex-row">
                 <div className='flex justify-between'>
                     <LottiePlayer></LottiePlayer>
                 </div>

@@ -6,7 +6,7 @@ export function EventCard({ event, index }) {
     return (
         <>
             <Link key={index} href={route('site.events.show', event.slug)}>
-                <div className='min-w-[260px] max-w-[260px] min-h-[300px] flex flex-col mr-5 cursor-pointer hover:scale-105 ease-in-out duration-300 rounded-lg shadow-md bg-card'>
+                <div className="mr-5 flex min-h-[300px] min-w-[260px] max-w-[260px] cursor-pointer flex-col rounded-xl border border-border bg-card shadow-md transition-transform duration-300 ease-in-out hover:scale-[1.02] hover:shadow-lg dark:shadow-black/25 dark:hover:shadow-black/35">
                     <div>
                         <figure>
                             <img src={event.image} alt={event.image} className='w-full rounded-t-lg aspect-square' loading='lazy' />

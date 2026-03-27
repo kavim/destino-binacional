@@ -11,7 +11,7 @@ export default function SiteLayout({ header, children }: Props) {
         <div className="relative flex min-h-screen flex-col bg-transparent">
             <MainNav />
             {header && (
-                <header className="border-b border-border/80 bg-card/90 shadow-sm shadow-black/[0.04] backdrop-blur-sm dark:bg-card/80 dark:shadow-black/15">
+                <header className="border-b border-border bg-card/90 shadow-sm shadow-black/[0.04] backdrop-blur-sm dark:bg-card/85 dark:shadow-black/20">
                     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                         {header}
                     </div>

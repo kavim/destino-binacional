@@ -27,7 +27,7 @@ function ImageUpload({ onImageSelected }) {
                 style={{ display: "none" }}
             />
 
-            <button type='button' onClick={onChooseImg} className="box-border relative z-30 inline-flex items-center justify-center w-auto px-8 py-2 overflow-hidden font-semibold text-white transition-all duration-300 bg-indigo-500 rounded-md cursor-pointer group ring-offset-2 ring-1 ring-indigo-300 ring-offset-indigo-200 hover:ring-offset-indigo-300 ease focus:outline-none">
+            <button type="button" onClick={onChooseImg} className="group relative z-30 box-border inline-flex w-auto cursor-pointer items-center justify-center overflow-hidden rounded-md bg-primary px-8 py-2 font-semibold text-primary-foreground shadow-sm ring-1 ring-primary/35 ring-offset-2 ring-offset-background transition-all duration-300 ease-in-out hover:bg-primary/90 hover:ring-primary/50 focus:outline-none focus:ring-2 focus:ring-ring dark:shadow-black/25">
                 <span className="absolute bottom-0 right-0 w-8 h-20 -mb-8 -mr-5 transition-all duration-300 ease-out transform rotate-45 translate-x-1 bg-foreground/10 group-hover:translate-x-0"></span>
                 <span className="absolute top-0 left-0 w-20 h-8 -mt-1 -ml-12 transition-all duration-300 ease-out transform -rotate-45 -translate-x-1 bg-foreground/10 group-hover:translate-x-0"></span>
                 <span className="relative z-20 flex items-center text-sm">

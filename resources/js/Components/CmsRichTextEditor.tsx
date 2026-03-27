@@ -110,7 +110,7 @@ export default function CmsRichTextEditor({
   return (
     <div
       className={cn(
-        "cms-rich-text-editor overflow-hidden rounded-md border border-input/90 bg-background shadow-sm shadow-black/[0.04] ring-1 ring-black/[0.03] dark:border-input dark:shadow-black/20 dark:ring-white/[0.05]",
+        "cms-rich-text-editor overflow-hidden rounded-xl border border-input bg-background shadow-sm shadow-black/[0.05] dark:border-input dark:shadow-black/25",
         "ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
         invalid && "border-destructive focus-within:ring-destructive",
         className
@@ -118,7 +118,7 @@ export default function CmsRichTextEditor({
     >
       {editor && (
         <div
-          className="flex flex-wrap items-center gap-0.5 border-b border-border/80 bg-gradient-to-b from-muted/70 to-muted/50 px-1.5 py-1 dark:from-muted/50 dark:to-muted/30"
+          className="flex flex-wrap items-center gap-0.5 border-b border-border bg-gradient-to-b from-muted/70 to-muted/50 px-1.5 py-1 dark:from-muted/50 dark:to-muted/35"
           role="toolbar"
           aria-label="Formatação"
         >

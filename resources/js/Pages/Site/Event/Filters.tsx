@@ -68,11 +68,11 @@ export default function Filters({ filters }) {
     };
 
     return (
-        <div className='flex flex-col justify-center rounded-lg border border-border bg-card p-4 shadow-sm'>
+        <div className="flex flex-col justify-center rounded-xl border border-border bg-card p-4 shadow-sm dark:shadow-black/20">
             <div className='w-full flex justify-end bg-card'>
                 <button
                     type="button"
-                    className='inline-flex items-center px-4 py-2 bg-primary border border-transparent rounded-md text-xs text-primary-foreground uppercase tracking-widest hover:bg-primary/90 focus:bg-primary/90 active:bg-primary/80 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-background transition ease-in-out duration-150'
+                    className="inline-flex items-center rounded-md border border-transparent bg-primary px-4 py-2 text-xs font-medium uppercase tracking-widest text-primary-foreground transition duration-150 ease-in-out hover:bg-primary/90 focus:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background active:bg-primary/80"
                     onClick={toggleFilters}
                 >
                     <i className={`fa-solid ${showFilters ? 'fa-xmark' : 'fa-filter'} mr-2`}></i>
@@ -115,7 +115,7 @@ export default function Filters({ filters }) {
 
                         <div className='flex justify-between mt-4 mb-6'>
                             <a
-                                className='border border-border inline-flex items-center px-4 py-2 rounded-md text-xs uppercase tracking-widest'
+                                className="inline-flex items-center rounded-md border border-border bg-background px-4 py-2 text-xs uppercase tracking-widest text-foreground transition-colors hover:bg-muted/60"
                                 href={route('site.events.index')}
                                 onClick={limpar}
                             >

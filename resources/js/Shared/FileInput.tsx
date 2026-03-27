@@ -4,7 +4,7 @@ import { filesize } from './utils';
 const Button = ({ text, onClick }) => (
   <button
     type="button"
-    className="px-4 py-1 text-xs font-medium text-white bg-gray-600 rounded-sm focus:outline-none hover:bg-gray-700"
+    className="rounded-md border border-border bg-secondary px-3 py-1.5 text-xs font-medium text-secondary-foreground shadow-sm transition-colors hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background dark:shadow-black/20"
     onClick={onClick}
   >
     {text}

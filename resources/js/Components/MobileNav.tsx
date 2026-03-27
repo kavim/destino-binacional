@@ -11,7 +11,7 @@ export default function MobileNav() {
         <div className='overflow-x-hidden'>
             <ResponsiveNavLink href={route('site.events.index')}>
                 <label tabIndex={0} className="inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground">
-                    <div className='p-1 rounded-full bg-indigo-400'>
+                    <div className="rounded-full bg-primary/85 p-1">
                         <img src='/images/icons/eventos.svg' alt='e' className="w-6 h-6 rounded-full" />
                     </div>
                     <span className='ml-2 font-semibold text-lg'>Eventos</span>

@@ -11,7 +11,7 @@ function BarChart({ data, maxValue, labelKey = 'date', valueKey = 'total', value
                     <span className="w-24 shrink-0 text-muted-foreground">{label}</span>
                     <div className="flex-1 h-6 bg-muted rounded overflow-hidden">
                         <div
-                            className="h-full bg-indigo-500 dark:bg-indigo-600 rounded"
+                            className="h-full rounded bg-primary dark:bg-primary/90"
                             style={{ width: `${Math.min(100, (Number(value) / max) * 100)}%` }}
                         />
                     </div>
@@ -42,8 +42,8 @@ export default function ObservabilityIndex() {
                             <button
                                 key={d}
                                 onClick={() => changeDays(d)}
-                                className={`px-3 py-1 rounded text-sm ${days === d
-                                    ? 'bg-indigo-600 text-white'
+                                className={`rounded-md px-3 py-1 text-sm ${days === d
+                                    ? 'bg-primary text-primary-foreground shadow-sm'
                                     : 'bg-muted text-muted-foreground hover:bg-muted/80'
                                     }`}
                             >
@@ -54,7 +54,7 @@ export default function ObservabilityIndex() {
                             href={log_viewer_url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="ml-2 px-3 py-1 rounded text-sm bg-amber-600 text-white hover:bg-amber-700"
+                            className="ml-2 rounded-md border border-amber-600/50 bg-amber-600 px-3 py-1 text-sm text-white shadow-sm hover:bg-amber-700 dark:border-amber-500/40 dark:bg-amber-700 dark:hover:bg-amber-600"
                         >
                             Ver logs (Laravel)
                         </a>
@@ -65,7 +65,7 @@ export default function ObservabilityIndex() {
             <Head title="Observabilidade" />
             <div className="py-6 max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
                 {/* Tráfego */}
-                <section className="bg-card shadow rounded-lg overflow-hidden">
+                <section className="overflow-hidden rounded-xl border border-border bg-card shadow-sm dark:shadow-black/20">
                     <div className="px-6 py-4 border-b border-border">
                         <h3 className="text-lg font-medium text-foreground">Tráfego</h3>
                     </div>
@@ -190,7 +190,7 @@ export default function ObservabilityIndex() {
                 </section>
 
                 {/* Performance */}
-                <section className="bg-card shadow rounded-lg overflow-hidden">
+                <section className="overflow-hidden rounded-xl border border-border bg-card shadow-sm dark:shadow-black/20">
                     <div className="px-6 py-4 border-b border-border">
                         <h3 className="text-lg font-medium text-foreground">Performance</h3>
                     </div>
@@ -250,7 +250,7 @@ export default function ObservabilityIndex() {
                 </section>
 
                 {/* Erros */}
-                <section className="bg-card shadow rounded-lg overflow-hidden">
+                <section className="overflow-hidden rounded-xl border border-border bg-card shadow-sm dark:shadow-black/20">
                     <div className="px-6 py-4 border-b border-border">
                         <h3 className="text-lg font-medium text-foreground">Erros</h3>
                     </div>
