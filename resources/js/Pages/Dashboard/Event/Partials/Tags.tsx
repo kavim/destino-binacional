@@ -8,7 +8,10 @@ import InputError from '@/Components/InputError';
 
 export default function Tags({ handleCheck }) {
 
-    const { parent_tags, errors } = usePage().props;
+    const { parent_tags, errors: fieldErrors } = usePage().props as unknown as {
+        parent_tags: Array<{ id: number; name: string; open?: boolean }>;
+        errors: Record<string, string>;
+    };
     const [controls, setControls] = useState(parent_tags);
 
     const toggleControl = (id) => {
@@ -53,7 +56,7 @@ export default function Tags({ handleCheck }) {
                                 <MultipleCheckbox tagId={parent_tags[index]['id']} handleCheck={handleCheck} />
                             </div>
                         </Collapsible>
-                        <InputError message={errors.tag_ids} className="mt-2" />
+                        <InputError message={fieldErrors?.tag_ids} className="mt-2" />
                     </div>
                 );
             })}

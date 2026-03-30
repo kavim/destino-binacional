@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Tour;
 use App\Services\TourService;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -14,9 +13,8 @@ class TourController extends Controller
 {
     public function __construct(
         protected TourService $tourService,
-    )
-    {
-        $this->tourService = new TourService();
+    ) {
+        $this->tourService = new TourService;
     }
 
     public function index(): \Inertia\Response|\Inertia\ResponseFactory
@@ -24,7 +22,7 @@ class TourController extends Controller
         $hasAnyFilter = request()->has('search') || request()->has('sub_category_id') || request()->has('category_id');
 
         $tours = Tour::when(request('search'), function ($query, $search) {
-            $query->where('slug', 'LIKE', '%' . Str::slug($search) . '%');
+            $query->where('slug', 'LIKE', '%'.Str::slug($search).'%');
         })
             ->when(request('sub_category_id'), function ($query, $sub_category_id) {
                 return $query->whereHas('categories', function ($query) use ($sub_category_id) {

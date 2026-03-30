@@ -1,8 +1,20 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 
-function BarChart({ data, maxValue, labelKey = 'date', valueKey = 'total', valueLabel }) {
-    const max = maxValue || Math.max(...Object.values(data).map(Number), 1);
+function BarChart({
+    data,
+    maxValue,
+    labelKey = 'date',
+    valueKey = 'total',
+    valueLabel,
+}: {
+    data: Record<string, unknown>;
+    maxValue?: number;
+    labelKey?: string;
+    valueKey?: string;
+    valueLabel?: (v: unknown) => string;
+}) {
+    const max = maxValue ?? Math.max(...Object.values(data).map(Number), 1);
     const entries = Object.entries(data).sort((a, b) => a[0].localeCompare(b[0]));
     return (
         <div className="space-y-1">
@@ -15,15 +27,42 @@ function BarChart({ data, maxValue, labelKey = 'date', valueKey = 'total', value
                             style={{ width: `${Math.min(100, (Number(value) / max) * 100)}%` }}
                         />
                     </div>
-                    <span className="w-12 text-right font-medium">{valueLabel ? valueLabel(value) : value}</span>
+                    <span className="w-12 text-right font-medium">
+                        {String(valueLabel ? valueLabel(value) : value)}
+                    </span>
                 </div>
             ))}
         </div>
     );
 }
 
+type ObservabilityPageProps = {
+    traffic: {
+        total_views: number;
+        unique_visitors_estimate: number;
+        views_by_day: Record<string, number>;
+        top_pages: Array<{ path: string; views: number }>;
+        visitors_by_country?: Array<{ country?: string; country_code?: string; total: number }>;
+        recent_visits?: Array<Record<string, any>>;
+    };
+    /** Erros agregados da API de observabilidade (não confundir com errors de validação Inertia) */
+    errors: {
+        by_source: Array<{ source: string; total: number }>;
+        recent: Array<Record<string, any>>;
+    };
+    performance: {
+        avg_duration_ms: number | null;
+        avg_memory_mb: number | null;
+        by_day: Record<string, number>;
+        slowest_routes: Array<{ path: string; route_name?: string; avg_ms: number; max_ms: number; requests: number }>;
+    };
+    days: number;
+    log_viewer_url: string;
+};
+
 export default function ObservabilityIndex() {
-    const { traffic, errors, performance, days, log_viewer_url } = usePage().props;
+    const { traffic, errors: observabilityErrors, performance, days, log_viewer_url } = usePage()
+        .props as unknown as ObservabilityPageProps;
 
     const changeDays = (d) => {
         router.get(route('observability.index'), { days: d }, { preserveState: true });
@@ -54,7 +93,7 @@ export default function ObservabilityIndex() {
                             href={log_viewer_url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="ml-2 rounded-md border border-amber-600/50 bg-amber-600 px-3 py-1 text-sm text-white shadow-sm hover:bg-amber-700 dark:border-amber-500/40 dark:bg-amber-700 dark:hover:bg-amber-600"
+                            className="ml-2 rounded-md border border-success/40 bg-success px-3 py-1 text-sm text-success-foreground shadow-sm hover:opacity-90 dark:border-success/35"
                         >
                             Ver logs (Laravel)
                         </a>
@@ -166,7 +205,7 @@ export default function ObservabilityIndex() {
                                                     </td>
                                                     <td className="px-4 py-2 text-sm">
                                                         {row.user ? (
-                                                            <span className="inline-flex px-2 py-0.5 text-xs rounded bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300" title={row.user.email}>
+                                                            <span className="inline-flex px-2 py-0.5 text-xs rounded bg-success/15 text-success dark:bg-success/25 dark:text-success" title={row.user.email}>
                                                                 {row.user.name}
                                                             </span>
                                                         ) : (
@@ -255,9 +294,9 @@ export default function ObservabilityIndex() {
                         <h3 className="text-lg font-medium text-foreground">Erros</h3>
                     </div>
                     <div className="p-6">
-                        {errors.by_source.length > 0 && (
+                        {observabilityErrors.by_source.length > 0 && (
                             <div className="flex gap-4 mb-6">
-                                {errors.by_source.map((row) => (
+                                {observabilityErrors.by_source.map((row) => (
                                     <div key={row.source} className="px-4 py-2 bg-red-50 dark:bg-red-900/20 rounded-lg">
                                         <span className="text-sm text-muted-foreground">{row.source}</span>
                                         <span className="ml-2 font-semibold text-red-700 dark:text-red-300">{row.total}</span>
@@ -277,18 +316,18 @@ export default function ObservabilityIndex() {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-border">
-                                    {errors.recent.length === 0 ? (
+                                    {observabilityErrors.recent.length === 0 ? (
                                         <tr>
                                             <td colSpan={4} className="px-4 py-4 text-center text-muted-foreground">Nenhum erro registrado</td>
                                         </tr>
                                     ) : (
-                                        errors.recent.map((row) => (
+                                        observabilityErrors.recent.map((row) => (
                                             <tr key={row.id}>
                                                 <td className="px-4 py-2 text-sm text-muted-foreground whitespace-nowrap">
                                                     {new Date(row.created_at).toLocaleString('pt-BR')}
                                                 </td>
                                                 <td className="px-4 py-2">
-                                                    <span className={`inline-flex px-2 py-0.5 text-xs rounded ${row.source === 'frontend' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300' : 'bg-muted text-foreground'}`}>
+                                                    <span className={`inline-flex px-2 py-0.5 text-xs rounded ${row.source === 'frontend' ? 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary' : 'bg-muted text-foreground'}`}>
                                                         {row.source}
                                                     </span>
                                                 </td>

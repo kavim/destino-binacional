@@ -17,9 +17,8 @@ class PlaceService
     public string $error_message = '';
 
     public function __construct(
-        protected PlaceRepository $placeRepository = new PlaceRepository(),
-    ) {
-    }
+        protected PlaceRepository $placeRepository = new PlaceRepository,
+    ) {}
 
     public function index()
     {

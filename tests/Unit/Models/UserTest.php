@@ -9,7 +9,7 @@ class UserTest extends TestCase
 {
     public function test_fillable_attributes(): void
     {
-        $user = new User();
+        $user = new User;
 
         $this->assertContains('name', $user->getFillable());
         $this->assertContains('email', $user->getFillable());
@@ -18,7 +18,7 @@ class UserTest extends TestCase
 
     public function test_hidden_attributes_include_password_and_token(): void
     {
-        $user = new User();
+        $user = new User;
 
         $this->assertContains('password', $user->getHidden());
         $this->assertContains('remember_token', $user->getHidden());
@@ -26,7 +26,7 @@ class UserTest extends TestCase
 
     public function test_email_verified_at_is_cast_to_datetime(): void
     {
-        $user = new User();
+        $user = new User;
         $casts = $user->getCasts();
 
         $this->assertArrayHasKey('email_verified_at', $casts);

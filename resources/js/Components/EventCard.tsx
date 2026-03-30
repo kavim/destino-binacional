@@ -1,6 +1,8 @@
 import { Link, usePage } from '@inertiajs/react';
 import dayjs from 'dayjs';
-import { es } from 'dayjs/locale/es';
+import 'dayjs/locale/es';
+
+dayjs.locale('es');
 
 export function EventCard({ event, index }) {
     return (

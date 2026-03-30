@@ -17,9 +17,10 @@ export default function Create() {
         google_maps_src: '',
         order: '',
         category_ids: [],
+        image: null as string | null,
     });
 
-    const onCorte = (image) => {
+    const onCorte = (image: string) => {
         setData('featured_image', image);
         setData('image', null);
     }

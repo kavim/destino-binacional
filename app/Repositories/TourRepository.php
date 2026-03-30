@@ -12,7 +12,7 @@ class TourRepository
             ->paginate();
     }
 
-    public function getByCategoryParentID(int $parent_id = null)
+    public function getByCategoryParentID(?int $parent_id = null)
     {
         return Tour::whereHas('categories', function ($query) use ($parent_id) {
             return $query->whereIn('parent_id', [$parent_id]);
@@ -30,7 +30,7 @@ class TourRepository
     public function filtered($start = null, $end = null, $category_id = null)
     {
         if (is_null($start)) {
-//            $start = now();
+            //            $start = now();
         }
 
         return Tour::orderBy('start')

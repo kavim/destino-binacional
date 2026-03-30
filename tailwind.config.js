@@ -64,6 +64,13 @@ module.exports = {
                     muted: 'hsl(var(--footer-muted))',
                     border: 'hsl(var(--footer-border))',
                 },
+                brand: {
+                    blue: '#355bc8',
+                    green: '#0D9C4A',
+                    dark: '#292929',
+                    muted: '#F3F3F3',
+                    white: '#FFFFFF',
+                },
             },
             borderRadius: {
                 lg: 'var(--radius)',

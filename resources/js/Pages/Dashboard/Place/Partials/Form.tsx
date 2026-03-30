@@ -11,13 +11,30 @@ import Categories from './Categories';
 import DeleteButton from '@/Shared/DeleteButton';
 import { Card, CardContent } from '@/Components/ui/card';
 
-export default function Form({ handleOnChange, submit, data, errors, processing, onDelete = null }) {
+export default function Form({
+    handleOnChange,
+    submit,
+    data,
+    errors,
+    processing,
+    onDelete = null,
+    onCorte: onCorteFromParent,
+}: {
+    handleOnChange: (e: { target: { name: string; value: unknown; type?: string; checked?: boolean } }) => void;
+    submit: (e: React.FormEvent) => void;
+    data: any;
+    errors: any;
+    processing: boolean;
+    onDelete?: (() => void) | null;
+    onCorte?: (image: string) => void;
+}) {
+    const { cities, place_types } = usePage().props as unknown as { cities: unknown; place_types: unknown };
 
-    const { cities, place_types } = usePage().props;
-
-    const onCorte = (image) => {
-        handleOnChange({ target: { name: 'featured_image', value: image } });
-    }
+    const onCorte =
+        onCorteFromParent ??
+        ((image: string) => {
+            handleOnChange({ target: { name: 'featured_image', value: image } });
+        });
 
     const handleCheck = (event) => {
         let updatedList = [...data.category_ids];
@@ -132,7 +149,9 @@ export default function Form({ handleOnChange, submit, data, errors, processing,
                     onChange={handleOnChange}
                     className="mt-1 block w-full"
                 >
-                    <option defaultValue hidden>Elige una Ciudad</option>
+                    <option value="" disabled hidden>
+                        Elige una Ciudad
+                    </option>
                     {Object.keys(cities).map((key, i) => (
                         <option key={i} value={cities[key].id}>
                             {cities[key].name}
@@ -150,7 +169,9 @@ export default function Form({ handleOnChange, submit, data, errors, processing,
                     onChange={handleOnChange}
                     className="mt-1 block w-full"
                 >
-                    <option defaultValue hidden>Elija una opción</option>
+                    <option value="" disabled hidden>
+                        Elija una opción
+                    </option>
                     {Object.keys(place_types).map((key, i) => (
                         <option key={i} value={place_types[key].id}>
                             {place_types[key].name}

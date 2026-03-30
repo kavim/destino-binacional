@@ -10,9 +10,8 @@ use Inertia\Inertia;
 class TourController
 {
     public function __construct(
-        protected TourService $tourService = new TourService(),
-    ) {
-    }
+        protected TourService $tourService = new TourService,
+    ) {}
 
     public function index(Request $request): \Inertia\Response
     {

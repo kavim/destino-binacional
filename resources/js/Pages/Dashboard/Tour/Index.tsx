@@ -31,7 +31,7 @@ type TourRow = {
 };
 
 export default function Index() {
-  const { tours } = usePage().props as {
+  const { tours } = usePage().props as unknown as {
     tours: { data: TourRow[]; links: unknown[] };
   };
   const { data, links } = tours;

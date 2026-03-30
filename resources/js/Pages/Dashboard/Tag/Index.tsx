@@ -3,7 +3,10 @@ import { Head, Link, usePage } from '@inertiajs/react';
 
 export default function Index() {
 
-    const { parent_tags, grouped_tags } = usePage().props;
+    const { parent_tags, grouped_tags } = usePage().props as unknown as {
+        parent_tags: Array<{ id: number; name: string }>;
+        grouped_tags: Record<number, Array<{ name: string }>>;
+    };
 
     return (
         <AuthenticatedLayout header={

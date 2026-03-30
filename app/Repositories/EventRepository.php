@@ -16,19 +16,19 @@ class EventRepository
     public function groupedByStartDateLimited(): Collection
     {
         return Event::where('start', '>=', now())
-        ->orderBy('start')
-        ->limit(50)
-        ->get([
-            'title',
-            'slug',
-            'start',
-            'end',
-            'featured_image',
-        ])
-        ->groupBy('start')
-        ->map(function ($event) {
-            return $event->take(8);
-        });
+            ->orderBy('start')
+            ->limit(50)
+            ->get([
+                'title',
+                'slug',
+                'start',
+                'end',
+                'featured_image',
+            ])
+            ->groupBy('start')
+            ->map(function ($event) {
+                return $event->take(8);
+            });
     }
 
     public function filtered(?string $start = null, ?string $end = null, ?int $category_id = null): Collection
@@ -38,17 +38,17 @@ class EventRepository
         }
 
         return Event::orderBy('start')
-        ->when($start, function ($query, $start) {
-            $query->whereDate('end', '>=', $start);
-        })
-        ->when($end, function ($query, $end) {
-            $query->whereDate('start', '<=', $end);
-        })
-        ->when($category_id, function ($query, $category_id) {
-            $query->where('category_id', $category_id);
-        })
-        ->limit(250)
-        ->get();
+            ->when($start, function ($query, $start) {
+                $query->whereDate('end', '>=', $start);
+            })
+            ->when($end, function ($query, $end) {
+                $query->whereDate('start', '<=', $end);
+            })
+            ->when($category_id, function ($query, $category_id) {
+                $query->where('category_id', $category_id);
+            })
+            ->limit(250)
+            ->get();
     }
 
     public function getBySlug(string $slug): Event

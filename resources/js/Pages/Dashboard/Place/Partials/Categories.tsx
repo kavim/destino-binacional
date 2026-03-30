@@ -8,7 +8,10 @@ import MultipleCheckbox from './MultipleCheckbox';
 
 export default function Categories({ handleCheck }) {
 
-    const { parent_categories, errors } = usePage().props;
+    const { parent_categories, errors: fieldErrors } = usePage().props as unknown as {
+        parent_categories: Array<{ id: number; name: string; color: string; icon: string; open?: boolean }>;
+        errors: Record<string, string>;
+    };
     const [controls, setControls] = useState(parent_categories);
 
     const toggleControl = (id) => {
@@ -61,7 +64,7 @@ export default function Categories({ handleCheck }) {
                                     <MultipleCheckbox catId={cat.id} handleCheck={handleCheck} />
                                 </div>
                             </Collapsible>
-                            <InputError message={errors.tag_ids} className="mt-2" />
+                            <InputError message={fieldErrors?.category_ids} className="mt-2" />
                         </div>
                     </>
                 )

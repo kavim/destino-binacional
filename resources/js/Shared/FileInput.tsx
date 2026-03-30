@@ -12,7 +12,7 @@ const Button = ({ text, onClick }) => (
 );
 
 export default function FileInput({ className, name, label, accept, errors = [], onChange }) {
-  const fileInput = useRef();
+  const fileInput = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState(null);
 
   function browse() {

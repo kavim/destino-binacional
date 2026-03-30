@@ -9,7 +9,13 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import { trans } from '@/utils';
 import Filters from './Filters';
 
-export default function Index({ filters, events, category }) {
+export default function Index({
+    filters,
+    category,
+}: {
+    filters?: unknown;
+    category?: unknown;
+}) {
     return (
         <SiteLayout>
             <Head title='Eventos' />
@@ -19,7 +25,7 @@ export default function Index({ filters, events, category }) {
             <Filters filters={filters} />
 
             <div>
-                <EventList events={events}></EventList>
+                <EventList />
             </div>
         </SiteLayout>
     );

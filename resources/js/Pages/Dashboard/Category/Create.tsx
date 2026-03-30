@@ -4,7 +4,10 @@ import { Card, CardContent } from '@/Components/ui/card';
 import Form from './Partials/Form';
 
 export default function Create() {
-    const { auth, parent } = usePage().props;
+    const { auth, parent } = usePage().props as unknown as {
+        auth: unknown;
+        parent: { id: number; name: string; color: string; icon: string } | null;
+    };
 
     const generateRandomColor = () => {
         const letters = '0123456789ABCDEF';

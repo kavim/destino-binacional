@@ -10,10 +10,9 @@ use Inertia\Inertia;
 class PlaceController extends Controller
 {
     public function __construct(
-        protected PlaceService $placeService = new PlaceService(),
-        protected CategoryService $categoryService = new CategoryService(),
-    ) {
-    }
+        protected PlaceService $placeService = new PlaceService,
+        protected CategoryService $categoryService = new CategoryService,
+    ) {}
 
     public function getByCategoryParentID($CategoryParentIdentifier = null): \Inertia\Response
     {

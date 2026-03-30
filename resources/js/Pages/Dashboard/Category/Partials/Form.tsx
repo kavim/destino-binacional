@@ -7,7 +7,7 @@ import ImagicLoader from '@/Components/ImagicLoader';
 import DeleteButton from '@/Shared/DeleteButton';
 import { Card, CardContent } from '@/Components/ui/card';
 
-export default function Form({ handleOnChange, submit, data, errors, onDelete, parent = null, processing, onIconChange }) {
+export default function Form({ handleOnChange, submit, data, errors, onDelete = undefined, parent = null, processing, onIconChange }) {
     const [iconImage, setIconImage] = useState(null);
 
     const onCorte = (image) => {

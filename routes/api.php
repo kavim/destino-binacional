@@ -44,5 +44,6 @@ Route::post('observability/errors', function (Request $request) {
         'stack' => $data['stack'] ?? null,
         'level' => $data['level'] ?? 'error',
     ]);
+
     return response()->json(['ok' => true], 201);
 })->middleware('throttle:60,1'); // 60 por minuto

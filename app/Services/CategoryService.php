@@ -15,9 +15,8 @@ use Intervention\Image\Facades\Image;
 class CategoryService
 {
     public function __construct(
-        protected CategoryRepository $categoryRepository = new CategoryRepository(),
-    ) {
-    }
+        protected CategoryRepository $categoryRepository = new CategoryRepository,
+    ) {}
 
     public function index(): Collection
     {

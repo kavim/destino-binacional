@@ -16,7 +16,8 @@
     "noUnusedParameters": false,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["resources/js/*"]
+      "@/*": ["resources/js/*"],
+      "ziggy-js": ["./vendor/tightenco/ziggy/src/js/index.d.ts"]
     }
   },
   "include": ["resources/js/**/*.ts", "resources/js/**/*.tsx"],

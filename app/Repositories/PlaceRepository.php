@@ -12,7 +12,7 @@ class PlaceRepository
             ->paginate();
     }
 
-    public function getByCategoryParentID(int $parent_id = null)
+    public function getByCategoryParentID(?int $parent_id = null)
     {
         return Place::whereHas('categories', function ($query) use ($parent_id) {
             return $query->whereIn('parent_id', [$parent_id]);

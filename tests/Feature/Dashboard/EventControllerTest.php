@@ -120,7 +120,7 @@ class EventControllerTest extends TestCase
         $other = $this->makeEvent(['category_id' => $this->childCategory->id]);
 
         $this->actingAs($this->user)
-            ->get('/events?category_id=' . $this->parentCategory->id)
+            ->get('/events?category_id='.$this->parentCategory->id)
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->has('events.data', 1)

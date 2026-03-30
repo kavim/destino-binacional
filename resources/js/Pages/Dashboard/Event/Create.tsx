@@ -20,10 +20,11 @@ export default function Create() {
         is_online: false,
         link: '',
         featured_image: '',
+        image: null as string | null,
         tag_ids: [],
     });
 
-    const onCorte = (image) => {
+    const onCorte = (image: string) => {
         setData('featured_image', image);
         setData('image', null);
     }

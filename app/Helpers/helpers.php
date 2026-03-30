@@ -20,7 +20,7 @@ if (! function_exists('extractSrcFromGmapsIframe')) {
 }
 
 if (! function_exists('parse_money')) {
-    function parse_money(?string $parse_money): string|null
+    function parse_money(?string $parse_money): ?string
     {
         // get only the numbers for example from 20,43 to be 2043, and from 20.43 to be 2043.
         // We have to currency and for pesos Uruguayos we don't need to multiply by 100

@@ -9,9 +9,8 @@ use Illuminate\Database\Eloquent\Collection;
 class TagService
 {
     public function __construct(
-        protected tagRepository $tagRepository = new TagRepository(),
-    ) {
-    }
+        protected tagRepository $tagRepository = new TagRepository,
+    ) {}
 
     public function index(): Collection
     {

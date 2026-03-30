@@ -6,27 +6,29 @@ import DatePicker from 'react-date-picker';
 import 'react-date-picker/dist/DatePicker.css';
 import 'react-calendar/dist/Calendar.css';
 
-export default function Filters({ filters }) {
+type EventFiltersState = { start?: string; end?: string };
+
+export default function Filters({ filters }: { filters: EventFiltersState }) {
     const [showFilters, setShowFilters] = useState(false);
     const { data, setData, get } = useForm({
         start: filters.start || '',
         end: filters.end || '',
     });
 
-    const formatDateForQuery = (date) => {
+    const formatDateForQuery = (date: Date) => {
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
     };
 
-    const parseUrlDate = (dateStr) => {
+    const parseUrlDate = (dateStr: unknown) => {
         if (!dateStr || typeof dateStr !== 'string') return null;
         const dateObj = new Date(dateStr.replace(/-/g, '\/'));
         return isNaN(dateObj.getTime()) ? null : dateObj;
     };
 
-    const startDataChange = (date) => {
+    const startDataChange = (date: Date | null) => {
         if (date) {
             setData('start', formatDateForQuery(date));
         } else {
@@ -34,7 +36,7 @@ export default function Filters({ filters }) {
         }
     };
 
-    const endDataChange = (date) => {
+    const endDataChange = (date: Date | null) => {
         if (date) {
             setData('end', formatDateForQuery(date));
         } else {
@@ -46,7 +48,7 @@ export default function Filters({ filters }) {
         setShowFilters(!showFilters);
     };
 
-    const limpar = (e) => {
+    const limpar = (e: React.MouseEvent<HTMLAnchorElement>) => {
         e.preventDefault();
         setData({ start: '', end: '' });
         get(route('site.events.index'), {
@@ -56,7 +58,7 @@ export default function Filters({ filters }) {
         });
     };
 
-    const submit = e => {
+    const submit = (e: React.FormEvent) => {
         e.preventDefault();
         setShowFilters(false);
 

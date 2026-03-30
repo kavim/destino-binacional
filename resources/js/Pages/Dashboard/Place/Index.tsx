@@ -33,7 +33,7 @@ type PlaceRow = {
 };
 
 export default function Index() {
-  const { places } = usePage().props as { places: { data: PlaceRow[]; links: unknown[] } };
+  const { places } = usePage().props as unknown as { places: { data: PlaceRow[]; links: unknown[] } };
   const { data, links } = places;
 
     return (

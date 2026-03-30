@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, usePage } from '@inertiajs/react';
 import dayjs from 'dayjs';
-import { es } from 'dayjs/locale/es';
+import 'dayjs/locale/es';
 import { trans } from '@/utils';
 import { EventCard } from '@/Components/EventCard';
 
@@ -35,7 +35,7 @@ export default function Events() {
                             return (
                                 <div
                                     key={index}
-                                    label={index}
+                                    data-slide-index={index}
                                     onClick={() => goToDate(group)}
                                     className="m-2">
                                     <div className="flex w-32 flex-none cursor-pointer rounded-xl border border-border bg-card text-center shadow-sm active:opacity-90 md:w-24">

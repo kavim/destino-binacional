@@ -28,7 +28,7 @@ abstract class TestCase extends BaseTestCase
         if ($connection !== 'sqlite') {
             $this->fail(
                 "SAFETY: Tests are running against [{$connection}] instead of [sqlite]. "
-                . 'Aborting to protect your data. Check phpunit.xml and .env.testing.'
+                .'Aborting to protect your data. Check phpunit.xml and .env.testing.'
             );
         }
     }

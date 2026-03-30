@@ -11,13 +11,24 @@ export default function Categories() {
                         <div className="relative z-10 flex flex-col space-y-1.5 p-6">
                             <div className='flex flex-col justify-center align-middle text-center'>
                                 <img src={categories[key].icon} alt={categories[key].name} className='w-24 mx-auto' />
-                                <h2 className='mt-3 font-semibold text-4xl'>
+                                <h2
+                                    className='mt-3 font-semibold text-4xl'
+                                    style={{ color: categories[key].color || undefined }}
+                                >
                                     {categories[key].name}
                                 </h2>
                                 <span className='mt-4'>
                                     <button
                                         type="button"
-                                        className="inline-flex items-center justify-center rounded-md border border-primary/40 bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-primary/15 dark:border-primary/50 dark:bg-primary/15">
+                                        className="inline-flex items-center justify-center rounded-md border px-3 py-1.5 text-xs font-medium transition-colors hover:opacity-90"
+                                        style={{
+                                            borderColor: categories[key].color || 'hsl(var(--primary))',
+                                            color: categories[key].color || 'hsl(var(--primary))',
+                                            backgroundColor: categories[key].color
+                                                ? `color-mix(in srgb, ${categories[key].color} 14%, transparent)`
+                                                : 'color-mix(in srgb, hsl(var(--primary)) 14%, transparent)',
+                                        }}
+                                    >
                                         Ver más <i className="fa-solid fa-chevron-right ml-2"></i>
                                     </button>
                                 </span>

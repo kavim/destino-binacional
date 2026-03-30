@@ -1,7 +1,11 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 
-export default function CategoryHeader() {
+type HeaderProps = {
+    category?: unknown;
+};
+
+export default function CategoryHeader(_props: HeaderProps = {}) {
 
     const className = cn(
         [

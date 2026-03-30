@@ -25,6 +25,8 @@ if (typeof window !== 'undefined') {
         reportFrontendError({
             message: `Unhandled promise: ${message}`,
             url: window.location?.href,
+            file: undefined,
+            line: undefined,
             stack: event.reason?.stack,
             level: 'error',
         });

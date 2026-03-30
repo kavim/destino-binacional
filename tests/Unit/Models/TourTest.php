@@ -9,7 +9,7 @@ class TourTest extends TestCase
 {
     public function test_fillable_attributes_are_defined(): void
     {
-        $tour = new Tour();
+        $tour = new Tour;
 
         $this->assertContains('title', $tour->getFillable());
         $this->assertContains('slug', $tour->getFillable());
@@ -20,7 +20,7 @@ class TourTest extends TestCase
 
     public function test_google_maps_src_is_cast_to_array(): void
     {
-        $tour = new Tour();
+        $tour = new Tour;
         $casts = $tour->getCasts();
 
         $this->assertArrayHasKey('google_maps_src', $casts);
@@ -29,7 +29,7 @@ class TourTest extends TestCase
 
     public function test_recurrence_day_hour_is_cast_to_array(): void
     {
-        $tour = new Tour();
+        $tour = new Tour;
         $casts = $tour->getCasts();
 
         $this->assertArrayHasKey('recurrence_day_hour', $casts);

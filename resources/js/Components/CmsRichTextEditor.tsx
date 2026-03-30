@@ -83,7 +83,7 @@ export default function CmsRichTextEditor({
     editorProps: {
       attributes: {
         id: id ?? name,
-        "aria-invalid": invalid ? true : undefined,
+        "aria-invalid": invalid ? "true" : undefined,
         class: tiptapContentClass,
       },
     },

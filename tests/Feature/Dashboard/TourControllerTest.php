@@ -136,7 +136,7 @@ class TourControllerTest extends TestCase
         $unrelated = $this->makeTour(['title' => 'Unrelated', 'slug' => 'unrelated']);
 
         $this->actingAs($this->user)
-            ->get('/tours?sub_category_id=' . $this->childCategory->id)
+            ->get('/tours?sub_category_id='.$this->childCategory->id)
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->has('tours.data', 1)
@@ -152,7 +152,7 @@ class TourControllerTest extends TestCase
         $unrelated = $this->makeTour(['title' => 'Unrelated', 'slug' => 'unrelated']);
 
         $this->actingAs($this->user)
-            ->get('/tours?category_id=' . $this->parentCategory->id)
+            ->get('/tours?category_id='.$this->parentCategory->id)
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->has('tours.data', 1)
@@ -168,7 +168,7 @@ class TourControllerTest extends TestCase
         }
 
         $this->actingAs($this->user)
-            ->get('/tours?sub_category_id=' . $this->childCategory->id)
+            ->get('/tours?sub_category_id='.$this->childCategory->id)
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->has('tours.data', 15)

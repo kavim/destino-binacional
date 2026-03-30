@@ -9,7 +9,7 @@ class EventTest extends TestCase
 {
     public function test_fillable_attributes_are_defined(): void
     {
-        $event = new Event();
+        $event = new Event;
 
         $this->assertContains('title', $event->getFillable());
         $this->assertContains('slug', $event->getFillable());
@@ -22,7 +22,7 @@ class EventTest extends TestCase
 
     public function test_is_online_is_cast_to_boolean(): void
     {
-        $event = new Event();
+        $event = new Event;
         $casts = $event->getCasts();
 
         $this->assertArrayHasKey('is_online', $casts);
@@ -31,7 +31,7 @@ class EventTest extends TestCase
 
     public function test_start_and_end_are_cast_to_date(): void
     {
-        $event = new Event();
+        $event = new Event;
         $casts = $event->getCasts();
 
         $this->assertArrayHasKey('start', $casts);

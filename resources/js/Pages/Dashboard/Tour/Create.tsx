@@ -21,9 +21,10 @@ export default function Create() {
         category_ids: [],
         recurrence_day_hour: recurrence_day_hour,
         recurrence_enabled: false,
+        image: null as string | null,
     });
 
-    const onCorte = (image) => {
+    const onCorte = (image: string) => {
         setData('featured_image', image);
         setData('image', null);
     }

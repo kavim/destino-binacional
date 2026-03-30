@@ -2,7 +2,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, usePage } from '@inertiajs/react';
 
 export default function Index() {
-    const { parent_categories, grouped_categories } = usePage().props;
+    const { parent_categories, grouped_categories } = usePage().props as unknown as {
+        parent_categories: Array<{ id: number; name: string; color: string; icon: string }>;
+        grouped_categories: Record<number, Array<{ id: number; name: string }>>;
+    };
     return (
         <AuthenticatedLayout header={
             <div className="flex justify-between mt-2" >

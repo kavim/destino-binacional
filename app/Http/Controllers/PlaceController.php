@@ -19,7 +19,7 @@ class PlaceController extends Controller
     public function __construct(
         protected PlaceService $placeService,
     ) {
-        $this->placeService = new PlaceService();
+        $this->placeService = new PlaceService;
     }
 
     public function index(): \Inertia\Response

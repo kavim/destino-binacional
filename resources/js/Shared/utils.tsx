@@ -1,8 +1,9 @@
-export function filesize(size) {
+export function filesize(size: number) {
     const i = Math.floor(Math.log(size) / Math.log(1024));
+    const idx = Math.min(i, 4);
     return (
-        (size / Math.pow(1024, i)).toFixed(2) * 1 +
+        Number((size / Math.pow(1024, idx)).toFixed(2)) +
         ' ' +
-        ['B', 'kB', 'MB', 'GB', 'TB'][i]
+        ['B', 'kB', 'MB', 'GB', 'TB'][idx]
     );
 }

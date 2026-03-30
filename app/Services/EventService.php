@@ -16,9 +16,8 @@ class EventService
     public string $error_message = '';
 
     public function __construct(
-        protected EventRepository $eventRepository = new EventRepository(),
-    ) {
-    }
+        protected EventRepository $eventRepository = new EventRepository,
+    ) {}
 
     public function index()
     {
@@ -62,7 +61,7 @@ class EventService
         return $event;
     }
 
-    public function storeFeaturedImage($image): string|null
+    public function storeFeaturedImage($image): ?string
     {
         if (! $image || is_null($image)) {
             return null;

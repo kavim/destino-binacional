@@ -1,12 +1,19 @@
 import React from 'react';
 
 export default ({
-  label,
+  label = '',
   name,
-  className,
+  className = '',
   children,
   errors = [],
   ...props
+}: {
+  label?: React.ReactNode;
+  name: string;
+  className?: string;
+  children: React.ReactNode;
+  errors?: unknown[];
+  [key: string]: unknown;
 }) => {
   return (
     <div className={className}>
@@ -23,7 +30,9 @@ export default ({
       >
         {children}
       </select>
-      {errors && <div className="form-error">{errors}</div>}
+      {errors && errors.length > 0 && (
+        <div className="form-error">{errors as React.ReactNode}</div>
+      )}
     </div>
   );
 };

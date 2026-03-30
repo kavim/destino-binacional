@@ -15,10 +15,31 @@ import { Card, CardContent } from '@/Components/ui/card';
 import { Input } from '@/Components/ui/input';
 import { cn } from '@/lib/utils';
 
-export default function Form({handleOnChange, submit, data, errors, processing, onDelete = null}) {
-    const onCorte = (image) => {
-        handleOnChange({target: {name: 'featured_image', value: image}});
-    }
+/** react-currency-mask typings omit className / InputElement used here */
+const CurrencyInputField = CurrencyInput as unknown as React.ComponentType<Record<string, unknown>>;
+
+export default function Form({
+    handleOnChange,
+    submit,
+    data,
+    errors,
+    processing,
+    onDelete = null,
+    onCorte: onCorteFromParent,
+}: {
+    handleOnChange: (e: { target: { name: string; value: unknown; type?: string; checked?: boolean } }) => void;
+    submit: (e: React.FormEvent) => void;
+    data: any;
+    errors: any;
+    processing: boolean;
+    onDelete?: (() => void) | null;
+    onCorte?: (image: string) => void;
+}) {
+    const onCorte =
+        onCorteFromParent ??
+        ((image: string) => {
+            handleOnChange({ target: { name: 'featured_image', value: image } });
+        });
 
     const startDataChange = (date) => {
         console.log(date.target.value);
@@ -129,7 +150,7 @@ export default function Form({handleOnChange, submit, data, errors, processing, 
                         <option value="UYU">UYU</option>
                         <option value="BRL">BRL</option>
                     </select>
-                    <CurrencyInput
+                    <CurrencyInputField
                         className="min-w-0 flex-1"
                         currency={data.currency}
                         locale={data.currency === 'UYU' ? 'es-UY' : 'pt-BR'}

@@ -5,7 +5,11 @@ import { Card, CardContent } from '@/Components/ui/card';
 import Form from './Partials/Form';
 
 export default function Create() {
-    const { auth, category, parent } = usePage().props;
+    const { auth, category, parent } = usePage().props as unknown as {
+        auth: unknown;
+        category: Record<string, unknown>;
+        parent: { id: number; name: string; color: string; icon: string } | null;
+    };
 
     const { data, setData, errors, put, processing } = useForm({
         name_es: category.name_es ? category.name_es : '',
@@ -41,7 +45,7 @@ export default function Create() {
             icon_image: data.icon_image,
             color: data.color,
             parent_id: data.parent_id,
-        })
+        } as never);
     };
 
     return (

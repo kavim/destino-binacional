@@ -1,4 +1,5 @@
 import { Link } from '@inertiajs/react';
+import { trans } from '@/utils';
 
 export default function Index({ places }) {
     return (

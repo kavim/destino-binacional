@@ -6,7 +6,11 @@ import pickBy from 'lodash/pickBy';
 import { cn } from '@/lib/utils';
 
 export default () => {
-    const { filters, grouped_categories, categories } = usePage().props;
+    const { filters, grouped_categories, categories } = usePage().props as unknown as {
+        filters: { search?: string; category_id?: string; sub_category_id?: string };
+        grouped_categories: Record<string, Array<{ id: string | number; name: string }>>;
+        categories: Array<{ id: string | number; name: string }>;
+    };
     const [opened, setOpened] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -52,7 +56,7 @@ export default () => {
         return () => clearTimeout(delayDebounceFn)
     }
 
-    function handleChange(e) {
+    function handleChange(e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) {
         const key = e.target.name;
         const value = e.target.value;
 
@@ -73,7 +77,9 @@ export default () => {
                         name='category_id'
                         onChange={handleChange}
                     >
-                        <option defaultValue hidden>Categoría</option>
+                        <option value="" disabled hidden>
+                            Categoría
+                        </option>
                         <option value={''}>Todas</option>
                         {categories.map((cat, index) => {
                             return (
@@ -100,13 +106,15 @@ export default () => {
                         name='sub_category_id'
                         onChange={handleChange}
                     >
-                        <option defaultValue hidden>SubCategoría</option>
+                        <option value="" disabled hidden>
+                            SubCategoría
+                        </option>
                         <option value={''}>Todas</option>
 
                         {values.category_id && (
                             <>
                                 {
-                                    grouped_categories[values.category_id].map((option, index) => {
+                                    grouped_categories[values.category_id]?.map((option, index) => {
                                         return (
                                             <option key={index} value={option.id}>
                                                 {option.name}

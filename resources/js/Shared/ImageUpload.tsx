@@ -1,14 +1,20 @@
 import React, { useRef } from "react";
 
-function ImageUpload({ onImageSelected }) {
-    const inputRef = useRef();
+type ImageUploadProps = {
+    onImageSelected: (dataUrl: string) => void;
+    setImage?: React.Dispatch<React.SetStateAction<string>>;
+};
+
+function ImageUpload({ onImageSelected }: ImageUploadProps) {
+    const inputRef = useRef<HTMLInputElement>(null);
 
     const imageInputed = (event) => {
         if (event.target.files && event.target.files.length > 0) {
             const reader = new FileReader();
             reader.readAsDataURL(event.target.files[0]);
-            reader.onload = function (e) {
-                onImageSelected(reader.result);
+            reader.onload = function () {
+                const result = reader.result;
+                onImageSelected(typeof result === 'string' ? result : '');
             };
         }
     };

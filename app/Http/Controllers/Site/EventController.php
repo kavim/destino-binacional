@@ -11,9 +11,8 @@ use Inertia\Inertia;
 class EventController extends Controller
 {
     public function __construct(
-        protected EventService $eventService = new EventService(),
-    ) {
-    }
+        protected EventService $eventService = new EventService,
+    ) {}
 
     public function index(Request $request): \Inertia\Response
     {

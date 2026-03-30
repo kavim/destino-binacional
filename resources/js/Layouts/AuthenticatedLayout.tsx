@@ -12,6 +12,8 @@ import { useTheme } from '@/Components/ThemeProvider';
 interface Props {
     header?: React.ReactNode;
     children: React.ReactNode;
+    /** @deprecated Prefer usePage().props.auth — kept for backward compatibility with existing pages */
+    auth?: unknown;
 }
 
 export default function Authenticated({ header, children }: Props) {

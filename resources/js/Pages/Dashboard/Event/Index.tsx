@@ -18,7 +18,7 @@ import {
 } from "@/Components/ui/table";
 import { Head, Link, usePage } from "@inertiajs/react";
 import dayjs from "dayjs";
-import { es } from "dayjs/locale/es";
+import "dayjs/locale/es";
 import { CalendarRange, ChevronRight, Radio } from "lucide-react";
 import SearchFilter from "./Partials/SearchFilter";
 import Pagination from "@/Shared/Pagination";
@@ -47,7 +47,7 @@ function formatEventRange(start?: string | null, end?: string | null): string {
 }
 
 export default function Index() {
-  const { events } = usePage().props as {
+  const { events } = usePage().props as unknown as {
     events: { data: EventRow[]; links: unknown[] };
   };
   const { data, links } = events;

@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('locale')->index();
             $table->longText('description')->nullable();
             $table->foreignId('place_id')
-                  ->constrained()
-                  ->onDelete('cascade');
+                ->constrained()
+                ->onDelete('cascade');
             $table->unique(['place_id', 'locale']);
             $table->softDeletes();
 

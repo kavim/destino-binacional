@@ -3,7 +3,6 @@
 namespace Tests\Feature\Dashboard;
 
 use App\Models\Category;
-use App\Models\CategoryTranslation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
@@ -92,7 +91,7 @@ class CategoryControllerTest extends TestCase
     public function test_create_page_renders_with_parent_id(): void
     {
         $this->actingAs($this->user)
-            ->get('/categories/create?parent_id=' . $this->parentCategory->id)
+            ->get('/categories/create?parent_id='.$this->parentCategory->id)
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->component('Dashboard/Category/Create')

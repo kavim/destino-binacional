@@ -1,7 +1,17 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, router, usePage } from '@inertiajs/react';
 
-function BarChart({ data, maxValue, valueLabel, barColor = 'bg-emerald-500 dark:bg-emerald-600' }) {
+function BarChart({
+    data,
+    maxValue,
+    valueLabel,
+    barColor = 'bg-brand-green',
+}: {
+    data: Record<string, unknown>;
+    maxValue?: number;
+    valueLabel?: (v: unknown) => string;
+    barColor?: string;
+}) {
     const values = Object.values(data).map(Number);
     const max = maxValue || (values.length ? Math.max(...values, 1) : 1);
     const entries = Object.entries(data).sort((a, b) => a[0].localeCompare(b[0]));
@@ -16,15 +26,20 @@ function BarChart({ data, maxValue, valueLabel, barColor = 'bg-emerald-500 dark:
                             style={{ width: `${Math.min(100, (Number(value) / max) * 100)}%` }}
                         />
                     </div>
-                    <span className="w-14 text-right font-medium shrink-0">{valueLabel ? valueLabel(value) : value}</span>
+                    <span className="w-14 text-right font-medium shrink-0">
+                        {String(valueLabel ? valueLabel(value) : value)}
+                    </span>
                 </div>
             ))}
         </div>
     );
 }
 
-function DonutChart({ data, colors = ['#10b981', '#14b8a6', '#06b6d4', '#0ea5e9'] }) {
-    const total = Object.values(data).reduce((a, b) => a + Number(b), 0);
+function DonutChart({ data, colors = ['#355bc8', '#0D9C4A'] }: { data: Record<string, unknown>; colors?: string[] }) {
+    const total = Object.values(data).reduce<number>(
+        (a, b) => a + Number(b),
+        0,
+    );
     if (total === 0) return <div className="text-sm text-muted-foreground">Sem dados</div>;
     const entries = Object.entries(data);
     let cumul = 0;
@@ -71,8 +86,41 @@ function DonutChart({ data, colors = ['#10b981', '#14b8a6', '#06b6d4', '#0ea5e9'
     );
 }
 
+type TrackerPageProps = {
+    summary?: {
+        total_sessions?: number;
+        total_page_views?: number;
+        avg_pages_per_session?: string | number | null;
+    };
+    sessions_by_day?: Record<string, unknown>;
+    views_by_day?: Record<string, unknown>;
+    top_paths?: Array<{ path: string; views: number }>;
+    visitors_by_country?: Array<{ country?: string; country_code?: string; total: number }>;
+    top_browsers?: Array<{ browser?: string; total: number }>;
+    devices_stats?: { mobile?: number; desktop?: number };
+    top_referers?: Array<{ host?: string; total: number }>;
+    recent_sessions?: Array<{
+        id?: number | string;
+        created_at?: string;
+        client_ip?: string;
+        city?: string;
+        country?: string;
+        country_code?: string;
+        browser?: string;
+        agent_name?: string;
+        is_mobile?: boolean;
+        platform?: string;
+        user?: { email?: string; name?: string };
+        page_views_count?: number;
+        referer_host?: string;
+    }>;
+    days?: number;
+    error?: string;
+};
+
 export default function TrackerIndex() {
-    const { summary, sessions_by_day, views_by_day, top_paths, visitors_by_country, top_browsers, devices_stats, top_referers, recent_sessions, days, error } = usePage().props;
+    const { summary, sessions_by_day, views_by_day, top_paths, visitors_by_country, top_browsers, devices_stats, top_referers, recent_sessions, days, error } =
+        usePage().props as unknown as TrackerPageProps;
 
     const changeDays = (d) => {
         router.get(route('tracker.index'), { days: d }, { preserveState: true });
@@ -97,7 +145,7 @@ export default function TrackerIndex() {
                                 key={d}
                                 onClick={() => changeDays(d)}
                                 className={`px-3 py-1 rounded text-sm transition-colors ${days === d
-                                    ? 'bg-emerald-600 text-white'
+                                    ? 'bg-primary text-primary-foreground shadow-sm'
                                     : 'bg-muted text-muted-foreground hover:bg-muted/80'
                                     }`}
                             >
@@ -118,7 +166,7 @@ export default function TrackerIndex() {
 
                 {/* Resumo */}
                 <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="bg-card shadow rounded-xl overflow-hidden border-l-4 border-emerald-500">
+                    <div className="bg-card shadow rounded-xl overflow-hidden border-l-4 border-brand-blue">
                         <div className="p-6">
                             <p className="text-sm text-muted-foreground">Sessões</p>
                             <p className="text-3xl font-bold text-foreground">
@@ -126,7 +174,7 @@ export default function TrackerIndex() {
                             </p>
                         </div>
                     </div>
-                    <div className="bg-card shadow rounded-xl overflow-hidden border-l-4 border-teal-500">
+                    <div className="bg-card shadow rounded-xl overflow-hidden border-l-4 border-brand-green">
                         <div className="p-6">
                             <p className="text-sm text-muted-foreground">Page views</p>
                             <p className="text-3xl font-bold text-foreground">
@@ -134,7 +182,7 @@ export default function TrackerIndex() {
                             </p>
                         </div>
                     </div>
-                    <div className="bg-card shadow rounded-xl overflow-hidden border-l-4 border-cyan-500">
+                    <div className="bg-card shadow rounded-xl overflow-hidden border-l-4 border-primary/70">
                         <div className="p-6">
                             <p className="text-sm text-muted-foreground">Páginas/sessão (média)</p>
                             <p className="text-3xl font-bold text-foreground">
@@ -152,7 +200,7 @@ export default function TrackerIndex() {
                         </div>
                         <div className="p-6">
                             {Object.keys(sessions_by_day || {}).length > 0 ? (
-                                <BarChart data={sessions_by_day} valueLabel={(v) => Number(v).toLocaleString('pt-BR')} barColor="bg-emerald-500 dark:bg-emerald-600" />
+                                <BarChart data={sessions_by_day} valueLabel={(v) => Number(v).toLocaleString('pt-BR')} barColor="bg-brand-green" />
                             ) : (
                                 <p className="text-muted-foreground text-sm">Nenhum dado no período</p>
                             )}
@@ -164,7 +212,7 @@ export default function TrackerIndex() {
                         </div>
                         <div className="p-6">
                             {Object.keys(views_by_day || {}).length > 0 ? (
-                                <BarChart data={views_by_day} valueLabel={(v) => Number(v).toLocaleString('pt-BR')} barColor="bg-teal-500 dark:bg-teal-600" />
+                                <BarChart data={views_by_day} valueLabel={(v) => Number(v).toLocaleString('pt-BR')} barColor="bg-brand-blue" />
                             ) : (
                                 <p className="text-muted-foreground text-sm">Nenhum dado no período</p>
                             )}
@@ -210,7 +258,7 @@ export default function TrackerIndex() {
                                 <BarChart
                                     data={Object.fromEntries(visitors_by_country.map((r) => [r.country || r.country_code || '?', r.total]))}
                                     valueLabel={(v) => Number(v).toLocaleString('pt-BR')}
-                                    barColor="bg-cyan-500 dark:bg-cyan-600"
+                                    barColor="bg-brand-green"
                                 />
                             ) : (
                                 <p className="text-muted-foreground text-sm">Nenhum dado de geolocalização</p>
@@ -230,7 +278,7 @@ export default function TrackerIndex() {
                                 <BarChart
                                     data={Object.fromEntries(top_browsers.map((r) => [r.browser || 'Desconhecido', r.total]))}
                                     valueLabel={(v) => Number(v).toLocaleString('pt-BR')}
-                                    barColor="bg-sky-500 dark:bg-sky-600"
+                                    barColor="bg-brand-blue"
                                 />
                             ) : (
                                 <p className="text-muted-foreground text-sm">Nenhum dado</p>
@@ -242,7 +290,7 @@ export default function TrackerIndex() {
                             <h3 className="text-lg font-medium text-foreground">Mobile vs Desktop</h3>
                         </div>
                         <div className="p-6">
-                            <DonutChart data={devicesData} colors={['#10b981', '#14b8a6']} />
+                            <DonutChart data={devicesData} colors={['#355bc8', '#0D9C4A']} />
                         </div>
                     </div>
                 </section>
@@ -257,7 +305,7 @@ export default function TrackerIndex() {
                             <BarChart
                                 data={Object.fromEntries(top_referers.map((r) => [r.host || '(direto)', r.total]))}
                                 valueLabel={(v) => Number(v).toLocaleString('pt-BR')}
-                                barColor="bg-violet-500 dark:bg-violet-600"
+                                barColor="bg-brand-blue"
                             />
                         </div>
                     </section>
@@ -302,14 +350,14 @@ export default function TrackerIndex() {
                                             </td>
                                             <td className="px-4 py-2 text-sm">{row.browser || row.agent_name || '—'}</td>
                                             <td className="px-4 py-2 text-sm">
-                                                <span className={`inline-flex px-2 py-0.5 text-xs rounded ${row.is_mobile ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300' : 'bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300'}`}>
+                                                <span className={`inline-flex px-2 py-0.5 text-xs rounded ${row.is_mobile ? 'bg-success/15 text-success dark:bg-success/25 dark:text-success' : 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary'}`}>
                                                     {row.is_mobile ? 'Mobile' : 'Desktop'}
                                                 </span>
                                                 {row.platform && <span className="ml-1 text-muted-foreground">{row.platform}</span>}
                                             </td>
                                             <td className="px-4 py-2 text-sm">
                                                 {row.user ? (
-                                                    <span className="inline-flex px-2 py-0.5 text-xs rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300" title={row.user.email}>
+                                                    <span className="inline-flex px-2 py-0.5 text-xs rounded bg-success/15 text-success dark:bg-success/25 dark:text-success" title={row.user.email}>
                                                         {row.user.name}
                                                     </span>
                                                 ) : (

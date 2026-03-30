@@ -4,7 +4,11 @@ import { Card, CardContent } from '@/Components/ui/card';
 import Form from './Partials/Form';
 
 export default function Edit() {
-    const { auth, tour, category_ids } = usePage().props;
+    const { auth, tour, category_ids } = usePage().props as unknown as {
+        auth: unknown;
+        tour: Record<string, unknown> & { id: number; title?: string };
+        category_ids: number[];
+    };
 
     const { data, setData, errors, put, processing } = useForm({
         title: tour.title || '',

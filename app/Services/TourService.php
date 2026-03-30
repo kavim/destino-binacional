@@ -4,9 +4,7 @@ namespace App\Services;
 
 use App\Models\Tour;
 use App\Repositories\TourRepository;
-use Carbon\Carbon;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -17,9 +15,8 @@ class TourService
     public string $error_message = '';
 
     public function __construct(
-        protected TourRepository $tourRepository = new TourRepository(),
-    ) {
-    }
+        protected TourRepository $tourRepository = new TourRepository,
+    ) {}
 
     public function index()
     {

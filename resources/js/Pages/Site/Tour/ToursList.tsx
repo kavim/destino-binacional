@@ -1,8 +1,11 @@
 import { Link, usePage } from '@inertiajs/react';
 import dayjs from 'dayjs';
+import 'dayjs/locale/es';
 
 export default function TourList() {
-    const { tours } = usePage().props;
+    const { tours } = usePage().props as unknown as {
+        tours: Array<{ slug: string; title: string; image: string; start: string; end: string }>;
+    };
     dayjs.locale("es");
 
     return (

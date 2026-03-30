@@ -15,11 +15,17 @@ use App\Models\User;
 trait SeedsTestData
 {
     protected User $user;
+
     protected City $city;
+
     protected PlaceType $placeType;
+
     protected Category $parentCategory;
+
     protected Category $childCategory;
+
     protected Tag $parentTag;
+
     protected Tag $childTag;
 
     protected function seedTestData(): void

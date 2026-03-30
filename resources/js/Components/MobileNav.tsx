@@ -3,8 +3,12 @@ import { Link, usePage } from '@inertiajs/react';
 import Flags from '@/Components/Flags';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 
+type MobileNavProps = {
+    cats: { categories: Array<{ slug: string; color: string; icon: string; name: string }> };
+};
+
 export default function MobileNav() {
-    const { cats } = usePage().props;
+    const { cats } = usePage().props as unknown as MobileNavProps;
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 
     return (

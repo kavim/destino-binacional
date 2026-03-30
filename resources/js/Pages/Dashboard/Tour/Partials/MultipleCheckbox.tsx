@@ -3,7 +3,10 @@ import Checkbox from '@/Components/Checkbox';
 
 export default function MultipleCheckbox({ catId, handleCheck }) {
 
-    const { grouped_categories, category_ids } = usePage().props;
+    const { grouped_categories, category_ids } = usePage().props as unknown as {
+        grouped_categories: Record<number, Array<{ id: number; name: string }>>;
+        category_ids: number[];
+    };
 
     return (
         <>

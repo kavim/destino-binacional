@@ -1,9 +1,11 @@
 import { Link, usePage } from '@inertiajs/react';
 import dayjs from 'dayjs';
-import { es } from 'dayjs/locale/es';
+import 'dayjs/locale/es';
 
 export default function EventList() {
-    const { events } = usePage().props;
+    const { events } = usePage().props as unknown as {
+        events: Array<{ slug: string; title: string; image: string; start: string; end: string }>;
+    };
     dayjs.locale("es");
 
     return (

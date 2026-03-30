@@ -12,12 +12,35 @@ import DeleteButton from '@/Shared/DeleteButton';
 import Tags from './Tags';
 import { Card, CardContent } from '@/Components/ui/card';
 
-export default function Form({ handleOnChange, submit, data, errors, processing, onDelete }) {
-    const { categories, cities, grouped_categories, parent_tags } = usePage().props;
+export default function Form({
+    handleOnChange,
+    submit,
+    data,
+    errors,
+    processing,
+    onDelete,
+    onCorte: onCorteFromParent,
+}: {
+    handleOnChange: (e: { target: { name: string; value: unknown; type?: string; checked?: boolean } }) => void;
+    submit: (e: React.FormEvent) => void;
+    data: any;
+    errors: any;
+    processing: boolean;
+    onDelete?: () => void;
+    onCorte?: (image: string) => void;
+}) {
+    const { categories, cities, grouped_categories, parent_tags } = usePage().props as unknown as {
+        categories: unknown;
+        cities: unknown;
+        grouped_categories: unknown;
+        parent_tags: unknown;
+    };
 
-    const onCorte = (image) => {
-        handleOnChange({ target: { name: 'featured_image', value: image } });
-    }
+    const onCorte =
+        onCorteFromParent ??
+        ((image: string) => {
+            handleOnChange({ target: { name: 'featured_image', value: image } });
+        });
 
     const check = () => {
         handleOnChange({ target: { name: 'is_online', value: !data.is_online } });
@@ -189,7 +212,9 @@ export default function Form({ handleOnChange, submit, data, errors, processing,
                                 onChange={handleOnChange}
                                 className="mt-1 block w-full"
                             >
-                                <option defaultValue hidden>Elige una Ciudad</option>
+                                <option value="" disabled hidden>
+                                    Elige una Ciudad
+                                </option>
                                 {Object.keys(cities).map((key, i) => (
                                     <option key={i} value={cities[key].id}>
                                         {cities[key].name}

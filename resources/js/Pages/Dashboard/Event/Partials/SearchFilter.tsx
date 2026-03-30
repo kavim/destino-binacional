@@ -5,7 +5,11 @@ import { usePrevious } from "react-use";
 import pickBy from "lodash/pickBy";
 
 export default () => {
-    const { filters, grouped_categories, categories } = usePage().props;
+    const { filters, grouped_categories, categories } = usePage().props as unknown as {
+        filters: { search?: string; category_id?: string };
+        grouped_categories: Record<string, Array<{ id: string | number; name: string }>>;
+        categories: Array<{ name: string }>;
+    };
     const [opened, setOpened] = useState(false);
 
     const [values, setValues] = useState({
@@ -39,7 +43,7 @@ export default () => {
         return () => clearTimeout(delayDebounceFn);
     }, [values]);
 
-    function handleChange(e) {
+    function handleChange(e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) {
         const key = e.target.name;
         const value = e.target.value;
 
@@ -69,7 +73,7 @@ export default () => {
                             name="category_id"
                             onChange={handleChange}
                         >
-                            <option defaultValue hidden>
+                            <option value="" disabled hidden>
                                 Categoría
                             </option>
                             {Object.keys(grouped_categories).map(

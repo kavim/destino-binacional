@@ -10,10 +10,9 @@ use Inertia\Inertia;
 class HomeController extends Controller
 {
     public function __construct(
-        public EventService $eventService = new EventService(),
-        public CategoryService $categoryService = new CategoryService(),
-    ) {
-    }
+        public EventService $eventService = new EventService,
+        public CategoryService $categoryService = new CategoryService,
+    ) {}
 
     public function index()
     {

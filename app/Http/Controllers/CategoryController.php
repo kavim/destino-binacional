@@ -12,7 +12,7 @@ class CategoryController extends Controller
     public function __construct(
         protected CategoryService $categoryService,
     ) {
-        $this->categoryService = new CategoryService();
+        $this->categoryService = new CategoryService;
     }
 
     public function index()

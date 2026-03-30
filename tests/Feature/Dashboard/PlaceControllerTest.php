@@ -149,7 +149,7 @@ class PlaceControllerTest extends TestCase
         $unrelated->categories()->detach();
 
         $this->actingAs($this->user)
-            ->get('/places?sub_category_id=' . $this->childCategory->id)
+            ->get('/places?sub_category_id='.$this->childCategory->id)
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->has('places.data', 1)
@@ -165,7 +165,7 @@ class PlaceControllerTest extends TestCase
         $unrelated->categories()->detach();
 
         $this->actingAs($this->user)
-            ->get('/places?category_id=' . $this->parentCategory->id)
+            ->get('/places?category_id='.$this->parentCategory->id)
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->has('places.data', 1)
@@ -220,7 +220,7 @@ class PlaceControllerTest extends TestCase
         $wrongCat->categories()->detach();
 
         $this->actingAs($this->user)
-            ->get('/places?search=museo&sub_category_id=' . $this->childCategory->id)
+            ->get('/places?search=museo&sub_category_id='.$this->childCategory->id)
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->has('places.data', 1)

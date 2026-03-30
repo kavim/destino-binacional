@@ -2,7 +2,7 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import SiteLayout from '@/Layouts/SiteLayout';
 import { cn } from '@/lib/utils';
 import dayjs from 'dayjs';
-import { es } from 'dayjs/locale/es';
+import 'dayjs/locale/es';
 import { trans } from '@/utils';
 
 export default function Show({ event }) {

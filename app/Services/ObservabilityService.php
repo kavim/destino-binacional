@@ -26,7 +26,7 @@ class ObservabilityService
         }
 
         $ip = $request->ip();
-        $ipHash = $ip ? hash('sha256', $ip . config('app.key')) : null;
+        $ipHash = $ip ? hash('sha256', $ip.config('app.key')) : null;
         $geo = $ip ? GeoService::locate($ip) : null;
 
         try {

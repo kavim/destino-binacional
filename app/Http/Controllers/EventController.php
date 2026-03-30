@@ -16,7 +16,7 @@ class EventController extends Controller
     public function __construct(
         protected EventService $eventService,
     ) {
-        $this->eventService = new EventService();
+        $this->eventService = new EventService;
     }
 
     /**
