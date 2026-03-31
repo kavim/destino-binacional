@@ -13,22 +13,24 @@ const Button = ({ text, onClick }) => (
 
 export default function FileInput({ className, name, label, accept, errors = [], onChange }) {
   const fileInput = useRef<HTMLInputElement>(null);
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState<File | null>(null);
 
   function browse() {
-    fileInput.current.click();
+    fileInput.current?.click();
   }
 
   function remove() {
     setFile(null);
     onChange(null);
-    fileInput.current.value = null;
+    if (fileInput.current) {
+      fileInput.current.value = '';
+    }
   }
 
-  function handleFileChange(e) {
-    const file = e.target.files[0];
-    setFile(file);
-    onChange(file);
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const selectedFile = e.target.files?.[0] ?? null;
+    setFile(selectedFile);
+    onChange(selectedFile);
   }
 
   return (

@@ -5,8 +5,8 @@ import Cropper from "react-easy-crop";
 function ImageCropper({ image, onCropDone, onCropCancel }) {
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
-    const [croppedArea, setCroppedArea] = useState(null);
-    const [aspectRatio, setAspectRatio] = useState(null);
+    const [croppedArea, setCroppedArea] = useState<any>(null);
+    const [aspectRatio, setAspectRatio] = useState<number>(4 / 3);
 
     const onCropComplete = (croppedAreaPercentage, croppedAreaPixels) => {
         setCroppedArea(croppedAreaPixels);

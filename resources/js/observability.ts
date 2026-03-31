@@ -2,7 +2,7 @@
  * Envia erros não tratados do frontend para o backend (observabilidade).
  */
 function reportFrontendError({ message, url, file, line, stack, level = 'error' }) {
-    const apiUrl = typeof window !== 'undefined' && window.axios ? '/api/observability/errors' : null;
+    const apiUrl = typeof window !== 'undefined' && typeof window.axios !== 'undefined' ? '/api/observability/errors' : null;
     if (!apiUrl) return;
 
     const payload = { message, url: url || window.location?.href, file, line, stack, level };

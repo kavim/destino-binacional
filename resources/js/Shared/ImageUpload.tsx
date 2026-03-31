@@ -8,7 +8,7 @@ type ImageUploadProps = {
 function ImageUpload({ onImageSelected }: ImageUploadProps) {
     const inputRef = useRef<HTMLInputElement>(null);
 
-    const imageInputed = (event) => {
+    const imageInputed = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
             const reader = new FileReader();
             reader.readAsDataURL(event.target.files[0]);
@@ -20,7 +20,7 @@ function ImageUpload({ onImageSelected }: ImageUploadProps) {
     };
 
     const onChooseImg = () => {
-        inputRef.current.click();
+        inputRef.current?.click();
     };
 
     return (

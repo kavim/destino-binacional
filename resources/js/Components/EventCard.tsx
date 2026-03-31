@@ -12,6 +12,7 @@ type EventCardProps = {
         start: string;
         end: string;
     };
+    index?: number;
 };
 
 export function EventCard({ event }: EventCardProps) {

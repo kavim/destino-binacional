@@ -74,7 +74,7 @@ export default function CmsRichTextEditor({
         defaultProtocol: "https",
       }),
       Placeholder.configure({
-        placeholder,
+        placeholder: placeholder ?? "",
         emptyEditorClass: "is-editor-empty",
       }),
     ],
@@ -83,7 +83,7 @@ export default function CmsRichTextEditor({
     editorProps: {
       attributes: {
         id: id ?? name,
-        "aria-invalid": invalid ? "true" : undefined,
+        "aria-invalid": invalid ? "true" : "false",
         class: tiptapContentClass,
       },
     },
