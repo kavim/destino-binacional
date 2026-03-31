@@ -1,17 +1,27 @@
-import { Link, usePage } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 
 dayjs.locale('es');
 
-export function EventCard({ event, index }) {
+type EventCardProps = {
+    event: {
+        slug: string;
+        image: string;
+        title: string;
+        start: string;
+        end: string;
+    };
+};
+
+export function EventCard({ event }: EventCardProps) {
     return (
         <>
-            <Link key={index} href={route('site.events.show', event.slug)}>
+            <Link href={route('site.events.show', event.slug)}>
                 <div className="mr-5 flex min-h-[300px] min-w-[260px] max-w-[260px] cursor-pointer flex-col rounded-xl border border-border bg-card shadow-md transition-transform duration-300 ease-in-out hover:scale-[1.02] hover:shadow-lg dark:shadow-black/25 dark:hover:shadow-black/35">
                     <div>
                         <figure>
-                            <img src={event.image} alt={event.image} className='w-full rounded-t-lg aspect-square' loading='lazy' />
+                            <img src={event.image} alt={event.title} className='w-full rounded-t-lg aspect-square' loading='lazy' />
                         </figure>
                     </div>
                     <div className='whitespace-normal p-2 break-all flex flex-col justify-between grow rounded-b-lg'>

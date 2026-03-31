@@ -5,8 +5,10 @@ import Flags from '@/Components/Flags';
 import MobileNav from '@/Components/MobileNav';
 import { ThemeToggle } from '@/Components/ThemeToggle';
 
+type CategorySummary = { slug: string; color: string; icon: string; name: string };
+
 export default function MainNav() {
-    const { cats } = (usePage().props as any);
+    const { cats } = usePage().props as { cats?: { categories?: CategorySummary[] } };
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 
     return (
@@ -28,8 +30,8 @@ export default function MainNav() {
                                 </button>
                                 <div className="absolute left-0 pt-2 w-72 z-50 hidden group-hover:block">
                                     <ul className="w-full rounded-lg border border-border bg-popover p-2 text-popover-foreground shadow-md dark:shadow-black/35">
-                                        {cats.categories.map((cat: any, index: number) => (
-                                            <li key={index}>
+                                        {(cats?.categories ?? []).map((cat) => (
+                                            <li key={cat.slug}>
                                                 <Link href={route('site.categories.show', { CategoryParentIdentifier: cat.slug })}
                                                     className="w-full flex justify-between rounded-sm px-2 py-1.5 text-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
                                                 >

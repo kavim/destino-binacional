@@ -28,10 +28,6 @@ export default function Edit() {
     });
 
     const handleOnChange = event => {
-
-        console.log(event.target.name);
-        console.log(event.target.value);
-
         setData(event.target.name, event.target.type === 'checkbox' ? event.target.checked : event.target.value);
     };
 
@@ -41,7 +37,7 @@ export default function Edit() {
     };
 
     function onDelete() {
-        if (confirm('Borrar este Local? ' + tour.title)) {
+        if (confirm('Borrar este tour? ' + tour.title)) {
             router.visit(route('tours.destroy', tour.id), {
                 method: 'delete',
             })
@@ -51,7 +47,7 @@ export default function Edit() {
     return (
         <AuthenticatedLayout
             auth={auth}
-            header={<h2 className="font-semibold text-xl text-foreground leading-tight">Editar Local</h2>}
+            header={<h2 className="font-semibold text-xl text-foreground leading-tight">Editar Tour</h2>}
         >
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">

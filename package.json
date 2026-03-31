@@ -5,7 +5,8 @@
         "build": "vite build",
         "test": "vitest run",
         "test:watch": "vitest",
-        "test:coverage": "vitest run --coverage"
+        "test:coverage": "vitest run --coverage",
+        "lint": "eslint resources/js --ext .ts,.tsx"
     },
     "devDependencies": {
         "@inertiajs/react": "^1.0.0",
@@ -16,6 +17,7 @@
         "@types/react": "^19.2.14",
         "@types/react-dom": "^19.2.3",
         "@vitejs/plugin-react": "^3.0.0",
+        "@eslint/js": "^9.19.0",
         "autoprefixer": "^10.4.12",
         "axios": "^1.1.2",
         "jsdom": "^27.0.1",
@@ -26,6 +28,10 @@
         "tailwindcss": "^3.2.1",
         "tailwindcss-animate": "^1.0.7",
         "typescript": "^5.9.3",
+        "typescript-eslint": "^8.24.0",
+        "eslint": "^9.19.0",
+        "eslint-plugin-react-hooks": "^5.1.0",
+        "eslint-plugin-react-refresh": "^0.4.16",
         "vite": "^4.0.0",
         "vitest": "^3.2.4"
     },

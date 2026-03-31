@@ -42,8 +42,6 @@ export default function Form({
         });
 
     const startDataChange = (date) => {
-        console.log(date.target.value);
-
         // Extrair os componentes da data
         const [year, month, day] = date.target.value.split('T')[0].split('-');
         const [hours, minutes] = date.target.value.split('T')[1].split(':');
