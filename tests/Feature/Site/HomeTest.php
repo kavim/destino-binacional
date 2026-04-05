@@ -34,12 +34,12 @@ class HomeTest extends TestCase
         );
     }
 
-    public function test_home_passes_categories(): void
+    public function test_home_passes_shared_categories(): void
     {
         $response = $this->get('/');
 
         $response->assertInertia(fn ($page) => $page
-            ->has('categories')
+            ->has('cats.categories')
         );
     }
 

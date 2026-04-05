@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
@@ -35,7 +36,16 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
             ],
             'cats' => [
-                'categories' => \App\Models\Category::where('parent_id', null)->get(),
+                /** Resolved when the Inertia response is built (after Localization middleware). */
+                'categories' => static function () {
+                    return Category::query()
+                        ->whereNull('parent_id')
+                        ->orderBy('id')
+                        ->get()
+                        ->map(fn (Category $category) => $category->toSitePublicPayload())
+                        ->values()
+                        ->all();
+                },
             ],
             'flash' => [
                 'message' => fn () => $request->session()->get('message'),

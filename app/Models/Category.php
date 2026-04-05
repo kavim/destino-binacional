@@ -147,4 +147,19 @@ class Category extends Model implements TranslatableContract
     {
         return $this->belongsToMany(Place::class);
     }
+
+    /**
+     * Site nav + home cards (name, slug, description follow current app locale).
+     */
+    public function toSitePublicPayload(): array
+    {
+        return [
+            'slug' => $this->slug,
+            'name' => $this->name,
+            'description' => $this->description,
+            'featured_image' => $this->featured_image,
+            'icon' => $this->icon,
+            'color' => $this->color,
+        ];
+    }
 }
