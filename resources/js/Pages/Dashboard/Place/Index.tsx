@@ -61,7 +61,8 @@ export default function Index() {
                         <CardHeader className="border-b border-border/60 bg-muted/20">
                             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                                 <div className="space-y-1">
-                                    <CardTitle className="text-base font-semibold tracking-tight">
+                                    <CardTitle className="flex items-center gap-2 text-base font-semibold tracking-tight">
+                                        <MapPin className="h-4 w-4 text-primary" />
                                         Directorio de locales
                                     </CardTitle>
                                     <CardDescription>

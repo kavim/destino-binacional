@@ -68,8 +68,8 @@ class EventControllerTest extends TestCase
             ->assertInertia(fn (Assert $page) => $page
                 ->component('Dashboard/Event/Index')
                 ->has('events')
-                ->has('categories')
-                ->has('grouped_categories')
+                ->has('parent_tags')
+                ->has('grouped_tags')
                 ->has('filters')
             );
     }
@@ -83,7 +83,7 @@ class EventControllerTest extends TestCase
         $this->actingAs($this->user)->get('/events')
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
-                ->has('events.data')
+                ->has('events.data', 10)
                 ->where('events.current_page', 1)
             );
     }
@@ -114,13 +114,32 @@ class EventControllerTest extends TestCase
             );
     }
 
-    public function test_filter_by_category_id(): void
+    public function test_filter_by_parent_tag_id(): void
     {
-        $target = $this->makeEvent(['category_id' => $this->parentCategory->id]);
-        $other = $this->makeEvent(['category_id' => $this->childCategory->id]);
+        $withTag = $this->makeEvent();
+        $withTag->tags()->attach($this->childTag->id);
+
+        $this->makeEvent();
 
         $this->actingAs($this->user)
-            ->get('/events?category_id='.$this->parentCategory->id)
+            ->get('/events?parent_tag_id='.$this->parentTag->id)
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->has('events.data', 1)
+                ->where('events.data.0.id', $withTag->id)
+            );
+    }
+
+    public function test_filter_by_tag_id(): void
+    {
+        $target = $this->makeEvent();
+        $target->tags()->attach($this->childTag->id);
+
+        $other = $this->makeEvent();
+        $other->tags()->attach($this->parentTag->id);
+
+        $this->actingAs($this->user)
+            ->get('/events?tag_id='.$this->childTag->id)
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->has('events.data', 1)
@@ -131,11 +150,26 @@ class EventControllerTest extends TestCase
     public function test_filters_are_echoed_back(): void
     {
         $this->actingAs($this->user)
-            ->get('/events?search=hello&category_id=99')
+            ->get('/events?search=hello&parent_tag_id=99&tag_id=88')
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->where('filters.search', 'hello')
-                ->where('filters.category_id', '99')
+                ->where('filters.parent_tag_id', '99')
+                ->where('filters.tag_id', '88')
+            );
+    }
+
+    public function test_filter_expands_pagination_to_100(): void
+    {
+        for ($i = 0; $i < 15; $i++) {
+            $this->makeEvent(['title' => "Evento Jazz $i", 'slug' => "evento-jazz-$i"]);
+        }
+
+        $this->actingAs($this->user)
+            ->get('/events?search=jazz')
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->has('events.data', 15)
             );
     }
 

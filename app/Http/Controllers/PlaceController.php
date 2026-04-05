@@ -48,7 +48,7 @@ class PlaceController extends Controller
             'places' => $places,
             'categories' => Category::where('parent_id', null)->get(),
             'grouped_categories' => Category::where('parent_id', '<>', null)->get()->groupBy('parent_id'),
-            'filters' => request()->all(['search', 'category_id']),
+            'filters' => request()->all(['search', 'category_id', 'sub_category_id']),
         ]);
     }
 
