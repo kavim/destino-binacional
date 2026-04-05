@@ -1,21 +1,19 @@
 export const translations = {
     methods: {
-        __(key, replacements = {}) {
-
+        __(key: string, replacements: Record<string, string> = {}): string {
             let translation = window._translations[key] || key;
 
-            Object.keys(replacements).forEach(r => {
-                translation = translation.replace(`:${r}`, replacements[r]);
+            Object.keys(replacements).forEach((r) => {
+                translation = translation.replace(`:${r}`, replacements[r] ?? "");
             });
 
             return translation;
         },
-        trans(key, replacements = {}) {
-
+        trans(key: string, replacements: Record<string, string> = {}): string {
             let translation = window._translations[key] || key;
 
-            Object.keys(replacements).forEach(r => {
-                translation = translation.replace(`:${r}`, replacements[r]);
+            Object.keys(replacements).forEach((r) => {
+                translation = translation.replace(`:${r}`, replacements[r] ?? "");
             });
 
             return translation;

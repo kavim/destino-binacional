@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useForm, usePage } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
@@ -11,6 +11,26 @@ import Categories from './Categories';
 import DeleteButton from '@/Shared/DeleteButton';
 import { Card, CardContent } from '@/Components/ui/card';
 
+type PlaceFormData = {
+    name: string;
+    description_es?: string;
+    description_pt?: string;
+    featured_image?: string;
+    image?: string;
+    google_maps_src?: string;
+    address?: string;
+    city_id?: string | number;
+    place_type_id?: string | number;
+    order?: string | number;
+    category_ids: number[];
+};
+
+type PlaceFormErrors = Record<string, string | undefined>;
+
+export type FormChangeEvent = {
+    target: { name: string; value: unknown; type?: string; checked?: boolean };
+};
+
 export default function Form({
     handleOnChange,
     submit,
@@ -20,15 +40,18 @@ export default function Form({
     onDelete = null,
     onCorte: onCorteFromParent,
 }: {
-    handleOnChange: (e: { target: { name: string; value: unknown; type?: string; checked?: boolean } }) => void;
+    handleOnChange: (e: FormChangeEvent | React.ChangeEvent<HTMLInputElement>) => void;
     submit: (e: React.FormEvent) => void;
-    data: any;
-    errors: any;
+    data: PlaceFormData;
+    errors: PlaceFormErrors;
     processing: boolean;
     onDelete?: (() => void) | null;
     onCorte?: (image: string) => void;
 }) {
-    const { cities, place_types } = usePage().props as unknown as { cities: unknown; place_types: unknown };
+    const { cities, place_types } = usePage().props as unknown as {
+        cities: Record<string, { id: string | number; name: string }>;
+        place_types: Record<string, { id: string | number; name: string }>;
+    };
 
     const onCorte =
         onCorteFromParent ??
@@ -36,9 +59,12 @@ export default function Form({
             handleOnChange({ target: { name: 'featured_image', value: image } });
         });
 
-    const handleCheck = (event) => {
+    const handleCheck = (event: {
+        target: { value?: string | number; checked: boolean };
+    }) => {
         let updatedList = [...data.category_ids];
-        let checkboxId = parseInt(event.target.value);
+        if (event.target.value === undefined) return;
+        const checkboxId = parseInt(String(event.target.value), 10);
 
         if (event.target.checked) {
             updatedList = [...data.category_ids, checkboxId];

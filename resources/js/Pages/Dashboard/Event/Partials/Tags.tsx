@@ -6,7 +6,13 @@ import 'collapsible-react-component/dist/index.css'
 import { cn } from '@/lib/utils';
 import InputError from '@/Components/InputError';
 
-export default function Tags({ handleCheck }) {
+type TagsProps = {
+    handleCheck: (e: {
+        target: { value?: string | number; checked: boolean };
+    }) => void;
+};
+
+export default function Tags({ handleCheck }: TagsProps) {
 
     const { parent_tags, errors: fieldErrors } = usePage().props as unknown as {
         parent_tags: Array<{ id: number; name: string; open?: boolean }>;
@@ -14,24 +20,19 @@ export default function Tags({ handleCheck }) {
     };
     const [controls, setControls] = useState(parent_tags);
 
-    const toggleControl = (id) => {
+    const toggleControl = (id: number) => {
         setControls(controls.map(control => {
             if (control.id === id) {
-                control.open = !control.open;
+                return { ...control, open: !control.open };
             }
             return control;
         }));
-    }
+    };
 
-    const isOpen = (id) => {
-        let isOpen = false;
-        controls.map(control => {
-            if (control.id === id) {
-                isOpen = control.open;
-            }
-        });
-        return isOpen;
-    }
+    const isOpen = (id: number): boolean => {
+        const c = controls.find((control) => control.id === id);
+        return Boolean(c?.open);
+    };
 
     return (
         <>
@@ -49,7 +50,7 @@ export default function Tags({ handleCheck }) {
                             </button>
                         </div>
                         <Collapsible
-                            open={isOpen(parent_tags[index]['id'])}
+                            open={isOpen(parent_tags[index]!.id)}
                             revealType='bottomFirst'
                         >
                             <div className='my-2'>

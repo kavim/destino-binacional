@@ -7,6 +7,7 @@ use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Category extends Model implements TranslatableContract
 {
@@ -52,19 +53,64 @@ class Category extends Model implements TranslatableContract
         return null;
     }
 
+    /**
+     * Featured image shown on category pages (hero background).
+     */
+    protected function resolveFeaturedImagePublicUrl(?string $value): string
+    {
+        $public = $this->publicImagesFileUrl($value);
+        if ($public !== null) {
+            return $public;
+        }
+
+        if ($value === null || $value === '') {
+            return asset('images/parque.webp');
+        }
+
+        if (Storage::disk('public')->exists('categories/'.$value)) {
+            return asset('storage/categories/'.$value);
+        }
+
+        return asset('images/parque.webp');
+    }
+
+    /**
+     * Category menu / hero icon (SVG often lives in public/images/icons/).
+     */
+    protected function resolveIconPublicUrl(?string $value): string
+    {
+        $public = $this->publicImagesFileUrl($value);
+        if ($public !== null) {
+            return $public;
+        }
+
+        if ($value === null || $value === '') {
+            return asset('images/icons/default.svg');
+        }
+
+        $basename = basename($value);
+        $candidates = [
+            'images/icons/'.$value,
+            'images/icons/'.$basename,
+        ];
+        foreach ($candidates as $relative) {
+            if (is_file(public_path($relative))) {
+                return asset($relative);
+            }
+        }
+
+        if (Storage::disk('public')->exists('icons/'.$value)) {
+            return asset('storage/icons/'.$value);
+        }
+
+        return asset('images/icons/default.svg');
+    }
+
     protected function image(): Attribute
     {
         return Attribute::make(
-            get: function (?string $value) {
-                if (is_null($value)) {
-                    return 'https://picsum.photos/1200/720';
-                }
-
-                if (substr($value, 0, 4) === 'http') {
-                    return $value;
-                }
-
-                return asset('/storage/categories/'.$value);
+            get: function (mixed $value, array $attributes) {
+                return $this->resolveFeaturedImagePublicUrl($attributes['featured_image'] ?? null);
             },
         );
     }
@@ -73,16 +119,7 @@ class Category extends Model implements TranslatableContract
     {
         return Attribute::make(
             get: function (?string $value) {
-                $public = $this->publicImagesFileUrl($value);
-                if ($public !== null) {
-                    return $public;
-                }
-
-                if (is_null($value) || $value === '') {
-                    return asset('images/icons/default.svg');
-                }
-
-                return asset('storage/categories/'.$value);
+                return $this->resolveFeaturedImagePublicUrl($value);
             },
         );
     }
@@ -91,17 +128,8 @@ class Category extends Model implements TranslatableContract
     {
         return Attribute::make(
             get: function (?string $value) {
-                $public = $this->publicImagesFileUrl($value);
-                if ($public !== null) {
-                    return $public;
-                }
-
-                if (is_null($value) || $value === '') {
-                    return asset('images/icons/default.svg');
-                }
-
-                return asset('storage/icons/'.$value);
-            }
+                return $this->resolveIconPublicUrl($value);
+            },
         );
     }
 

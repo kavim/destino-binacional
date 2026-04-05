@@ -1,8 +1,19 @@
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import SiteLayout from '@/Layouts/SiteLayout';
 import { cn } from '@/lib/utils';
+import { safeGoogleMapsEmbedUrl } from '@/lib/mapsEmbedUrl';
+import { sanitizeCmsHtmlForDisplay } from '@/lib/sanitizeHtml';
 
-export default function Show({ place }) {
+type SitePlaceShow = {
+    name: string;
+    image: string;
+    description: string;
+    google_maps_src?: string;
+};
+
+export default function Show({ place }: { place: SitePlaceShow }) {
+    const safeDescription = sanitizeCmsHtmlForDisplay(place.description);
+    const mapEmbed = safeGoogleMapsEmbedUrl(place.google_maps_src);
 
     const className = cn(
         [
@@ -33,16 +44,22 @@ export default function Show({ place }) {
                 </div>
                 <div className='flex flex-col-reverse md:flex-row '>
                     <div className='p-3 break-words w-full md:w-2/3 bg-card md:my-2 md:ml-5 rounded-lg'>
-                        <div dangerouslySetInnerHTML={{ __html: place.description }} />
+                        <div dangerouslySetInnerHTML={{ __html: safeDescription }} />
                     </div>
                     <div className='break-words w-full md:w-1/3 my-2 md:mx-5 hidden md:inline'>
                         <img src={place.image} alt="" className='rounded-lg' />
                     </div>
                 </div>
                 <div className='flex flex-col relative md:p-4 md:mt-5'>
-                    {place.google_maps_src && (
+                    {mapEmbed && (
                         <div className="w-full h-[90vh] sm:h-[30vh] md:h-[60vh] rounded-lg">
-                            <iframe className="w-full h-full rounded-lg" src={place.google_maps_src} title={place.name} loading="lazy"></iframe>
+                            <iframe
+                                className="w-full h-full rounded-lg"
+                                src={mapEmbed}
+                                title={place.name}
+                                loading="lazy"
+                                referrerPolicy="strict-origin-when-cross-origin"
+                            />
                         </div>
                     )}
                 </div>

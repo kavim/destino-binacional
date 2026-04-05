@@ -1,0 +1,16 @@
+---
+description: Laravel/PHP — controllers, models, rotas e migrations
+globs:
+  - app/**/*.php
+  - routes/**/*.php
+  - database/**/*.php
+alwaysApply: false
+---
+
+# Backend Laravel
+
+- **Formatação**: após alterar PHP, rodar `./vendor/bin/pint` (ou `pint` no PATH) nos ficheiros tocados antes de commit/PR.
+- **Estrutura**: controllers em `app/Http/Controllers/`, models em `app/Models/`, requests/policies onde o projeto já usa.
+- **Rotas**: manter rotas nomeadas; alinhar com o que o front consome via Inertia/Ziggy.
+- **Migrations**: nomes e alterações reversíveis quando fizer sentido; não editar migrations já aplicadas em produção sem estratégia explícita.
+- **Não editar** `vendor/` salvo exceção documentada.

@@ -1,6 +1,11 @@
 import React from 'react';
 
-export default ({ name, className }) => {
+type IconProps = {
+    name: string;
+    className?: string;
+};
+
+const Icon = ({ name, className }: IconProps) => {
   if (name === 'apple') {
     return (
       <svg
@@ -157,3 +162,5 @@ export default ({ name, className }) => {
 
   return null;
 };
+
+export default Icon;

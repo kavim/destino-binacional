@@ -1,5 +1,28 @@
 <?php
 
+if (! function_exists('googleMapsEmbedHttpsUrlIsAllowed')) {
+
+    /** Apenas HTTPS + host Google + caminho típico de embed (/maps/embed). */
+    function googleMapsEmbedHttpsUrlIsAllowed(string $url): bool
+    {
+        $parts = parse_url($url);
+        if (($parts['scheme'] ?? '') !== 'https') {
+            return false;
+        }
+        $host = strtolower($parts['host'] ?? '');
+        $isGoogle = $host === 'www.google.com'
+            || $host === 'google.com'
+            || $host === 'maps.google.com'
+            || str_ends_with($host, '.google.com');
+        if (! $isGoogle) {
+            return false;
+        }
+        $path = strtolower($parts['path'] ?? '');
+
+        return str_contains($path, '/maps/embed');
+    }
+}
+
 if (! function_exists('extractSrcFromGmapsIframe')) {
 
     function extractSrcFromGmapsIframe(?string $google_maps_src): ?string
@@ -8,13 +31,24 @@ if (! function_exists('extractSrcFromGmapsIframe')) {
             return null;
         }
 
+        $candidates = [];
+
         if (str_starts_with($google_maps_src, 'http')) {
-            return $google_maps_src;
+            $candidates[] = $google_maps_src;
         }
 
-        preg_match('~iframe.*src="([^"]*)"~', $google_maps_src, $result);
+        if (preg_match('~iframe[^>]+src="([^"]*)"~i', $google_maps_src, $m) && ! empty($m[1])) {
+            $candidates[] = $m[1];
+        }
 
-        return is_array($result) && count($result) > 0 && $result[1] ? $result[1] : null;
+        foreach ($candidates as $raw) {
+            $raw = trim($raw);
+            if ($raw !== '' && googleMapsEmbedHttpsUrlIsAllowed($raw)) {
+                return $raw;
+            }
+        }
+
+        return null;
     }
 
 }

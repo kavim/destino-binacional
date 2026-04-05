@@ -70,6 +70,7 @@
   html {
     @apply bg-background;
     color-scheme: light;
+    -webkit-tap-highlight-color: hsl(var(--primary) / 0.12);
   }
 
   html.dark {
@@ -103,6 +104,13 @@
         hsl(240 5% 40% / 0.06),
         transparent 55%
       );
+  }
+
+  /* iOS / mobile: fixed body backgrounds often tear or seam behind full-bleed heroes */
+  @media (max-width: 1023px) {
+    body {
+      background-attachment: scroll;
+    }
   }
 }
 

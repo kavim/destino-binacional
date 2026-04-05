@@ -5,6 +5,7 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Head, Link, useForm } from '@inertiajs/react';
+import type React from 'react';
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -18,13 +19,18 @@ export default function Register() {
         return () => {
             reset('password', 'password_confirmation');
         };
-    }, []);
+    }, [reset]);
 
-    const handleOnChange = (event) => {
-        setData(event.target.name, event.target.type === 'checkbox' ? event.target.checked : event.target.value);
+    const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, type, value, checked } = event.target;
+        const next = type === 'checkbox' ? checked : value;
+        if (name === 'name') setData('name', next as string);
+        else if (name === 'email') setData('email', next as string);
+        else if (name === 'password') setData('password', next as string);
+        else if (name === 'password_confirmation') setData('password_confirmation', next as string);
     };
 
-    const submit = (e) => {
+    const submit = (e: React.FormEvent) => {
         e.preventDefault();
 
         post(route('register'));

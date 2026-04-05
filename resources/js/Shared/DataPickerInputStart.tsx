@@ -1,9 +1,16 @@
 import DatePicker from 'react-date-picker';
+import type { DatePickerValue } from '@/lib/datePickerValue';
 
-export default function DataPickerInputStart({ start, handleOnChange, className }) {
-    const parseDate = (dateStr) => {
+type DataPickerInputStartProps = {
+    start: string;
+    handleOnChange: (value: DatePickerValue) => void;
+    className?: string;
+};
+
+export default function DataPickerInputStart({ start, handleOnChange, className }: DataPickerInputStartProps) {
+    const parseDate = (dateStr: unknown) => {
         if (!dateStr || typeof dateStr !== 'string') return null;
-        return new Date(dateStr.replace(/-/g, '\/'));
+        return new Date(dateStr.replace(/-/g, '/'));
     };
 
     return (

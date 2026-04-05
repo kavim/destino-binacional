@@ -94,16 +94,16 @@ class CategoryService
 
         $width = config('custom.icons_feature_image.width');
         $height = config('custom.icons_feature_image.height');
-        $path = config('custom.icons_feature_image.path');
+        $dest = public_path('images/icons');
         $featured_image_src = null;
 
         try {
+            $featured_image_src = 'cat_ico_'.time().'.'.$icon->getClientOriginalExtension();
+
             if ($icon->getClientOriginalExtension() === 'svg') {
-                $featured_image_src = 'cat_ico_'.time().'.'.$icon->getClientOriginalExtension();
-                $icon->storeAs($path, $featured_image_src, 'public');
+                $icon->move($dest, $featured_image_src);
             } else {
-                $featured_image_src = 'cat_ico_'.time().'.'.$icon->getClientOriginalExtension();
-                Image::make($icon)->resize($width, $height)->save(storage_path('app/public/'.$path.$featured_image_src));
+                Image::make($icon)->resize($width, $height)->save($dest.'/'.$featured_image_src);
             }
         } catch (Exception $e) {
             Log::error($e);

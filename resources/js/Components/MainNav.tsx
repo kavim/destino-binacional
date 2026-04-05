@@ -12,9 +12,9 @@ export default function MainNav() {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 
     return (
-        <nav className="sticky top-0 z-40 border-b border-border bg-card/80 shadow-sm shadow-black/5 backdrop-blur-md backdrop-saturate-150 dark:bg-card/85 dark:shadow-black/20">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between h-16">
+        <nav className="sticky top-0 z-40 border-b border-border bg-card/80 pt-[env(safe-area-inset-top)] shadow-sm shadow-black/5 backdrop-blur-md backdrop-saturate-150 dark:bg-card/85 dark:shadow-black/20">
+            <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+                <div className="flex min-h-[3.5rem] items-center justify-between py-2 sm:h-16 sm:py-0">
                     <div className="flex">
                         <div className="shrink-0 flex items-center">
                             <Link href="/">
@@ -67,10 +67,16 @@ export default function MainNav() {
                         </div>
                     </div>
 
-                    <div className="-mr-2 flex items-center sm:hidden">
+                    <div className="-mr-2 flex items-center gap-0.5 sm:hidden">
+                        <div className="flex h-11 w-11 items-center justify-center">
+                            <ThemeToggle />
+                        </div>
                         <button
+                            type="button"
+                            aria-expanded={showingNavigationDropdown}
+                            aria-controls="mobile-site-nav"
                             onClick={() => setShowingNavigationDropdown((previousState) => !previousState)}
-                            className="inline-flex items-center justify-center p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent focus:outline-none focus:bg-accent focus:text-foreground transition duration-150 ease-in-out"
+                            className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md p-2 text-muted-foreground hover:text-foreground hover:bg-accent focus:outline-none focus:bg-accent focus:text-foreground transition duration-150 ease-in-out"
                         >
                             <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                                 <path
@@ -93,8 +99,11 @@ export default function MainNav() {
                 </div>
             </div>
 
-            <div className={(showingNavigationDropdown ? 'block' : 'hidden') + ' sm:hidden'}>
-                <div className="pt-2 pb-3 space-y-1">
+            <div
+                id="mobile-site-nav"
+                className={(showingNavigationDropdown ? 'block' : 'hidden') + ' sm:hidden'}
+            >
+                <div className="space-y-1 pt-2 pb-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
                     <MobileNav />
                 </div>
             </div>

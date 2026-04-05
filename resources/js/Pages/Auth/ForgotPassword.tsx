@@ -3,17 +3,22 @@ import InputError from '@/Components/InputError';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Head, useForm } from '@inertiajs/react';
+import type React from 'react';
 
-export default function ForgotPassword({ status }) {
+type ForgotPasswordProps = {
+    status?: string;
+};
+
+export default function ForgotPassword({ status }: ForgotPasswordProps) {
     const { data, setData, post, processing, errors } = useForm({
         email: '',
     });
 
-    const onHandleChange = (event) => {
-        setData(event.target.name, event.target.value);
+    const onHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setData('email', event.target.value);
     };
 
-    const submit = (e) => {
+    const submit = (e: React.FormEvent) => {
         e.preventDefault();
 
         post(route('password.email'));

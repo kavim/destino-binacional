@@ -11,7 +11,11 @@ interface Props {
 }
 
 export default function UpdateProfileInformation({ mustVerifyEmail, status, className }: Props) {
-    const user = (usePage().props as any).auth.user;
+    const user = (
+        usePage().props as unknown as {
+            auth: { user: { name: string; email: string; email_verified_at: string | null } };
+        }
+    ).auth.user;
 
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
         name: user.name,

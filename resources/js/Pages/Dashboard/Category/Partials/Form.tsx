@@ -1,27 +1,73 @@
-import { useState, useEffect } from 'react';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import InputError from '@/Components/InputError';
-import ImagicLoader from '@/Components/ImagicLoader';
-import DeleteButton from '@/Shared/DeleteButton';
-import { Card, CardContent } from '@/Components/ui/card';
+import { useState, useEffect } from "react";
+import type React from "react";
+import InputLabel from "@/Components/InputLabel";
+import PrimaryButton from "@/Components/PrimaryButton";
+import TextInput from "@/Components/TextInput";
+import InputError from "@/Components/InputError";
+import ImagicLoader from "@/Components/ImagicLoader";
+import DeleteButton from "@/Shared/DeleteButton";
+import { Card, CardContent } from "@/Components/ui/card";
 
-export default function Form({ handleOnChange, submit, data, errors, onDelete = undefined, parent = null, processing, onIconChange }) {
-    const [iconImage, setIconImage] = useState(null);
+export type CategoryParentSummary = {
+    id: number;
+    name: string;
+    color: string;
+    icon: string;
+};
 
-    const onCorte = (image) => {
-        handleOnChange({ target: { name: 'image', value: image } });
-    }
+type CategoryFormData = {
+    name_es: string;
+    name_pt: string;
+    icon: string;
+    icon_image: string | File;
+    featured_image: string;
+    image: string;
+    color: string;
+    parent_id: number | null;
+};
 
-    const onIconImageChange = (event) => {
-        const file = event.target.files[0];
-        setIconImage(URL.createObjectURL(file));
+type CategoryFormErrors = Record<string, string | undefined>;
+
+type CategoryOnChangePayload = {
+    target: { name: string; value: unknown; type?: string; checked?: boolean };
+};
+
+type FormProps = {
+    handleOnChange: (e: CategoryOnChangePayload | React.ChangeEvent<HTMLInputElement>) => void;
+    submit: (e: React.FormEvent) => void;
+    data: CategoryFormData;
+    errors: CategoryFormErrors;
+    onDelete?: () => void;
+    parent?: CategoryParentSummary | null;
+    processing: boolean;
+    onIconChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+};
+
+export default function Form({
+    handleOnChange,
+    submit,
+    data,
+    errors,
+    onDelete = undefined,
+    parent = null,
+    processing,
+    onIconChange,
+}: FormProps) {
+    const [iconImage, setIconImage] = useState<string | null>(null);
+
+    const onCorte = (image: string) => {
+        handleOnChange({ target: { name: "image", value: image } });
+    };
+
+    const onIconImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            setIconImage(URL.createObjectURL(file));
+        }
         onIconChange(event);
     };
 
     useEffect(() => {
-        // Set the iconImage when editing a category
         if (data.icon) {
             setIconImage(data.icon);
         }
@@ -65,24 +111,35 @@ export default function Form({ handleOnChange, submit, data, errors, onDelete = 
                         <Card className="mb-5 overflow-hidden">
                             <CardContent className="space-y-3 p-4 sm:p-5">
                                 <div className="flex justify-center">
-                                {data.featured_image && !data.image ? (
-                                    <div className="mb-1">
-                                        <img src={data.featured_image} alt="featured_image" className='max-h-96 w-full max-w-md rounded-xl object-contain' />
-                                    </div>
-                                ) : (
-                                    <>
-                                        {(data.image) && (
-                                            <div className="mb-1">
-                                                <img src={data.image} alt="current_image" className='max-h-96 w-full max-w-md rounded-xl object-contain' />
-                                            </div>
-                                        )}
-                                    </>
-                                )}
+                                    {data.featured_image && !data.image ? (
+                                        <div className="mb-1">
+                                            <img
+                                                src={data.featured_image}
+                                                alt="featured_image"
+                                                className="max-h-96 w-full max-w-md rounded-xl object-contain"
+                                            />
+                                        </div>
+                                    ) : (
+                                        <>
+                                            {data.image && (
+                                                <div className="mb-1">
+                                                    <img
+                                                        src={data.image}
+                                                        alt="current_image"
+                                                        className="max-h-96 w-full max-w-md rounded-xl object-contain"
+                                                    />
+                                                </div>
+                                            )}
+                                        </>
+                                    )}
                                 </div>
 
                                 <ImagicLoader onCorte={onCorte}></ImagicLoader>
 
-                                <InputError message={errors.featured_image} className="mt-2" />
+                                <InputError
+                                    message={errors.featured_image}
+                                    className="mt-2"
+                                />
                                 <InputError message={errors.image} className="mt-2" />
                             </CardContent>
                         </Card>
@@ -103,43 +160,55 @@ export default function Form({ handleOnChange, submit, data, errors, onDelete = 
                             <div>
                                 <InputLabel htmlFor="icon" value="Icono:" />
                                 {iconImage && (
-
-                                    <div className='flex justify-start items-center my-2'>
-                                        <div className='p-2 rounded-full' style={{ backgroundColor: data.color }}>
-                                            <img src={iconImage} alt="icon" className="w-10 h-10 rounded-full" />
+                                    <div className="my-2 flex items-center justify-start">
+                                        <div
+                                            className="rounded-full p-2"
+                                            style={{ backgroundColor: data.color }}
+                                        >
+                                            <img
+                                                src={iconImage}
+                                                alt="icon"
+                                                className="h-10 w-10 rounded-full"
+                                            />
                                         </div>
                                     </div>
                                 )}
 
-                                <input type="file" name="icon_image" onChange={onIconImageChange} />
+                                <input
+                                    type="file"
+                                    name="icon_image"
+                                    onChange={onIconImageChange}
+                                />
 
-                                <div className="my-5 p-2 border rounded-md">
-                                    <p>Recomendamos descargar los iconos SVG <a href="https://www.svgrepo.com/" className="text-primary underline underline-offset-2 hover:text-primary/80">de este catálogo</a></p>
+                                <div className="my-5 rounded-md border p-2">
+                                    <p>
+                                        Recomendamos descargar los iconos SVG{" "}
+                                        <a
+                                            href="https://www.svgrepo.com/"
+                                            className="text-primary underline underline-offset-2 hover:text-primary/80"
+                                        >
+                                            de este catálogo
+                                        </a>
+                                    </p>
                                 </div>
                             </div>
                         </div>
                     </>
                 )}
 
-                {
-                    onDelete ? (
-                        <div className="flex justify-between mt-5">
-                            <DeleteButton type='button' onDelete={onDelete}>
-                                Delete
-                            </DeleteButton>
-                            <PrimaryButton disabled={processing}>
-                                Save
-                            </PrimaryButton>
-                        </div>
-                    ) : (
-                        <div className="flex justify-end mt-5">
-                            <PrimaryButton disabled={processing}>
-                                Save
-                            </PrimaryButton>
-                        </div>
-                    )
-                }
-            </form >
+                {onDelete ? (
+                    <div className="mt-5 flex justify-between">
+                        <DeleteButton type="button" onDelete={onDelete}>
+                            Delete
+                        </DeleteButton>
+                        <PrimaryButton disabled={processing}>Save</PrimaryButton>
+                    </div>
+                ) : (
+                    <div className="mt-5 flex justify-end">
+                        <PrimaryButton disabled={processing}>Save</PrimaryButton>
+                    </div>
+                )}
+            </form>
         </>
     );
 }

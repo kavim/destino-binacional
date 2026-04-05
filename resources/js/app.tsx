@@ -1,5 +1,5 @@
 import './bootstrap';
-import './observability';
+import { registerInertiaObservability } from './observability';
 import '../css/app.css';
 import 'react-date-picker/dist/DatePicker.css';
 
@@ -14,6 +14,7 @@ createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: (name) => resolvePageComponent(`./Pages/${name}.tsx`, import.meta.glob('./Pages/**/*.tsx')),
     setup({ el, App, props }) {
+        registerInertiaObservability();
         const root = createRoot(el);
         root.render(
             <ThemeProvider defaultTheme="system" storageKey="destino-ui-theme">

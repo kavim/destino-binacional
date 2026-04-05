@@ -1,4 +1,5 @@
-import { forwardRef, useEffect, useRef } from 'react';
+import { forwardRef, useCallback, useEffect, useRef } from 'react';
+import type React from 'react';
 import { Input } from "@/Components/ui/input";
 
 interface TextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -10,20 +11,31 @@ export default forwardRef<HTMLInputElement, TextInputProps>(function TextInput(
     ref
 ) {
     const localRef = useRef<HTMLInputElement>(null);
-    const inputRef = (ref as React.RefObject<HTMLInputElement>) || localRef;
+
+    const setRefs = useCallback(
+        (node: HTMLInputElement | null) => {
+            localRef.current = node;
+            if (typeof ref === 'function') {
+                ref(node);
+            } else if (ref != null) {
+                (ref as React.MutableRefObject<HTMLInputElement | null>).current = node;
+            }
+        },
+        [ref],
+    );
 
     useEffect(() => {
-        if (isFocused && inputRef.current) {
-            inputRef.current.focus();
+        if (isFocused) {
+            localRef.current?.focus();
         }
-    }, []);
+    }, [isFocused]);
 
     return (
         <Input
             {...props}
             type={type}
             className={className}
-            ref={inputRef}
+            ref={setRefs}
         />
     );
 });

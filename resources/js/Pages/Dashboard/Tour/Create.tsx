@@ -1,10 +1,15 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 import { Card, CardContent } from '@/Components/ui/card';
-import Form from './Partials/Form';
+import Form, { type FormChangeEvent } from './Partials/Form';
+import type { DayWorkingHours } from '@/Components/WorkingHours';
+import type React from 'react';
 
 export default function Create() {
-    const { auth, recurrence_day_hour } = usePage().props;
+    const { auth, recurrence_day_hour } = usePage().props as unknown as {
+        auth: unknown;
+        recurrence_day_hour: DayWorkingHours[];
+    };
 
     const { data, setData, errors, post, processing } = useForm({
         title: '',
@@ -18,22 +23,24 @@ export default function Create() {
         guide: '',
         start: '',
         end: '',
-        category_ids: [],
-        recurrence_day_hour: recurrence_day_hour,
+        category_ids: [] as number[],
+        recurrence_day_hour: recurrence_day_hour ?? [],
         recurrence_enabled: false,
-        image: null as string | null,
+        image: '',
     });
 
     const onCorte = (image: string) => {
         setData('featured_image', image);
-        setData('image', null);
-    }
-
-    const handleOnChange = event => {
-        setData(event.target.name, event.target.type === 'checkbox' ? event.target.checked : event.target.value);
+        setData('image', '');
     };
 
-    const submit = e => {
+    const handleOnChange = (event: React.ChangeEvent<HTMLInputElement> | FormChangeEvent) => {
+        const t = event.target;
+        const value = t.type === 'checkbox' ? Boolean(t.checked) : t.value;
+        setData((prev) => ({ ...prev, [t.name]: value }) as typeof prev);
+    };
+
+    const submit = (e: React.FormEvent) => {
         e.preventDefault();
         post(route('tours.store'));
     };

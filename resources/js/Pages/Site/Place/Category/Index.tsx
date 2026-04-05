@@ -1,6 +1,6 @@
 import SiteLayout from '@/Layouts/SiteLayout';
 import { Head, usePage } from '@inertiajs/react';
-import Pagination from '@/Shared/Pagination';
+import Pagination, { type PaginationLink } from '@/Shared/Pagination';
 import CategoryHeader from './CategoryHeader';
 import PlaceCardList from '../PlaceCardList';
 
@@ -12,11 +12,14 @@ type SiteCategoryShow = {
     icon: string;
 };
 
+const EMPTY_CATEGORY_COPY =
+    'Próximamente compartiremos más detalles sobre esta categoría.';
+
 type SiteCategoryIndexPageProps = {
     category: SiteCategoryShow;
     places: {
         data: Array<{ slug: string; name: string; image?: string }>;
-        links: unknown[];
+        links: PaginationLink[];
     };
 };
 
@@ -45,16 +48,20 @@ export default function Index() {
 
             <CategoryHeader category={category} />
 
-            <div className='w-full'>
+            <div className="w-full">
                 <div
-                    className={`border-y border-border px-6 py-6 text-center shadow-sm ${!bandBg ? 'bg-primary text-primary-foreground' : ''}`}
+                    className={`border-y border-border px-4 py-5 text-center text-sm leading-relaxed shadow-sm sm:px-6 sm:py-6 sm:text-base ${!bandBg ? 'bg-primary text-primary-foreground' : ''}`}
                     style={bandBg ? { backgroundColor: bandBg, color: bandFg } : undefined}
                 >
-                    {category.description}
+                    <p className="mx-auto max-w-3xl text-balance whitespace-pre-line">
+                        {category.description?.trim()
+                            ? category.description.trim()
+                            : EMPTY_CATEGORY_COPY}
+                    </p>
                 </div>
             </div>
 
-            <div className="sm:max-w-full lg:max-w-7xl mx-auto my-5">
+            <div className="mx-auto my-5 max-w-full px-2 sm:px-4 lg:max-w-7xl lg:px-8">
                 <PlaceCardList places={data} />
                 <Pagination links={links} />
             </div>

@@ -1,12 +1,13 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 import { Card, CardContent } from '@/Components/ui/card';
-import Form from './Partials/Form';
+import Form, { type FormChangeEvent } from './Partials/Form';
+import type React from 'react';
 
 export default function Create() {
-    const { auth } = usePage().props;
+    const { auth } = usePage().props as unknown as { auth: unknown };
 
-    const { data, setData, errors, post, reset, processing, recentlySuccessful } = useForm({
+    const { data, setData, errors, post, processing } = useForm({
         title: '',
         description: '',
         google_maps_src: '',
@@ -20,20 +21,22 @@ export default function Create() {
         is_online: false,
         link: '',
         featured_image: '',
-        image: null as string | null,
+        image: '' as string,
         tag_ids: [],
     });
 
     const onCorte = (image: string) => {
         setData('featured_image', image);
-        setData('image', null);
-    }
-
-    const handleOnChange = event => {
-        setData(event.target.name, event.target.type === 'checkbox' ? event.target.checked : event.target.value);
+        setData('image', '');
     };
 
-    const submit = e => {
+    const handleOnChange = (event: React.ChangeEvent<HTMLInputElement> | FormChangeEvent) => {
+        const t = event.target;
+        const value = t.type === 'checkbox' ? Boolean(t.checked) : t.value;
+        setData((prev) => ({ ...prev, [t.name]: value }) as typeof prev);
+    };
+
+    const submit = (e: React.FormEvent) => {
         e.preventDefault();
         post(route('events.store'));
     };

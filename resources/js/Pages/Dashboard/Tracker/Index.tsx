@@ -122,7 +122,13 @@ export default function TrackerIndex() {
     const { summary, sessions_by_day, views_by_day, top_paths, visitors_by_country, top_browsers, devices_stats, top_referers, recent_sessions, days, error } =
         usePage().props as unknown as TrackerPageProps;
 
-    const changeDays = (d) => {
+    const sessionsByDay = sessions_by_day ?? {};
+    const viewsByDay = views_by_day ?? {};
+    const visitorsByCountry = visitors_by_country ?? [];
+    const topBrowsers = top_browsers ?? [];
+    const topReferers = top_referers ?? [];
+
+    const changeDays = (d: number) => {
         router.get(route('tracker.index'), { days: d }, { preserveState: true });
     };
 
@@ -199,8 +205,8 @@ export default function TrackerIndex() {
                             <h3 className="text-lg font-medium text-foreground">Sessões por dia</h3>
                         </div>
                         <div className="p-6">
-                            {Object.keys(sessions_by_day || {}).length > 0 ? (
-                                <BarChart data={sessions_by_day} valueLabel={(v) => Number(v).toLocaleString('pt-BR')} barColor="bg-brand-green" />
+                            {Object.keys(sessionsByDay).length > 0 ? (
+                                <BarChart data={sessionsByDay} valueLabel={(v) => Number(v).toLocaleString('pt-BR')} barColor="bg-brand-green" />
                             ) : (
                                 <p className="text-muted-foreground text-sm">Nenhum dado no período</p>
                             )}
@@ -211,8 +217,8 @@ export default function TrackerIndex() {
                             <h3 className="text-lg font-medium text-foreground">Page views por dia</h3>
                         </div>
                         <div className="p-6">
-                            {Object.keys(views_by_day || {}).length > 0 ? (
-                                <BarChart data={views_by_day} valueLabel={(v) => Number(v).toLocaleString('pt-BR')} barColor="bg-brand-blue" />
+                            {Object.keys(viewsByDay).length > 0 ? (
+                                <BarChart data={viewsByDay} valueLabel={(v) => Number(v).toLocaleString('pt-BR')} barColor="bg-brand-blue" />
                             ) : (
                                 <p className="text-muted-foreground text-sm">Nenhum dado no período</p>
                             )}
@@ -254,9 +260,9 @@ export default function TrackerIndex() {
                             <h3 className="text-lg font-medium text-foreground">Visitantes por país</h3>
                         </div>
                         <div className="p-6">
-                            {visitors_by_country?.length > 0 ? (
+                            {visitorsByCountry.length > 0 ? (
                                 <BarChart
-                                    data={Object.fromEntries(visitors_by_country.map((r) => [r.country || r.country_code || '?', r.total]))}
+                                    data={Object.fromEntries(visitorsByCountry.map((r) => [r.country || r.country_code || '?', r.total]))}
                                     valueLabel={(v) => Number(v).toLocaleString('pt-BR')}
                                     barColor="bg-brand-green"
                                 />
@@ -274,9 +280,9 @@ export default function TrackerIndex() {
                             <h3 className="text-lg font-medium text-foreground">Navegadores</h3>
                         </div>
                         <div className="p-6">
-                            {top_browsers?.length > 0 ? (
+                            {topBrowsers.length > 0 ? (
                                 <BarChart
-                                    data={Object.fromEntries(top_browsers.map((r) => [r.browser || 'Desconhecido', r.total]))}
+                                    data={Object.fromEntries(topBrowsers.map((r) => [r.browser || 'Desconhecido', r.total]))}
                                     valueLabel={(v) => Number(v).toLocaleString('pt-BR')}
                                     barColor="bg-brand-blue"
                                 />
@@ -296,14 +302,14 @@ export default function TrackerIndex() {
                 </section>
 
                 {/* Top referers */}
-                {top_referers?.length > 0 && (
+                {topReferers.length > 0 && (
                     <section className="bg-card shadow rounded-xl overflow-hidden">
                         <div className="px-6 py-4 border-b border-border">
                             <h3 className="text-lg font-medium text-foreground">Principais origens (Referers)</h3>
                         </div>
                         <div className="p-6">
                             <BarChart
-                                data={Object.fromEntries(top_referers.map((r) => [r.host || '(direto)', r.total]))}
+                                data={Object.fromEntries(topReferers.map((r) => [r.host || '(direto)', r.total]))}
                                 valueLabel={(v) => Number(v).toLocaleString('pt-BR')}
                                 barColor="bg-brand-blue"
                             />
@@ -342,7 +348,7 @@ export default function TrackerIndex() {
                                     recent_sessions.map((row) => (
                                         <tr key={row.id} className="hover:bg-muted">
                                             <td className="px-4 py-2 text-sm text-muted-foreground whitespace-nowrap">
-                                                {new Date(row.created_at).toLocaleString('pt-BR')}
+                                                {new Date(row.created_at ?? '').toLocaleString('pt-BR')}
                                             </td>
                                             <td className="px-4 py-2 text-sm font-mono text-foreground">{row.client_ip || '—'}</td>
                                             <td className="px-4 py-2 text-sm text-foreground">

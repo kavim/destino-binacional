@@ -1,34 +1,50 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { useForm, usePage, router } from '@inertiajs/react';
 import { Card, CardContent } from '@/Components/ui/card';
-import Form from './Partials/Form';
+import Form, { type FormChangeEvent } from './Partials/Form';
+import type React from 'react';
+
+type PlaceRecord = Record<string, unknown> & {
+    id: number;
+    name?: string;
+    description_es?: string;
+    description_pt?: string;
+    address?: string;
+    city_id?: string | number;
+    place_type_id?: string | number;
+    image?: string;
+    google_maps_src?: string;
+    order?: string | number;
+};
 
 export default function Edit() {
     const { auth, place, category_ids } = usePage().props as unknown as {
         auth: unknown;
-        place: Record<string, unknown> & { id: number; name?: string };
+        place: PlaceRecord;
         category_ids: number[];
     };
 
-    const { data, setData, errors, put, reset, processing, recentlySuccessful } = useForm({
-        name: place.name,
-        description_es: place.description_es || '',
-        description_pt: place.description_pt || '',
-        address: place.address || '',
-        category_ids: category_ids ? category_ids : [],
-        city_id: place.city_id,
-        place_type_id: place.place_type_id,
+    const { data, setData, errors, put, processing } = useForm({
+        name: place.name ?? '',
+        description_es: String(place.description_es ?? ''),
+        description_pt: String(place.description_pt ?? ''),
+        address: String(place.address ?? ''),
+        category_ids: category_ids ?? [],
+        city_id: place.city_id != null ? String(place.city_id) : '',
+        place_type_id: place.place_type_id != null ? String(place.place_type_id) : '',
         featured_image: '',
-        image: place.image,
-        google_maps_src: place.google_maps_src || '',
-        order: place.order || '',
+        image: place.image != null ? String(place.image) : '',
+        google_maps_src: String(place.google_maps_src ?? ''),
+        order: place.order != null ? String(place.order) : '',
     });
 
-    const handleOnChange = event => {
-        setData(event.target.name, event.target.type === 'checkbox' ? event.target.checked : event.target.value);
+    const handleOnChange = (event: React.ChangeEvent<HTMLInputElement> | FormChangeEvent) => {
+        const t = event.target;
+        const value = t.type === 'checkbox' ? Boolean(t.checked) : t.value;
+        setData((prev) => ({ ...prev, [t.name]: value }) as typeof prev);
     };
 
-    const submit = e => {
+    const submit = (e: React.FormEvent) => {
         e.preventDefault();
         put(route('places.update', place.id), { preserveScroll: true });
     };

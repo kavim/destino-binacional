@@ -5,39 +5,61 @@ import 'dayjs/locale/es';
 import { trans } from '@/utils';
 import { EventCard } from '@/Components/EventCard';
 
+type HomeEventItem = {
+    slug: string;
+    image: string;
+    title: string;
+    start: string;
+    end: string;
+};
+
+type GroupedEventsMap = Record<string, HomeEventItem[]>;
+
 export default function Events() {
     dayjs.locale("es");
-    const { grouped_events } = usePage().props;
+    const { grouped_events } = usePage().props as unknown as { grouped_events: GroupedEventsMap };
 
-    const [slectedDate, setSlectedDate] = useState(null);
+    const [slectedDate, setSlectedDate] = useState<string | null>(null);
 
     const slideToStart = () => {
         const slider = document.getElementById('slider');
+        if (!slider) return;
         slider.scrollLeft = 10;
-    }
+    };
 
-    const goToDate = (group) => {
+    const goToDate = (group: string) => {
         setSlectedDate(group);
         slideToStart();
     }
 
     return (
-        <div className="rounded-xl border border-border bg-card/95 py-3 shadow-md shadow-black/[0.06] dark:bg-card dark:shadow-black/25 md:mx-4 md:p-2 sm:p-0">
-            <div className="text-3xl md:text-4xl font-extrabold text-center">
-                <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-                    Próximos eventos
-                </span>
+        <div className="rounded-xl border border-border bg-card/95 py-4 shadow-md shadow-black/[0.06] dark:bg-card dark:shadow-black/25 sm:py-3 md:mx-4 md:p-2">
+            <div className="w-full px-3 text-center sm:px-4">
+                <h2 className="text-2xl font-extrabold sm:text-3xl md:text-4xl">
+                    <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+                        Próximos eventos
+                    </span>
+                </h2>
             </div>
             {Object.keys(grouped_events).length > 0 ? (
                 <>
-                    <div className='flex max-w-full overflow-x-auto scroll whitespace-nowrap scroll-smooth scrollbar-hide py-5 px-2'>
+                    <div className="scrollbar-hide flex max-w-full flex-nowrap scroll-smooth gap-1 overflow-x-auto overscroll-x-contain px-2 pb-2 pt-5 [-webkit-overflow-scrolling:touch]">
                         {Object.keys(grouped_events).map((group, index) => {
                             return (
                                 <div
-                                    key={index}
+                                    key={group}
                                     data-slide-index={index}
                                     onClick={() => goToDate(group)}
-                                    className="m-2">
+                                    className="m-2 shrink-0 snap-start"
+                                    role="button"
+                                    tabIndex={0}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter" || e.key === " ") {
+                                            e.preventDefault();
+                                            goToDate(group);
+                                        }
+                                    }}
+                                >
                                     <div className="flex w-32 flex-none cursor-pointer rounded-xl border border-border bg-card text-center shadow-sm active:opacity-90 md:w-24">
                                         <div className="flex w-full flex-col overflow-hidden text-center">
                                             <div className="rounded-t-xl bg-primary py-1 text-sm font-medium uppercase tracking-wide text-primary-foreground">
@@ -60,25 +82,29 @@ export default function Events() {
                         })}
                     </div>
 
-                    <div id='slider' className='w-full h-full overflow-x-auto scroll whitespace-nowrap scroll-smooth scrollbar-hide px-2 py-5 flex flex-row'>
+                    <div
+                        id="slider"
+                        className="scrollbar-hide flex w-full snap-x snap-mandatory flex-row flex-nowrap items-start justify-start gap-0 overflow-x-auto scroll-smooth overscroll-x-contain px-3 pb-5 pt-4 sm:px-2 sm:pb-5 sm:pt-3 [-webkit-overflow-scrolling:touch]"
+                    >
                         {slectedDate ? (
                             <>
                                 {
-                                    grouped_events[slectedDate].map((event, index) => (
-                                        <EventCard key={index} index={index} event={event} />
+                                    grouped_events[slectedDate].map((event) => (
+                                        <EventCard key={event.slug} event={event} />
                                     ))
                                 }
                             </>
                         ) : (
                             <>
                                 {
-                                    Object.keys(grouped_events).map((group, index) => {
-                                        return (
-                                            grouped_events[group].map((event, index) => (
-                                                <EventCard key={index} index={index} event={event} />
-                                            ))
-                                        )
-                                    })
+                                    Object.keys(grouped_events).map((group) =>
+                                        grouped_events[group].map((event) => (
+                                            <EventCard
+                                                key={`${group}-${event.slug}`}
+                                                event={event}
+                                            />
+                                        )),
+                                    )
                                 }
                             </>
                         )}

@@ -1,21 +1,17 @@
-import React from 'react';
 import SiteLayout from '@/Layouts/SiteLayout';
 import { Head } from '@inertiajs/react';
 import Header from './Header';
-import Filters from './Filters';
 import TourList from "./ToursList";
 
-export default function Index({ filters }) {
+export default function Index() {
     return (
         <SiteLayout>
             <Head title='Tour' />
 
-            <Header/>
+            <Header />
 
-            {/*<Filters filters={filters} />*/}
-
-            <div>
-                <TourList></TourList>
+            <div className="mx-auto my-5 max-w-full px-2 sm:px-4 lg:max-w-7xl lg:px-8">
+                <TourList />
             </div>
         </SiteLayout>
     );

@@ -1,12 +1,30 @@
 import React from "react";
 import TimeRangePicker from "@/Components/TimeRangePicker";
+import type { TimeRangeChangePayload } from "@/Components/TimeRangePicker";
 import moment from "moment";
 import { trans } from '@/utils';
 import Checkbox from "@/Components/Checkbox";
 
-export default function WorkingHours({ handleOnChange, workingHours }) {
+type HourSlot = { start: string; end: string };
 
-    const handleTimeRangeChange = (event) => {
+export type DayWorkingHours = {
+    day: string;
+    enable: boolean;
+    hours: HourSlot[];
+};
+
+type WorkingHoursProps = {
+    handleOnChange: (e: {
+        target: { name: string; value: DayWorkingHours[] };
+    }) => void;
+    workingHours: DayWorkingHours[];
+};
+
+export default function WorkingHours({
+    handleOnChange,
+    workingHours,
+}: WorkingHoursProps) {
+    const handleTimeRangeChange = (event: TimeRangeChangePayload) => {
         const updatedWorkingHours = workingHours.map(dayInfo => {
             if (dayInfo.day === event.day) {
                 dayInfo.hours[0].start = event.newStart.format("HH:mm");
@@ -17,7 +35,7 @@ export default function WorkingHours({ handleOnChange, workingHours }) {
 
         handleOnChange({ target: { name: "working_hours", value: updatedWorkingHours } });
     };
-    const handleTimeRangeChange2 = (event) => {
+    const handleTimeRangeChange2 = (event: TimeRangeChangePayload) => {
         const updatedWorkingHours = workingHours.map(dayInfo => {
             if (dayInfo.day === event.day) {
                 dayInfo.hours[1].start = event.newStart.format("HH:mm");
@@ -29,10 +47,10 @@ export default function WorkingHours({ handleOnChange, workingHours }) {
         handleOnChange({ target: { name: "working_hours", value: updatedWorkingHours } });
     };
 
-    const addHourRange = (day) => {
+    const addHourRange = (day: string) => {
         const updatedWorkingHours = workingHours.map(dayInfo => {
             if (dayInfo.day === day) {
-                let newHour = {
+                const newHour = {
                     start: '14:00',
                     end: '18:00',
                 };
@@ -45,7 +63,7 @@ export default function WorkingHours({ handleOnChange, workingHours }) {
         handleOnChange({ target: { name: "working_hours", value: updatedWorkingHours } });
     }
 
-    const removeHourRange = (day) => {
+    const removeHourRange = (day: string) => {
         const updatedWorkingHours = workingHours.map(dayInfo => {
             if (dayInfo.day === day) {
                 dayInfo.hours.pop();
@@ -56,7 +74,7 @@ export default function WorkingHours({ handleOnChange, workingHours }) {
         handleOnChange({ target: { name: "working_hours", value: updatedWorkingHours } });
     }
 
-    const checkChange = (event) => {
+    const checkChange = (event: { target: { name?: string; checked: boolean } }) => {
         const updatedWorkingHours = workingHours.map(dayInfo => {
             if (dayInfo.day === event.target.name) {
                 dayInfo.enable = event.target.checked;

@@ -1,7 +1,22 @@
 import { Link } from "@inertiajs/react";
 import { cn } from "@/lib/utils";
+import { stripHtmlToText } from "@/lib/sanitizeHtml";
 
-const PageLink = ({ active, label, url }) => {
+export type PaginationLink = {
+  active: boolean;
+  label: string;
+  url: string | null;
+};
+
+const PageLink = ({
+  active,
+  label,
+  url,
+}: {
+  active: boolean;
+  label: string;
+  url: string;
+}) => {
   const className = cn(
     "mr-1 mb-1 inline-flex rounded-md border px-4 py-2 text-sm font-medium transition-colors",
     "border-border bg-muted text-foreground",
@@ -11,19 +26,19 @@ const PageLink = ({ active, label, url }) => {
   );
   return (
     <Link className={className} href={url}>
-      <span dangerouslySetInnerHTML={{ __html: label }}></span>
+      <span>{stripHtmlToText(label)}</span>
     </Link>
   );
 };
 
-const PageInactive = ({ label }) => {
+const PageInactive = ({ label }: { label: string }) => {
   const className = cn(
     "mr-1 mb-1 inline-flex rounded-md border border-border bg-muted px-4 py-2 text-sm text-muted-foreground opacity-50"
   );
-  return <div className={className} dangerouslySetInnerHTML={{ __html: label }} />;
+  return <div className={className}>{stripHtmlToText(label)}</div>;
 };
 
-export default ({ links = [] }) => {
+export default function Pagination({ links = [] }: { links?: PaginationLink[] }) {
   if (links.length === 3) return null;
 
   return (
@@ -37,4 +52,4 @@ export default ({ links = [] }) => {
       })}
     </div>
   );
-};
+}

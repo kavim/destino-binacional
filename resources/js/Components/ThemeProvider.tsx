@@ -84,6 +84,8 @@ export function ThemeProvider({
   );
 }
 
+/** Colocated hook for this provider; fast refresh expects components-only default exports. */
+// eslint-disable-next-line react-refresh/only-export-components -- useTheme is the public API for ThemeProvider
 export const useTheme = () => {
   const context = useContext(ThemeProviderContext);
 

@@ -8,7 +8,7 @@ interface Props {
 
 export default function SiteLayout({ header, children }: Props) {
     return (
-        <div className="relative flex min-h-screen flex-col bg-transparent">
+        <div className="relative flex min-h-screen min-h-[100dvh] flex-col overflow-x-hidden bg-transparent">
             <MainNav />
             {header && (
                 <header className="border-b border-border bg-card/90 shadow-sm shadow-black/[0.04] backdrop-blur-sm dark:bg-card/85 dark:shadow-black/20">
@@ -17,7 +17,7 @@ export default function SiteLayout({ header, children }: Props) {
                     </div>
                 </header>
             )}
-            <main className="relative flex-1">{children}</main>
+            <main className="relative w-full shrink-0 pb-10">{children}</main>
             <Footer />
         </div>
     );

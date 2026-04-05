@@ -1,17 +1,50 @@
-import { router } from '@inertiajs/react'
+import { router } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { Card, CardContent } from '@/Components/ui/card';
 import Form from './Partials/Form';
+import type React from 'react';
+import type { CategoryParentSummary } from './Partials/Form';
 
-export default function Create() {
+type CategoryChangeEvent =
+    | React.ChangeEvent<HTMLInputElement>
+    | {
+          target: {
+              name: string;
+              value: unknown;
+              type?: string;
+              checked?: boolean;
+          };
+      };
+
+type CategoryRecord = Record<string, unknown> & {
+    id: number;
+    name_es?: string;
+    name_pt?: string;
+    featured_image?: string;
+    icon?: string;
+    color?: string;
+};
+
+type CategoryFormData = {
+    name_es: string;
+    name_pt: string;
+    icon: string;
+    icon_image: string | File;
+    featured_image: string;
+    image: string;
+    color: string;
+    parent_id: number | null;
+};
+
+export default function Edit() {
     const { auth, category, parent } = usePage().props as unknown as {
         auth: unknown;
-        category: Record<string, unknown>;
-        parent: { id: number; name: string; color: string; icon: string } | null;
+        category: CategoryRecord;
+        parent: CategoryParentSummary | null;
     };
 
-    const { data, setData, errors, put, processing } = useForm({
+    const { data, setData, errors, processing } = useForm<CategoryFormData>({
         name_es: category.name_es ? category.name_es : '',
         name_pt: category.name_pt ? category.name_pt : '',
         featured_image: category.featured_image ? category.featured_image : '',
@@ -19,19 +52,21 @@ export default function Create() {
         icon: category.icon ? category.icon : '',
         icon_image: '',
         color: category.color ? category.color : '#1c1c1c',
-        parent_id: parent ? parent.id : '',
+        parent_id: parent ? parent.id : null,
     });
 
-    const handleOnChange = event => {
-        setData(event.target.name, event.target.type === 'checkbox' ? event.target.checked : event.target.value);
+    const handleOnChange = (event: CategoryChangeEvent) => {
+        const t = event.target;
+        const value = t.type === 'checkbox' ? Boolean(t.checked) : t.value;
+        setData((prev) => ({ ...prev, [t.name]: value }) as CategoryFormData);
     };
 
-    const onIconChange = e => {
-        let img = e.target.files[0];
-        setData('icon_image', img);
-    }
+    const onIconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const img = e.target.files?.[0];
+        if (img) setData('icon_image', img);
+    };
 
-    const submit = e => {
+    const submit = (e: React.FormEvent) => {
         e.preventDefault();
         // put(route('categories.update', category.id));
         router.post(`/categories/${category.id}`, {

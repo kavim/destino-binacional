@@ -1,23 +1,31 @@
-import { Link } from '@inertiajs/react';
+import type React from "react";
+import { Link } from "@inertiajs/react";
+import { cn } from "@/lib/utils";
 
-interface ResponsiveNavLinkProps {
+type InertiaLinkProps = React.ComponentProps<typeof Link>;
+
+interface ResponsiveNavLinkProps extends InertiaLinkProps {
     active?: boolean;
     className?: string;
     children: React.ReactNode;
-    href: string;
-    method?: string;
-    as?: string;
 }
 
-export default function ResponsiveNavLink({ active = false, className = '', children, ...props }: ResponsiveNavLinkProps) {
+export default function ResponsiveNavLink({
+    active = false,
+    className = "",
+    children,
+    ...props
+}: ResponsiveNavLinkProps) {
     return (
         <Link
-            {...(props as any)}
-            className={`w-full flex items-start pl-3 pr-4 py-2 border-l-4 ${
+            {...props}
+            className={cn(
+                "flex w-full items-center border-l-4 pl-3 pr-4 py-3 text-base font-medium transition duration-150 ease-in-out focus:outline-none",
                 active
-                    ? 'border-primary text-primary bg-primary/10 focus:text-primary focus:bg-primary/15 focus:border-primary'
-                    : 'border-transparent text-muted-foreground hover:text-foreground hover:bg-accent hover:border-border focus:text-foreground focus:bg-accent focus:border-border'
-            } text-base font-medium focus:outline-none transition duration-150 ease-in-out ${className}`}
+                    ? "border-primary bg-primary/10 text-primary focus:border-primary focus:bg-primary/15 focus:text-primary"
+                    : "border-transparent text-muted-foreground hover:border-border hover:bg-accent hover:text-foreground focus:border-border focus:bg-accent focus:text-foreground",
+                className,
+            )}
         >
             {children}
         </Link>

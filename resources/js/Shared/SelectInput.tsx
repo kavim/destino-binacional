@@ -1,20 +1,21 @@
 import React from 'react';
 
-export default ({
+export type SelectInputProps = {
+  label?: React.ReactNode;
+  name: string;
+  className?: string;
+  children: React.ReactNode;
+  errors?: unknown[];
+} & Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'name'>;
+
+export default function SelectInput({
   label = '',
   name,
   className = '',
   children,
   errors = [],
   ...props
-}: {
-  label?: React.ReactNode;
-  name: string;
-  className?: string;
-  children: React.ReactNode;
-  errors?: unknown[];
-  [key: string]: unknown;
-}) => {
+}: SelectInputProps) {
   return (
     <div className={className}>
       {label && (
@@ -35,4 +36,4 @@ export default ({
       )}
     </div>
   );
-};
+}

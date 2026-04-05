@@ -6,13 +6,17 @@ import { Card, CardContent } from "@/Components/ui/card";
 import { Badge } from "@/Components/ui/badge";
 import { cn } from "@/lib/utils";
 
+type DashboardProps = {
+    auth: { user: { name: string } };
+};
+
 const shortcutCardClass = cn(
   "group transition-colors",
   "hover:border-primary/40 hover:bg-accent/50",
   "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background"
 );
 
-export default function Dashboard(props) {
+export default function Dashboard(props: DashboardProps) {
   return (
     <AuthenticatedLayout
       header={

@@ -1,14 +1,22 @@
 import React, { useState } from "react";
-import ImageUpload from '@/Shared/ImageUpload';
-import ImageCropper from '@/Shared/ImageCropper';
-import Modal from '@/Components/Modal';
-import { Button } from '@/Components/ui/button';
-import { X } from 'lucide-react';
+import ImageUpload from "@/Shared/ImageUpload";
+import ImageCropper from "@/Shared/ImageCropper";
+import Modal from "@/Components/Modal";
+import { Button } from "@/Components/ui/button";
+import { X } from "lucide-react";
+
+type CroppedArea = {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+};
 
 function ImagicLoader({ onCorte }: { onCorte: (dataURL: string) => void }) {
     const [image, setImage] = useState("");
-    const [currentPage, setCurrentPage] = useState("choose-img");
-    const [imgAfterCrop, setImgAfterCrop] = useState("");
+    const [currentPage, setCurrentPage] = useState<"choose-img" | "crop-img">(
+        "choose-img",
+    );
     const [modalShow, setModalShow] = useState(false);
 
     const onImageSelected = (selectedImg: string) => {
@@ -17,14 +25,15 @@ function ImagicLoader({ onCorte }: { onCorte: (dataURL: string) => void }) {
         setModalShow(true);
     };
 
-    const onCropDone = (imgCroppedArea: any) => {
+    const onCropDone = (imgCroppedArea: CroppedArea | null) => {
+        if (!imgCroppedArea) return;
         const canvasEle = document.createElement("canvas");
         canvasEle.width = imgCroppedArea.width;
         canvasEle.height = imgCroppedArea.height;
 
         const context = canvasEle.getContext("2d");
 
-        let imageObj1 = new Image();
+        const imageObj1 = new Image();
         imageObj1.src = image;
         imageObj1.onload = function () {
             context!.drawImage(
@@ -41,8 +50,7 @@ function ImagicLoader({ onCorte }: { onCorte: (dataURL: string) => void }) {
 
             const dataURL = canvasEle.toDataURL("image/webp");
 
-            setImgAfterCrop(dataURL);
-            setCurrentPage("img-cropped");
+            setCurrentPage("choose-img");
             onCorte(dataURL);
             setModalShow(false);
         };
@@ -51,8 +59,7 @@ function ImagicLoader({ onCorte }: { onCorte: (dataURL: string) => void }) {
     const onCropCancel = () => {
         setCurrentPage("choose-img");
         setImage("");
-        setCurrentPage("");
-        setModalShow(modalShow ? false : true);
+        setModalShow(false);
     };
 
     return (

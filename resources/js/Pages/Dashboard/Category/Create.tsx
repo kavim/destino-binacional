@@ -2,6 +2,29 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { Card, CardContent } from '@/Components/ui/card';
 import Form from './Partials/Form';
+import type React from 'react';
+
+type CategoryChangeEvent =
+    | React.ChangeEvent<HTMLInputElement>
+    | {
+          target: {
+              name: string;
+              value: unknown;
+              type?: string;
+              checked?: boolean;
+          };
+      };
+
+type CategoryFormData = {
+    name_es: string;
+    name_pt: string;
+    icon: string;
+    icon_image: string | File;
+    featured_image: string;
+    image: string;
+    color: string;
+    parent_id: number | null;
+};
 
 export default function Create() {
     const { auth, parent } = usePage().props as unknown as {
@@ -18,7 +41,7 @@ export default function Create() {
         return color;
     };
 
-    const { data, setData, errors, post, processing } = useForm({
+    const { data, setData, errors, post, processing } = useForm<CategoryFormData>({
         name_es: '',
         name_pt: '',
         icon: '',
@@ -29,16 +52,18 @@ export default function Create() {
         parent_id: parent ? parent.id : null,
     });
 
-    const handleOnChange = event => {
-        setData(event.target.name, event.target.type === 'checkbox' ? event.target.checked : event.target.value);
+    const handleOnChange = (event: CategoryChangeEvent) => {
+        const t = event.target;
+        const value = t.type === 'checkbox' ? Boolean(t.checked) : t.value;
+        setData((prev) => ({ ...prev, [t.name]: value }) as CategoryFormData);
     };
 
-    const onIconChange = e => {
-        let img = e.target.files[0];
-        setData('icon_image', img);
-    }
+    const onIconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const img = e.target.files?.[0];
+        if (img) setData('icon_image', img);
+    };
 
-    const submit = e => {
+    const submit = (e: React.FormEvent) => {
         e.preventDefault();
         post(route('categories.store'));
     };

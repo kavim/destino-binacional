@@ -19,7 +19,7 @@ import {
 import { formatCurrencyCents } from "@/lib/format";
 import { Head, Link, usePage } from "@inertiajs/react";
 import { Banknote, ChevronRight, Route } from "lucide-react";
-import Pagination from "@/Shared/Pagination";
+import Pagination, { type PaginationLink } from "@/Shared/Pagination";
 import SearchFilter from "./Partials/SearchFilter";
 
 type TourRow = {
@@ -32,7 +32,7 @@ type TourRow = {
 
 export default function Index() {
   const { tours } = usePage().props as unknown as {
-    tours: { data: TourRow[]; links: unknown[] };
+    tours: { data: TourRow[]; links: PaginationLink[] };
   };
   const { data, links } = tours;
 

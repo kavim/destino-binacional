@@ -114,6 +114,7 @@ const NavigationMenuIndicator = React.forwardRef<
 NavigationMenuIndicator.displayName =
   NavigationMenuPrimitive.Indicator.displayName;
 
+/* eslint-disable react-refresh/only-export-components -- navigationMenuTriggerStyle (CVA) + Radix re-exports */
 export {
   navigationMenuTriggerStyle,
   NavigationMenu,
@@ -125,3 +126,4 @@ export {
   NavigationMenuIndicator,
   NavigationMenuViewport,
 };
+/* eslint-enable react-refresh/only-export-components */

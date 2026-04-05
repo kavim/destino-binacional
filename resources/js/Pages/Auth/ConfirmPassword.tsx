@@ -5,6 +5,7 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Head, useForm } from '@inertiajs/react';
+import type React from 'react';
 
 export default function ConfirmPassword() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -15,13 +16,13 @@ export default function ConfirmPassword() {
         return () => {
             reset('password');
         };
-    }, []);
+    }, [reset]);
 
-    const handleOnChange = (event) => {
-        setData(event.target.name, event.target.value);
+    const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setData('password', event.target.value);
     };
 
-    const submit = (e) => {
+    const submit = (e: React.FormEvent) => {
         e.preventDefault();
 
         post(route('password.confirm'));

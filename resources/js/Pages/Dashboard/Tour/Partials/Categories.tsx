@@ -1,75 +1,93 @@
 import React, { useState } from 'react';
 import { usePage } from '@inertiajs/react';
-import { Collapsible } from 'collapsible-react-component'
-import 'collapsible-react-component/dist/index.css'
+import { Collapsible } from 'collapsible-react-component';
+import 'collapsible-react-component/dist/index.css';
 import { cn } from '@/lib/utils';
 import InputError from '@/Components/InputError';
 import MultipleCheckbox from './MultipleCheckbox';
 
-export default function Categories({ handleCheck }) {
+type CategoryCheckHandler = (e: {
+    target: { value?: string | number; checked: boolean };
+}) => void;
 
+type CategoriesProps = {
+    handleCheck: CategoryCheckHandler;
+};
+
+export default function Categories({ handleCheck }: CategoriesProps) {
     const { parent_categories, errors: fieldErrors } = usePage().props as unknown as {
-        parent_categories: Array<{ id: number; name: string; color: string; icon: string; open?: boolean }>;
+        parent_categories: Array<{
+            id: number;
+            name: string;
+            color: string;
+            icon: string;
+            open?: boolean;
+        }>;
         errors: Record<string, string>;
     };
     const [controls, setControls] = useState(parent_categories);
 
-    const toggleControl = (id) => {
-        setControls(controls.map(control => {
-            if (control.id === id) {
-                control.open = !control.open;
-            }
-            return control;
-        }));
-    }
+    const toggleControl = (id: number) => {
+        setControls(
+            controls.map((control) => {
+                if (control.id === id) {
+                    return { ...control, open: !control.open };
+                }
+                return control;
+            }),
+        );
+    };
 
-    const isOpen = (id) => {
-        let isOpen = false;
-        controls.map(control => {
-            if (control.id === id) {
-                isOpen = control.open;
-            }
-        });
-        return isOpen;
-    }
+    const isCategoryOpen = (id: number): boolean => {
+        const c = controls.find((control) => control.id === id);
+        return Boolean(c?.open);
+    };
 
     return (
         <>
-            {parent_categories.map((cat, index) => {
-                return (
-                    <div key={index}>
-                        <div className='bg-muted rounded-lg mb-3 border shadow-sm'>
-                            <div className='flex px-2 py-1 justify-between cursor-pointer' onClick={() => {
-                                toggleControl(cat.id);
-                            }}>
-                                <div>
-                                    <div className='flex justify-start items-center'>
-                                        <div className='p-2 rounded-full' style={{ backgroundColor: cat.color }}>
-                                            <img src={cat.icon} alt={cat.name} className="w-5 h-5 rounded-full" />
-                                        </div>
-                                        <span className='ml-3 text-md' >{cat.name}</span>
-                                    </div>
-                                </div>
-                                <button
-                                    type='button'
+            {parent_categories.map((cat) => (
+                <div key={cat.id} className="mb-3 rounded-lg border bg-muted shadow-sm">
+                    <div
+                        className="flex cursor-pointer justify-between px-2 py-1"
+                        onClick={() => {
+                            toggleControl(cat.id);
+                        }}
+                    >
+                        <div>
+                            <div className="flex items-center justify-start">
+                                <div
+                                    className="rounded-full p-2"
+                                    style={{ backgroundColor: cat.color }}
                                 >
-                                    <i className={cn(['fas fa-chevron-down transition ease-in-out duration-250'], { '-rotate-180': isOpen(cat.id) })} ></i>
-                                </button>
-                            </div>
-                            <Collapsible
-                                open={isOpen(cat.id)}
-                                revealType='bottomFirst'
-                            >
-                                <div className='my-2 mx-4'>
-                                    <MultipleCheckbox catId={cat.id} handleCheck={handleCheck} />
+                                    <img
+                                        src={cat.icon}
+                                        alt={cat.name}
+                                        className="h-5 w-5 rounded-full"
+                                    />
                                 </div>
-                            </Collapsible>
-                            <InputError message={fieldErrors?.category_ids} className="mt-2" />
+                                <span className="ml-3 text-md">{cat.name}</span>
+                            </div>
                         </div>
+                        <button type="button">
+                            <i
+                                className={cn(
+                                    'fas fa-chevron-down transition duration-250 ease-in-out',
+                                    { '-rotate-180': isCategoryOpen(cat.id) },
+                                )}
+                            />
+                        </button>
                     </div>
-                )
-            })
-            }
+                    <Collapsible open={isCategoryOpen(cat.id)} revealType="bottomFirst">
+                        <div className="mx-4 my-2">
+                            <MultipleCheckbox catId={cat.id} handleCheck={handleCheck} />
+                        </div>
+                    </Collapsible>
+                    <InputError
+                        message={fieldErrors?.category_ids}
+                        className="mt-2"
+                    />
+                </div>
+            ))}
         </>
     );
 }

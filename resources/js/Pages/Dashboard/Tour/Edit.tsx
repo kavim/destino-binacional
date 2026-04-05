@@ -1,7 +1,9 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { useForm, usePage, router } from '@inertiajs/react';
 import { Card, CardContent } from '@/Components/ui/card';
-import Form from './Partials/Form';
+import Form, { type FormChangeEvent } from './Partials/Form';
+import type { DayWorkingHours } from '@/Components/WorkingHours';
+import type React from 'react';
 
 export default function Edit() {
     const { auth, tour, category_ids } = usePage().props as unknown as {
@@ -10,28 +12,35 @@ export default function Edit() {
         category_ids: number[];
     };
 
+    const recurrenceRaw = tour.recurrence_day_hour;
+    const recurrence_day_hour: DayWorkingHours[] = Array.isArray(recurrenceRaw)
+        ? (recurrenceRaw as DayWorkingHours[])
+        : [];
+
     const { data, setData, errors, put, processing } = useForm({
-        title: tour.title || '',
-        description: tour.description || '',
-        price: tour.price || '',
-        currency: tour.currency || 'BRL',
+        title: String(tour.title ?? ''),
+        description: String(tour.description ?? ''),
+        price: String(tour.price ?? ''),
+        currency: String(tour.currency ?? 'BRL'),
         featured_image: '',
-        image: tour.image,
-        google_maps_src: tour.google_maps_src || '',
-        meeting_point: tour.meeting_point || '',
-        guide: tour.guide || '',
-        start: tour.start || '',
-        end: tour.end || '',
+        image: tour.image != null ? String(tour.image) : '',
+        google_maps_src: String(tour.google_maps_src ?? ''),
+        meeting_point: String(tour.meeting_point ?? ''),
+        guide: String(tour.guide ?? ''),
+        start: String(tour.start ?? ''),
+        end: String(tour.end ?? ''),
         category_ids: category_ids ? category_ids : [],
-        recurrence_day_hour: tour.recurrence_day_hour || [],
-        recurrence_enabled: tour.recurrence_enabled || '',
+        recurrence_day_hour,
+        recurrence_enabled: Boolean(tour.recurrence_enabled),
     });
 
-    const handleOnChange = event => {
-        setData(event.target.name, event.target.type === 'checkbox' ? event.target.checked : event.target.value);
+    const handleOnChange = (event: React.ChangeEvent<HTMLInputElement> | FormChangeEvent) => {
+        const t = event.target;
+        const value = t.type === 'checkbox' ? Boolean(t.checked) : t.value;
+        setData((prev) => ({ ...prev, [t.name]: value }) as typeof prev);
     };
 
-    const submit = e => {
+    const submit = (e: React.FormEvent) => {
         e.preventDefault();
         put(route('tours.update', tour.id), { preserveScroll: true });
     };

@@ -7,8 +7,8 @@ const socialLinkClass = cn(
 
 export default function Footer() {
   return (
-    <footer className="relative mt-12 border-t border-footer-border bg-footer text-footer-foreground shadow-[inset_0_1px_0_0_hsl(0_0%_100%_/0.06)] dark:shadow-[inset_0_1px_0_0_hsl(0_0%_100%_/0.04)]">
-      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+    <footer className="relative mt-auto border-t border-footer-border bg-footer text-footer-foreground shadow-[inset_0_1px_0_0_hsl(0_0%_100%_/0.06)] dark:shadow-[inset_0_1px_0_0_hsl(0_0%_100%_/0.04)]">
+      <div className="mx-auto max-w-7xl px-4 py-14 pb-[max(3.5rem,env(safe-area-inset-bottom))] sm:px-6 lg:px-8">
         <div className="grid gap-12 md:grid-cols-[minmax(0,280px)_1fr] md:items-start">
           <div className="mx-auto text-center md:mx-0 md:text-left">
             <a

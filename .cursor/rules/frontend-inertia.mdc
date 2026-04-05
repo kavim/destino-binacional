@@ -1,0 +1,12 @@
+---
+description: Front-end Inertia/React/TS — pastas e padrões do projeto
+globs: resources/js/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Front-end (Destino Binacional)
+
+- Páginas Inertia em `resources/js/Pages/`; componentes em `Components/` e `Shared/`.
+- Reutilizar primitivos em `Components/ui/` e layouts já usados (`AuthenticatedLayout`, etc.).
+- Navegação e forms: `@inertiajs/react` (`Link`, `useForm`, `router`).
+- Evitar refatorações amplas não pedidas; alinhar estilo e imports ao arquivo vizinho.

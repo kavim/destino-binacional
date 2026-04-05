@@ -8,9 +8,32 @@ import CmsRichTextEditor from '@/Components/CmsRichTextEditor';
 import ImagicLoader from '@/Components/ImagicLoader';
 import DataPickerInputStart from '@/Shared/DataPickerInputStart';
 import DataPickerInputEnd from '@/Shared/DataPickerInputEnd';
+import type { DatePickerValue } from '@/lib/datePickerValue';
+import { datePickerValueToDate } from '@/lib/datePickerValue';
 import DeleteButton from '@/Shared/DeleteButton';
 import Tags from './Tags';
 import { Card, CardContent } from '@/Components/ui/card';
+
+type EventFormData = {
+    title: string;
+    description?: string;
+    featured_image?: string;
+    image?: string;
+    start?: string;
+    end?: string;
+    is_online: boolean;
+    google_maps_src?: string;
+    address?: string;
+    city_id?: string | number;
+    link?: string;
+    tag_ids: number[];
+};
+
+type EventFormErrors = Record<string, string | undefined>;
+
+export type FormChangeEvent = {
+    target: { name: string; value: unknown; type?: string; checked?: boolean };
+};
 
 export default function Form({
     handleOnChange,
@@ -21,19 +44,16 @@ export default function Form({
     onDelete,
     onCorte: onCorteFromParent,
 }: {
-    handleOnChange: (e: { target: { name: string; value: unknown; type?: string; checked?: boolean } }) => void;
+    handleOnChange: (e: FormChangeEvent | React.ChangeEvent<HTMLInputElement>) => void;
     submit: (e: React.FormEvent) => void;
-    data: any;
-    errors: any;
+    data: EventFormData;
+    errors: EventFormErrors;
     processing: boolean;
     onDelete?: () => void;
     onCorte?: (image: string) => void;
 }) {
-    const { categories, cities, grouped_categories, parent_tags } = usePage().props as unknown as {
-        categories: unknown;
-        cities: unknown;
-        grouped_categories: unknown;
-        parent_tags: unknown;
+    const { cities } = usePage().props as unknown as {
+        cities: Record<string, { id: string | number; name: string }>;
     };
 
     const onCorte =
@@ -46,9 +66,12 @@ export default function Form({
         handleOnChange({ target: { name: 'is_online', value: !data.is_online } });
     }
 
-    const handleCheck = (event) => {
+    const handleCheck = (event: {
+        target: { value?: string | number; checked: boolean };
+    }) => {
         let updatedList = [...data.tag_ids];
-        let checkboxId = parseInt(event.target.value);
+        if (event.target.value === undefined) return;
+        const checkboxId = parseInt(String(event.target.value), 10);
 
         if (event.target.checked) {
             updatedList = [...data.tag_ids, checkboxId];
@@ -57,6 +80,23 @@ export default function Form({
         }
 
         handleOnChange({ target: { name: 'tag_ids', value: updatedList } });
+    };
+
+    const formatPickerToYmd = (d: Date) => {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+    };
+
+    const onStartPickerChange = (value: DatePickerValue) => {
+        const d = datePickerValueToDate(value);
+        handleOnChange({ target: { name: 'start', value: d ? formatPickerToYmd(d) : '' } });
+    };
+
+    const onEndPickerChange = (value: DatePickerValue) => {
+        const d = datePickerValueToDate(value);
+        handleOnChange({ target: { name: 'end', value: d ? formatPickerToYmd(d) : '' } });
     };
 
     return (
@@ -118,8 +158,8 @@ export default function Form({
             <div className="my-5">
                 <InputLabel htmlFor="start" value="Fecha de inicio del Evento" />
                 <DataPickerInputStart
-                    start={data.start}
-                    handleOnChange={handleOnChange}
+                    start={data.start ?? ''}
+                    handleOnChange={onStartPickerChange}
                     className="mt-1 block w-full"
                 />
                 <InputError message={errors.start} className="mt-2" />
@@ -128,8 +168,8 @@ export default function Form({
             <div className="my-5">
                 <InputLabel htmlFor="end" value="Fecha de cierre del Evento" />
                 <DataPickerInputEnd
-                    end={data.end}
-                    handleOnChange={handleOnChange}
+                    end={data.end ?? ''}
+                    handleOnChange={onEndPickerChange}
                     className="mt-1 block w-full"
                 />
                 <InputError message={errors.end} className="mt-2" />

@@ -5,8 +5,14 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Head, useForm } from '@inertiajs/react';
+import type React from 'react';
 
-export default function ResetPassword({ token, email }) {
+type ResetPasswordProps = {
+    token: string;
+    email: string;
+};
+
+export default function ResetPassword({ token, email }: ResetPasswordProps) {
     const { data, setData, post, processing, errors, reset } = useForm({
         token: token,
         email: email,
@@ -18,13 +24,16 @@ export default function ResetPassword({ token, email }) {
         return () => {
             reset('password', 'password_confirmation');
         };
-    }, []);
+    }, [reset]);
 
-    const onHandleChange = (event) => {
-        setData(event.target.name, event.target.value);
+    const onHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = event.target;
+        if (name === 'email') setData('email', value);
+        else if (name === 'password') setData('password', value);
+        else if (name === 'password_confirmation') setData('password_confirmation', value);
     };
 
-    const submit = (e) => {
+    const submit = (e: React.FormEvent) => {
         e.preventDefault();
 
         post(route('password.store'));

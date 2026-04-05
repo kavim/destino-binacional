@@ -18,7 +18,7 @@ import {
 } from "@/Components/ui/table";
 import { Head, Link, usePage } from "@inertiajs/react";
 import { ChevronRight, MapPin } from "lucide-react";
-import Pagination from "@/Shared/Pagination";
+import Pagination, { type PaginationLink } from "@/Shared/Pagination";
 import SearchFilter from "./Partials/SearchFilter";
 
 type City = { id: number; name: string };
@@ -33,7 +33,7 @@ type PlaceRow = {
 };
 
 export default function Index() {
-  const { places } = usePage().props as unknown as { places: { data: PlaceRow[]; links: unknown[] } };
+  const { places } = usePage().props as unknown as { places: { data: PlaceRow[]; links: PaginationLink[] } };
   const { data, links } = places;
 
     return (

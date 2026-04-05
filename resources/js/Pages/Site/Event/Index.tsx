@@ -1,19 +1,14 @@
-import React, { useState } from 'react';
 import SiteLayout from '@/Layouts/SiteLayout';
-import { Head, useForm } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import Header from './Header';
 import EventList from './EventsList';
-import DataPickerInputStart from '@/Shared/DataPickerInputStart';
-import DataPickerInputEnd from '@/Shared/DataPickerInputEnd';
-import PrimaryButton from '@/Components/PrimaryButton';
-import { trans } from '@/utils';
-import Filters from './Filters';
+import Filters, { type EventFiltersState } from './Filters';
 
 export default function Index({
     filters,
     category,
 }: {
-    filters?: unknown;
+    filters?: EventFiltersState;
     category?: unknown;
 }) {
     return (
@@ -22,9 +17,8 @@ export default function Index({
 
             <Header category={category} />
 
-            <Filters filters={filters} />
-
-            <div>
+            <div className="mx-auto my-5 max-w-full space-y-4 px-2 sm:px-4 lg:max-w-7xl lg:px-8">
+                <Filters filters={filters ?? {}} />
                 <EventList />
             </div>
         </SiteLayout>

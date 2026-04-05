@@ -34,6 +34,12 @@ type EventRow = {
   is_online?: boolean;
 };
 
+type PaginationLinkItem = {
+  url: string | null;
+  label: string;
+  active: boolean;
+};
+
 function formatEventRange(start?: string | null, end?: string | null): string {
   if (!start && !end) return "—";
   const s = start ? dayjs(start) : null;
@@ -48,7 +54,7 @@ function formatEventRange(start?: string | null, end?: string | null): string {
 
 export default function Index() {
   const { events } = usePage().props as unknown as {
-    events: { data: EventRow[]; links: unknown[] };
+    events: { data: EventRow[]; links: PaginationLinkItem[] };
   };
   const { data, links } = events;
 

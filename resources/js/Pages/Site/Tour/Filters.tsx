@@ -3,8 +3,10 @@ import { useForm } from '@inertiajs/react';
 import PrimaryButton from '@/Components/PrimaryButton';
 import { trans } from '@/utils';
 import DatePicker from 'react-date-picker';
+import type { DatePickerValue } from '@/lib/datePickerValue';
 import 'react-date-picker/dist/DatePicker.css';
 import 'react-calendar/dist/Calendar.css';
+import { datePickerValueToDate } from '@/lib/datePickerValue';
 
 type TourFiltersState = { start?: string; end?: string };
 
@@ -24,11 +26,12 @@ export default function Filters({ filters }: { filters: TourFiltersState }) {
 
     const parseUrlDate = (dateStr: unknown) => {
         if (!dateStr || typeof dateStr !== 'string') return null;
-        const dateObj = new Date(dateStr.replace(/-/g, '\/'));
+        const dateObj = new Date(dateStr.replace(/-/g, '/'));
         return isNaN(dateObj.getTime()) ? null : dateObj;
     };
 
-    const startDataChange = (date: Date | null) => {
+    const startDataChange = (value: DatePickerValue) => {
+        const date = datePickerValueToDate(value);
         if (date) {
             setData('start', formatDateForQuery(date));
         } else {
@@ -36,7 +39,8 @@ export default function Filters({ filters }: { filters: TourFiltersState }) {
         }
     };
 
-    const endDataChange = (date: Date | null) => {
+    const endDataChange = (value: DatePickerValue) => {
+        const date = datePickerValueToDate(value);
         if (date) {
             setData('end', formatDateForQuery(date));
         } else {

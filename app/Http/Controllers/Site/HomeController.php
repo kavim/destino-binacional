@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Site;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Services\CategoryService;
 use App\Services\EventService;
 use Inertia\Inertia;
@@ -21,7 +22,14 @@ class HomeController extends Controller
 
         return Inertia::render('Site/Home/Home', [
             'grouped_events' => $events,
-            'categories' => $categories,
+            'categories' => $categories->map(fn (Category $category) => [
+                'slug' => $category->slug,
+                'name' => $category->name,
+                'description' => $category->description,
+                'featured_image' => $category->featured_image,
+                'icon' => $category->icon,
+                'color' => $category->color,
+            ])->values(),
         ]);
     }
 

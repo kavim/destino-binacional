@@ -9,7 +9,7 @@ import Categories from './Categories';
 import DeleteButton from '@/Shared/DeleteButton';
 import TimeInput  from '@/Components/TimeInput';
 import { CurrencyInput } from 'react-currency-mask';
-import WorkingHours from '@/Components/WorkingHours';
+import WorkingHours, { type DayWorkingHours } from '@/Components/WorkingHours';
 import Checkbox from "@/Components/Checkbox";
 import { Card, CardContent } from '@/Components/ui/card';
 import { Input } from '@/Components/ui/input';
@@ -17,6 +17,29 @@ import { cn } from '@/lib/utils';
 
 /** react-currency-mask typings omit className / InputElement used here */
 const CurrencyInputField = CurrencyInput as unknown as React.ComponentType<Record<string, unknown>>;
+
+type TourFormData = {
+    title: string;
+    description?: string;
+    price: string;
+    currency: string;
+    featured_image?: string;
+    image?: string;
+    google_maps_src?: string;
+    meeting_point?: string;
+    guide?: string;
+    start?: string;
+    end?: string;
+    category_ids: number[];
+    recurrence_day_hour: DayWorkingHours[];
+    recurrence_enabled: boolean;
+};
+
+type TourFormErrors = Record<string, string | undefined>;
+
+export type FormChangeEvent = {
+    target: { name: string; value: unknown; type?: string; checked?: boolean };
+};
 
 export default function Form({
     handleOnChange,
@@ -27,10 +50,10 @@ export default function Form({
     onDelete = null,
     onCorte: onCorteFromParent,
 }: {
-    handleOnChange: (e: { target: { name: string; value: unknown; type?: string; checked?: boolean } }) => void;
+    handleOnChange: (e: FormChangeEvent | React.ChangeEvent<HTMLInputElement>) => void;
     submit: (e: React.FormEvent) => void;
-    data: any;
-    errors: any;
+    data: TourFormData;
+    errors: TourFormErrors;
     processing: boolean;
     onDelete?: (() => void) | null;
     onCorte?: (image: string) => void;
@@ -41,13 +64,18 @@ export default function Form({
             handleOnChange({ target: { name: 'featured_image', value: image } });
         });
 
-    const startDataChange = (date) => {
+    const startDataChange = (date: { target: { value: string } }) => {
         // Extrair os componentes da data
         const [year, month, day] = date.target.value.split('T')[0].split('-');
         const [hours, minutes] = date.target.value.split('T')[1].split(':');
 
         // Criar uma nova data no formato UTC
-        const utcDate = new Date(Date.UTC(year, month - 1, day, hours, minutes));
+        const y = Number(year);
+        const mo = Number(month);
+        const d = Number(day);
+        const h = Number(hours);
+        const mi = Number(minutes);
+        const utcDate = new Date(Date.UTC(y, mo - 1, d, h, mi));
 
         // Formatar a data em "yyyy-MM-ddThh:mm"
         const formattedDate = utcDate.toISOString().slice(0, 16);
@@ -56,13 +84,18 @@ export default function Form({
         handleOnChange({target: {name: 'start', value: formattedDate}});
     };
 
-    const endDataChange = (date) => {
+    const endDataChange = (date: { target: { value: string } }) => {
         // Extrair os componentes da data
         const [year, month, day] = date.target.value.split('T')[0].split('-');
         const [hours, minutes] = date.target.value.split('T')[1].split(':');
 
         // Criar uma nova data no formato UTC
-        const utcDate = new Date(Date.UTC(year, month - 1, day, hours, minutes));
+        const y = Number(year);
+        const mo = Number(month);
+        const d = Number(day);
+        const h = Number(hours);
+        const mi = Number(minutes);
+        const utcDate = new Date(Date.UTC(y, mo - 1, d, h, mi));
 
         // Formatar a data em "yyyy-MM-ddThh:mm"
         const formattedDate = utcDate.toISOString().slice(0, 16);
@@ -71,7 +104,7 @@ export default function Form({
         handleOnChange({target: {name: 'end', value: formattedDate}});
     };
 
-    const handleMoneyChange = (_event, originalValue) => {
+    const handleMoneyChange = (_event: unknown, originalValue: unknown) => {
         const n =
             typeof originalValue === 'number' && Number.isFinite(originalValue)
                 ? originalValue
@@ -81,9 +114,12 @@ export default function Form({
         });
     };
 
-    const handleCheck = (event) => {
+    const handleCheck = (event: {
+        target: { value?: string | number; checked: boolean };
+    }) => {
         let updatedList = [...data.category_ids];
-        let checkboxId = parseInt(event.target.value);
+        if (event.target.value === undefined) return;
+        const checkboxId = parseInt(String(event.target.value), 10);
 
         if (event.target.checked) {
             updatedList = [...data.category_ids, checkboxId];
@@ -92,6 +128,20 @@ export default function Form({
         }
 
         handleOnChange({target: {name: 'category_ids', value: updatedList}});
+    };
+
+    const handleRecurrenceCheckbox = (e: {
+        target: { name?: string; value?: string | number; checked: boolean };
+    }) => {
+        if (!e.target.name) return;
+        handleOnChange({
+            target: {
+                name: e.target.name,
+                value: e.target.checked,
+                type: 'checkbox',
+                checked: e.target.checked,
+            },
+        });
     };
 
     return (
@@ -219,7 +269,7 @@ export default function Form({
             <div className="divider mt-10">Recorrencia</div>
 
             <div className="my-5">
-                <Checkbox label="Ativar recorrencia" name="recurrence_enabled" isChecked={data.recurrence_enabled} onChange={handleOnChange} />
+                <Checkbox label="Ativar recorrencia" name="recurrence_enabled" isChecked={data.recurrence_enabled} onChange={handleRecurrenceCheckbox} />
 
                 {data.recurrence_enabled ? (
                     <WorkingHours workingHours={data.recurrence_day_hour} handleOnChange={handleOnChange} />

@@ -1,4 +1,5 @@
-import { Link } from '@inertiajs/react';
+import type React from "react";
+import { Link } from "@inertiajs/react";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -15,19 +16,17 @@ interface TriggerProps {
 }
 
 interface ContentProps {
-    align?: 'left' | 'right';
+    align?: "left" | "right";
     width?: string;
     contentClasses?: string;
     children: React.ReactNode;
 }
 
-interface DropdownLinkProps {
-    href: string;
-    method?: string;
-    as?: string;
+type InertiaLinkProps = React.ComponentProps<typeof Link>;
+
+type DropdownLinkProps = InertiaLinkProps & {
     className?: string;
-    children: React.ReactNode;
-}
+};
 
 const Dropdown = ({ children }: DropdownProps) => {
     return (
@@ -45,19 +44,19 @@ const Trigger = ({ children }: TriggerProps) => {
     );
 };
 
-const Content = ({ align = 'right', children }: ContentProps) => {
+const Content = ({ align = "right", children }: ContentProps) => {
     return (
-        <DropdownMenuContent align={align === 'right' ? 'end' : 'start'}>
+        <DropdownMenuContent align={align === "right" ? "end" : "start"}>
             {children}
         </DropdownMenuContent>
     );
 };
 
-const DropdownLink = ({ className = '', children, ...props }: DropdownLinkProps) => {
+const DropdownLink = ({ className = "", children, ...props }: DropdownLinkProps) => {
     return (
         <DropdownMenuItem asChild>
             <Link
-                {...(props as any)}
+                {...props}
                 className={className}
             >
                 {children}

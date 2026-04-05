@@ -1,6 +1,12 @@
 import { Link, Head } from '@inertiajs/react';
 
-export default function Welcome(props) {
+type WelcomeProps = {
+    auth: { user: { name: string; email: string } | null };
+    laravelVersion: string;
+    phpVersion: string;
+};
+
+export default function Welcome(props: WelcomeProps) {
     return (
         <>
             <Head title="Welcome" />

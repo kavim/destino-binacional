@@ -1,17 +1,13 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link, router, usePage } from '@inertiajs/react';
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import { Head, router, usePage } from "@inertiajs/react";
 
 function BarChart({
     data,
     maxValue,
-    labelKey = 'date',
-    valueKey = 'total',
     valueLabel,
 }: {
-    data: Record<string, unknown>;
+    data: Record<string, number>;
     maxValue?: number;
-    labelKey?: string;
-    valueKey?: string;
     valueLabel?: (v: unknown) => string;
 }) {
     const max = maxValue ?? Math.max(...Object.values(data).map(Number), 1);
@@ -42,13 +38,40 @@ type ObservabilityPageProps = {
         unique_visitors_estimate: number;
         views_by_day: Record<string, number>;
         top_pages: Array<{ path: string; views: number }>;
-        visitors_by_country?: Array<{ country?: string; country_code?: string; total: number }>;
-        recent_visits?: Array<Record<string, any>>;
+        visitors_by_country?: Array<{
+            country?: string;
+            country_code?: string;
+            total: number;
+        }>;
+        recent_visits?: Array<{
+            id: string | number;
+            viewed_at: string;
+            path: string;
+            ip?: string;
+            city?: string;
+            region?: string;
+            country?: string;
+            timezone?: string;
+            user?: {
+                name: string;
+                email: string;
+            } | null;
+            referer?: string | null;
+            user_agent?: string | null;
+        }>;
     };
     /** Erros agregados da API de observabilidade (não confundir com errors de validação Inertia) */
     errors: {
         by_source: Array<{ source: string; total: number }>;
-        recent: Array<Record<string, any>>;
+        recent: Array<{
+            id: string | number;
+            created_at: string;
+            source: string;
+            message: string;
+            url?: string | null;
+            file?: string | null;
+            context?: Record<string, unknown> | null;
+        }>;
     };
     performance: {
         avg_duration_ms: number | null;
@@ -64,7 +87,9 @@ export default function ObservabilityIndex() {
     const { traffic, errors: observabilityErrors, performance, days, log_viewer_url } = usePage()
         .props as unknown as ObservabilityPageProps;
 
-    const changeDays = (d) => {
+    const visitorsByCountry = traffic.visitors_by_country ?? [];
+
+    const changeDays = (d: number) => {
         router.get(route('observability.index'), { days: d }, { preserveState: true });
     };
 
@@ -161,11 +186,11 @@ export default function ObservabilityIndex() {
                         </div>
 
                         {/* Visitantes por país */}
-                        {traffic.visitors_by_country?.length > 0 && (
+                        {visitorsByCountry.length > 0 && (
                             <div className="mt-6">
                                 <p className="text-sm font-medium text-foreground mb-2">Visitantes por país</p>
                                 <BarChart
-                                    data={Object.fromEntries(traffic.visitors_by_country.map((r) => [r.country || r.country_code || '?', r.total]))}
+                                    data={Object.fromEntries(visitorsByCountry.map((r) => [r.country || r.country_code || '?', r.total]))}
                                     valueLabel={(v) => Number(v).toLocaleString('pt-BR')}
                                 />
                             </div>
@@ -312,13 +337,14 @@ export default function ObservabilityIndex() {
                                         <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground uppercase">Quando</th>
                                         <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground uppercase">Origem</th>
                                         <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground uppercase">Mensagem</th>
+                                        <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground uppercase">Meta (cliente)</th>
                                         <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground uppercase">URL / Arquivo</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-border">
                                     {observabilityErrors.recent.length === 0 ? (
                                         <tr>
-                                            <td colSpan={4} className="px-4 py-4 text-center text-muted-foreground">Nenhum erro registrado</td>
+                                            <td colSpan={5} className="px-4 py-4 text-center text-muted-foreground">Nenhum erro registrado</td>
                                         </tr>
                                     ) : (
                                         observabilityErrors.recent.map((row) => (
@@ -333,6 +359,26 @@ export default function ObservabilityIndex() {
                                                 </td>
                                                 <td className="px-4 py-2 text-sm text-foreground max-w-md truncate" title={row.message}>
                                                     {row.message}
+                                                </td>
+                                                <td className="px-4 py-2 text-sm text-muted-foreground max-w-[10rem] truncate">
+                                                    {(() => {
+                                                        const ctx = row.context;
+                                                        const meta =
+                                                            ctx &&
+                                                            typeof ctx === 'object' &&
+                                                            'client_meta' in ctx &&
+                                                            ctx.client_meta &&
+                                                            typeof ctx.client_meta === 'object'
+                                                                ? (ctx.client_meta as Record<string, string>)
+                                                                : undefined;
+                                                        const summary = meta?.kind ?? (meta ? 'ver tooltip' : '—');
+                                                        const full = meta ? JSON.stringify(meta, null, 0) : '';
+                                                        return (
+                                                            <span title={full || undefined} className="font-mono text-xs">
+                                                                {summary}
+                                                            </span>
+                                                        );
+                                                    })()}
                                                 </td>
                                                 <td className="px-4 py-2 text-sm text-muted-foreground max-w-xs truncate" title={row.url || row.file || ''}>
                                                     {row.url || row.file || '—'}

@@ -1,12 +1,26 @@
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import SiteLayout from '@/Layouts/SiteLayout';
 import { cn } from '@/lib/utils';
+import { safeGoogleMapsEmbedUrl } from '@/lib/mapsEmbedUrl';
+import { sanitizeCmsHtmlForDisplay } from '@/lib/sanitizeHtml';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
-import { trans } from '@/utils';
 
-export default function Show({ event }) {
+type SiteEventShow = {
+    title: string;
+    image: string;
+    start: string;
+    end: string;
+    description: string;
+    google_maps_src?: string;
+    name?: string;
+};
+
+export default function Show({ event }: { event: SiteEventShow }) {
     dayjs.locale("es");
+
+    const safeDescription = sanitizeCmsHtmlForDisplay(event.description);
+    const mapEmbed = safeGoogleMapsEmbedUrl(event.google_maps_src);
 
     const className = cn(
         [
@@ -59,16 +73,22 @@ export default function Show({ event }) {
                 </div>
                 <div className='flex flex-col-reverse md:flex-row'>
                     <div className='p-3 break-words w-full md:w-2/3 bg-card md:my-2 md:ml-5 rounded-lg'>
-                        <div dangerouslySetInnerHTML={{ __html: event.description }} />
+                        <div dangerouslySetInnerHTML={{ __html: safeDescription }} />
                     </div>
                     <div className='w-full break-words md:w-1/3 md:my-2 md:mx-5 rounded-xl px-4 py-4 md:py-0'>
                         <img src={event.image} alt="" className='rounded-xl' />
                     </div>
                 </div>
                 <div className='flex flex-col relative md:p-4 md:mt-5'>
-                    {event.google_maps_src && (
+                    {mapEmbed && (
                         <div className="w-full h-[60vh] md:h-[60vh] rounded-lg">
-                            <iframe className="w-full h-full md:rounded-lg" src={event.google_maps_src} title={event.name} loading="lazy"></iframe>
+                            <iframe
+                                className="w-full h-full md:rounded-lg"
+                                src={mapEmbed}
+                                title={event.name ?? event.title}
+                                loading="lazy"
+                                referrerPolicy="strict-origin-when-cross-origin"
+                            />
                         </div>
                     )}
                 </div>

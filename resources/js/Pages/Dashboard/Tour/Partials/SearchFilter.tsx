@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { router } from '@inertiajs/react'
 import { usePage } from '@inertiajs/react';
 import { usePrevious } from 'react-use';
 import pickBy from 'lodash/pickBy';
 import { cn } from '@/lib/utils';
 
-export default () => {
+export default function TourSearchFilter() {
     const { filters, grouped_categories, categories } = usePage().props as unknown as {
         filters: { search?: string; category_id?: string; sub_category_id?: string };
         grouped_categories: Record<string, Array<{ id: string | number; name: string }>>;
@@ -149,4 +149,4 @@ export default () => {
 
 
     );
-};
+}

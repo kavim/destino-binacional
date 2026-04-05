@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
-import ApplicationLogo from '@/Components/ApplicationLogo';
-import Dropdown from '@/Components/Dropdown';
-import NavLink from '@/Components/NavLink';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { Link, usePage } from '@inertiajs/react';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { ThemeToggle } from '@/Components/ThemeToggle';
-import { useTheme } from '@/Components/ThemeProvider';
+import { useState, useEffect } from "react";
+import ApplicationLogo from "@/Components/ApplicationLogo";
+import Dropdown from "@/Components/Dropdown";
+import NavLink from "@/Components/NavLink";
+import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
+import { Link, usePage } from "@inertiajs/react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { ThemeToggle } from "@/Components/ThemeToggle";
+import { useTheme } from "@/Components/ThemeProvider";
 
 interface Props {
     header?: React.ReactNode;
@@ -16,9 +16,21 @@ interface Props {
     auth?: unknown;
 }
 
-export default function Authenticated({ header, children }: Props) {
+type AuthenticatedLayoutPageProps = {
+    auth: {
+        user: {
+            name: string;
+            email: string;
+        };
+    };
+    flash: {
+        success?: string;
+        error?: string;
+    };
+};
 
-    const { auth, flash } = usePage().props as any;
+export default function Authenticated({ header, children }: Props) {
+    const { auth, flash } = usePage().props as unknown as AuthenticatedLayoutPageProps;
     const { resolvedTheme } = useTheme();
 
     useEffect(() => {

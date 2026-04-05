@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { filesize } from './utils';
 
-const Button = ({ text, onClick }) => (
+const Button = ({ text, onClick }: { text: string; onClick: () => void }) => (
   <button
     type="button"
     className="rounded-md border border-border bg-secondary px-3 py-1.5 text-xs font-medium text-secondary-foreground shadow-sm transition-colors hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background dark:shadow-black/20"
@@ -11,7 +11,16 @@ const Button = ({ text, onClick }) => (
   </button>
 );
 
-export default function FileInput({ className, name, label, accept, errors = [], onChange }) {
+type FileInputProps = {
+    className?: string;
+    name: string;
+    label?: string;
+    accept?: string;
+    errors?: string[];
+    onChange: (file: File | null) => void;
+};
+
+export default function FileInput({ className, name, label, accept, errors = [], onChange }: FileInputProps) {
   const fileInput = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
 

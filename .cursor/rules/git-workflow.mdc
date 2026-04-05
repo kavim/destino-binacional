@@ -1,0 +1,11 @@
+---
+description: Regras de Git — branch principal protegida e sem push forçado
+alwaysApply: true
+---
+
+# Git e branches
+
+- **Não commitar diretamente em `main` nem em `master`.** Usar prefixos consistentes: `feature/…`, `fix/…`, `chore/…`, `docs/…`; abrir **PR** para integrar na branch principal (sem merge direto na principal salvo pedido explícito e política do time).
+- **Não executar `git push --force`, `git push -f`, nem reescrever histórico remoto** (`push --force-with-lease`, `rebase` + push que sobrescreva remoto) **a menos que o usuário peça explicitamente** e saiba o risco.
+- **Evitar commits “forçados” locais** como `git commit --no-verify` / pular hooks **sem pedido explícito do usuário** — preferir corrigir lint/testes ou ajustar o hook.
+- Ao sugerir comandos Git ao usuário, **não incluir** flags de force por padrão; se forem necessárias, avisar do impacto em colaboradores e no remoto.

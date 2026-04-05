@@ -6,6 +6,7 @@ import Modal from '@/Components/Modal';
 import SecondaryButton from '@/Components/SecondaryButton';
 import TextInput from '@/Components/TextInput';
 import { useForm } from '@inertiajs/react';
+import type React from 'react';
 
 export default function DeleteUserForm({ className }: { className?: string }) {
     const [confirmingUserDeletion, setConfirmingUserDeletion] = useState(false);
@@ -26,7 +27,7 @@ export default function DeleteUserForm({ className }: { className?: string }) {
         setConfirmingUserDeletion(true);
     };
 
-    const deleteUser = (e) => {
+    const deleteUser = (e: React.FormEvent) => {
         e.preventDefault();
 
         destroy(route('profile.destroy'), {

@@ -4,7 +4,7 @@ import { usePage } from "@inertiajs/react";
 import { usePrevious } from "react-use";
 import pickBy from "lodash/pickBy";
 
-export default () => {
+export default function EventSearchFilter() {
     const { filters, grouped_categories, categories } = usePage().props as unknown as {
         filters: { search?: string; category_id?: string };
         grouped_categories: Record<string, Array<{ id: string | number; name: string }>>;
@@ -41,7 +41,7 @@ export default () => {
         }, 1500);
 
         return () => clearTimeout(delayDebounceFn);
-    }, [values]);
+    }, [values]); // eslint-disable-line react-hooks/exhaustive-deps -- prevValues (usePrevious): skip first debounced navigation
 
     function handleChange(e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) {
         const key = e.target.name;
@@ -138,4 +138,4 @@ export default () => {
             </button>
         </div>
     );
-};
+}
