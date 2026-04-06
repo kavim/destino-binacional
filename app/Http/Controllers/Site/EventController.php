@@ -32,6 +32,7 @@ class EventController extends Controller
     public function show(Request $request, string $slug)
     {
         $event = $this->eventService->getBySlug($slug);
+        $event->load('city.state');
 
         return Inertia::render('Site/Event/Show', [
             'event' => $event,
