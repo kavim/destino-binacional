@@ -3,7 +3,7 @@
 namespace Tests\Unit\Models;
 
 use App\Models\Event;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class EventTest extends TestCase
 {
@@ -42,6 +42,6 @@ class EventTest extends TestCase
     {
         $event = new Event(['featured_image' => null]);
 
-        $this->assertStringContainsString('lorem.space', $event->image);
+        $this->assertStringContainsString('parque.webp', $event->image);
     }
 }

@@ -3,7 +3,7 @@
 namespace Tests\Unit\Models;
 
 use App\Models\Tour;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class TourTest extends TestCase
 {
@@ -40,6 +40,6 @@ class TourTest extends TestCase
     {
         $tour = new Tour(['featured_image' => null]);
 
-        $this->assertStringContainsString('lorem.space', $tour->image);
+        $this->assertStringContainsString('parque.webp', $tour->image);
     }
 }

@@ -29,9 +29,9 @@ class EventService
         return $this->eventRepository->groupedByStartDateLimited();
     }
 
-    public function filtered(?string $start = null, ?string $end = null, ?int $category_id = null)
+    public function filtered(?string $start = null, ?string $end = null, ?int $category_id = null, ?string $search = null)
     {
-        return $this->eventRepository->filtered($start, $end, $category_id);
+        return $this->eventRepository->filtered($start, $end, $category_id, $search);
     }
 
     public function getBySlug(string $slug)

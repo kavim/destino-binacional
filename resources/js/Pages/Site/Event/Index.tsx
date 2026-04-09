@@ -6,20 +6,23 @@ import Filters, { type EventFiltersState } from './Filters';
 
 export default function Index({
     filters,
-    category,
+    category: _category,
 }: {
     filters?: EventFiltersState;
     category?: unknown;
 }) {
     return (
         <SiteLayout>
-            <Head title='Eventos' />
+            <Head title="Eventos" />
 
-            <Header category={category} />
+            <Header />
 
-            <div className="mx-auto my-5 max-w-full space-y-4 px-2 sm:px-4 lg:max-w-7xl lg:px-8">
-                <Filters filters={filters ?? {}} />
-                <EventList />
+            {/* Conteúdo sobrepõe ligeiramente o hero (só o degradê) para transição mais suave */}
+            <div className="relative z-10 mx-auto min-w-0 max-w-7xl px-3 pb-14 pt-2 sm:px-5 sm:pb-16 lg:px-8">
+                <div className="mx-auto flex max-w-6xl flex-col gap-8 sm:gap-10">
+                    <Filters filters={filters ?? {}} />
+                    <EventList />
+                </div>
             </div>
         </SiteLayout>
     );

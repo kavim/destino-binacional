@@ -31,7 +31,7 @@ class EventRepository
             });
     }
 
-    public function filtered(?string $start = null, ?string $end = null, ?int $category_id = null): Collection
+    public function filtered(?string $start = null, ?string $end = null, ?int $category_id = null, ?string $search = null): Collection
     {
         if (is_null($start)) {
             $start = today();
@@ -46,6 +46,9 @@ class EventRepository
             })
             ->when($category_id, function ($query, $category_id) {
                 $query->where('category_id', $category_id);
+            })
+            ->when($search, function ($query, $search) {
+                $query->where('title', 'like', '%'.$search.'%');
             })
             ->limit(250)
             ->get();

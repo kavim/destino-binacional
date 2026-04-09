@@ -1,21 +1,46 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from '@inertiajs/react';
 import PrimaryButton from '@/Components/PrimaryButton';
 import { trans } from '@/utils';
+import { cn } from '@/lib/utils';
 import DatePicker from 'react-date-picker';
 import type { DatePickerValue } from '@/lib/datePickerValue';
 import 'react-date-picker/dist/DatePicker.css';
 import 'react-calendar/dist/Calendar.css';
 import { datePickerValueToDate } from '@/lib/datePickerValue';
+import dayjs from 'dayjs';
+import 'dayjs/locale/pt-br';
+import { CalendarRange, ChevronDown, Search, SlidersHorizontal } from 'lucide-react';
 
-export type EventFiltersState = { start?: string; end?: string };
+export type EventFiltersState = { start?: string; end?: string; search?: string };
+
+function formatChipDate(iso: string): string {
+    const d = dayjs(iso);
+    return d.isValid() ? d.locale('pt-br').format('D MMM YYYY') : iso;
+}
 
 export default function Filters({ filters }: { filters?: EventFiltersState }) {
-    const [showFilters, setShowFilters] = useState(false);
+    dayjs.locale('pt-br');
+    const [showFilters, setShowFilters] = useState(() =>
+        Boolean(
+            filters?.start ||
+                filters?.end ||
+                (typeof filters?.search === 'string' && filters.search.trim() !== ''),
+        ),
+    );
     const { data, setData, get } = useForm({
         start: filters?.start || '',
         end: filters?.end || '',
+        search: filters?.search || '',
     });
+
+    useEffect(() => {
+        setData({
+            start: filters?.start || '',
+            end: filters?.end || '',
+            search: filters?.search || '',
+        });
+    }, [filters?.start, filters?.end, filters?.search]); // eslint-disable-line react-hooks/exhaustive-deps -- sincronizar com URL após visit
 
     const formatDateForQuery = (date: Date) => {
         const year = date.getFullYear();
@@ -48,24 +73,19 @@ export default function Filters({ filters }: { filters?: EventFiltersState }) {
         }
     };
 
-    const toggleFilters = () => {
-        setShowFilters(!showFilters);
-    };
-
     const limpar = (e: React.MouseEvent<HTMLAnchorElement>) => {
         e.preventDefault();
-        setData({ start: '', end: '' });
+        setData({ start: '', end: '', search: '' });
         get(route('site.events.index'), {
-            data: { start: '', end: '' },
+            data: { start: '', end: '', search: '' },
             preserveState: true,
             replace: true,
         });
+        setShowFilters(false);
     };
 
-    const submit = (e: React.FormEvent) => {
-        e.preventDefault();
+    const applyFilters = () => {
         setShowFilters(false);
-
         get(route('site.events.index'), {
             data: data,
             preserveState: true,
@@ -73,67 +93,157 @@ export default function Filters({ filters }: { filters?: EventFiltersState }) {
         });
     };
 
+    const hasRange = Boolean(data.start || data.end);
+    const hasSearch = Boolean(data.search?.trim());
+
     return (
-        <div className="flex flex-col justify-center rounded-xl border border-border bg-card p-4 shadow-sm dark:shadow-black/20">
-            <div className="flex w-full justify-end bg-card">
+        <div
+            className={cn(
+                'overflow-hidden rounded-2xl border border-border/80 bg-card/95 shadow-md shadow-black/[0.04] backdrop-blur-md dark:border-border dark:bg-card/90 dark:shadow-black/20',
+                showFilters && 'ring-2 ring-primary/25',
+            )}
+        >
+            <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-start sm:justify-between sm:gap-4 sm:p-5">
+                <div className="min-w-0 flex-1 space-y-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                        <SlidersHorizontal className="h-4 w-4 shrink-0 text-primary" aria-hidden />
+                        <span className="text-sm font-semibold text-foreground">Período dos eventos</span>
+                    </div>
+                    {hasRange || hasSearch ? (
+                        <div className="flex flex-wrap items-center gap-2">
+                            {hasSearch ? (
+                                <span className="inline-flex max-w-full items-center gap-1.5 rounded-full bg-muted px-3 py-1 text-xs font-medium text-foreground">
+                                    <Search className="h-3.5 w-3.5 shrink-0 opacity-80" aria-hidden />
+                                    <span className="truncate" title={data.search}>
+                                        “{data.search.trim()}”
+                                    </span>
+                                </span>
+                            ) : null}
+                            {hasRange ? (
+                                <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                                    <CalendarRange className="h-3.5 w-3.5" aria-hidden />
+                                    {data.start ? formatChipDate(data.start) : '…'}
+                                    {data.end ? (
+                                        <>
+                                            <span className="text-primary/60">→</span>
+                                            {formatChipDate(data.end)}
+                                        </>
+                                    ) : null}
+                                </span>
+                            ) : null}
+                        </div>
+                    ) : (
+                        <p className="text-pretty text-sm leading-relaxed text-muted-foreground">
+                            A lista mostra eventos que ainda não terminaram. Abra{' '}
+                            <strong className="font-medium text-foreground">Filtros</strong> para
+                            buscar por título ou limitar o período.
+                        </p>
+                    )}
+                </div>
                 <button
                     type="button"
-                    className="inline-flex items-center rounded-md border border-transparent bg-primary px-4 py-2 text-xs font-medium uppercase tracking-widest text-primary-foreground transition duration-150 ease-in-out hover:bg-primary/90 focus:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background active:bg-primary/80"
-                    onClick={toggleFilters}
+                    aria-expanded={showFilters}
+                    aria-controls="event-date-filters-panel"
+                    className={cn(
+                        'inline-flex min-h-11 w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:w-auto sm:min-w-[10.5rem]',
+                    )}
+                    onClick={() => setShowFilters((o) => !o)}
                 >
-                    <i
-                        className={`fa-solid ${showFilters ? 'fa-xmark' : 'fa-filter'} mr-2`}
+                    <span className="sm:hidden">Datas</span>
+                    <span className="hidden sm:inline">{showFilters ? 'Fechar' : 'Filtros'}</span>
+                    <ChevronDown
+                        className={cn('h-4 w-4 transition-transform duration-200', showFilters && 'rotate-180')}
+                        aria-hidden
                     />
-                    {showFilters ? 'Fechar' : 'Filtros'}
                 </button>
             </div>
 
-            {showFilters && (
-                <div className="mt-4">
-                    <form onSubmit={submit}>
-                        <div className="mb-4">
-                            <label className="mb-1 block text-left text-xs font-semibold uppercase text-muted-foreground">
-                                De:
+            <div
+                id="event-date-filters-panel"
+                className={cn(
+                    'border-t border-border/60 bg-muted/20 transition-all duration-200 dark:bg-muted/10',
+                    showFilters ? 'max-h-[880px] opacity-100' : 'max-h-0 overflow-hidden border-t-0 opacity-0',
+                )}
+            >
+                {showFilters ? (
+                    <div className="space-y-5 p-4 sm:p-5">
+                        <div>
+                            <label
+                                className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+                                htmlFor="event-search-public"
+                            >
+                                <Search className="h-3.5 w-3.5" aria-hidden />
+                                Título do evento (opcional)
                             </label>
-                            <DatePicker
-                                onChange={startDataChange}
-                                value={parseUrlDate(data.start)}
-                                clearIcon={data.start ? undefined : null}
-                                className="kimput mt-2 block w-full font-semibold text-foreground"
-                                calendarClassName="rounded-md border border-border bg-popover text-popover-foreground shadow-md"
-                                locale="pt-BR"
-                                format="dd/MM/yyyy"
+                            <input
+                                id="event-search-public"
+                                type="search"
+                                value={data.search}
+                                onChange={(e) => setData('search', e.target.value)}
+                                placeholder="Deixe em branco para listar todos no período"
+                                autoComplete="off"
+                                className="mt-1 flex h-11 w-full min-w-0 rounded-xl border border-input bg-background px-3 text-sm text-foreground shadow-sm outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
                             />
                         </div>
 
-                        <div className="mb-4">
-                            <label className="mb-1 block text-left text-xs font-semibold uppercase text-muted-foreground">
-                                Até:
-                            </label>
-                            <DatePicker
-                                onChange={endDataChange}
-                                value={parseUrlDate(data.end)}
-                                clearIcon={data.end ? undefined : null}
-                                className="kimput mt-2 block w-full font-semibold text-foreground"
-                                calendarClassName="rounded-md border border-border bg-popover text-popover-foreground shadow-md"
-                                locale="pt-BR"
-                                format="dd/MM/yyyy"
-                            />
+                        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                            <div>
+                                <label
+                                    className="mb-2 block text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+                                    htmlFor="event-filter-start"
+                                >
+                                    De
+                                </label>
+                                <DatePicker
+                                    id="event-filter-start"
+                                    onChange={startDataChange}
+                                    value={parseUrlDate(data.start)}
+                                    clearIcon={data.start ? undefined : null}
+                                    className="kimput mt-1 block w-full font-semibold text-foreground"
+                                    calendarClassName="rounded-md border border-border bg-popover text-popover-foreground shadow-md"
+                                    locale="pt-BR"
+                                    format="dd/MM/yyyy"
+                                />
+                            </div>
+                            <div>
+                                <label
+                                    className="mb-2 block text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+                                    htmlFor="event-filter-end"
+                                >
+                                    Até
+                                </label>
+                                <DatePicker
+                                    id="event-filter-end"
+                                    onChange={endDataChange}
+                                    value={parseUrlDate(data.end)}
+                                    clearIcon={data.end ? undefined : null}
+                                    className="kimput mt-1 block w-full font-semibold text-foreground"
+                                    calendarClassName="rounded-md border border-border bg-popover text-popover-foreground shadow-md"
+                                    locale="pt-BR"
+                                    format="dd/MM/yyyy"
+                                />
+                            </div>
                         </div>
 
-                        <div className="mb-6 mt-4 flex justify-between">
+                        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
                             <a
-                                className="inline-flex items-center rounded-md border border-border bg-background px-4 py-2 text-xs uppercase tracking-widest text-foreground transition-colors hover:bg-muted/60"
+                                className="inline-flex min-h-11 items-center justify-center rounded-xl border border-border bg-background px-4 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                                 href={route('site.events.index')}
                                 onClick={limpar}
                             >
-                                reset
+                                Limpar filtros
                             </a>
-                            <PrimaryButton>{trans('buscar')}</PrimaryButton>
+                            <PrimaryButton
+                                type="button"
+                                className="min-h-11 w-full sm:w-auto sm:px-8"
+                                onClick={applyFilters}
+                            >
+                                {trans('buscar')}
+                            </PrimaryButton>
                         </div>
-                    </form>
-                </div>
-            )}
+                    </div>
+                ) : null}
+            </div>
         </div>
     );
 }
