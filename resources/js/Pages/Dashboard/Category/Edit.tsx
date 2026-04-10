@@ -22,7 +22,8 @@ type CategoryRecord = Record<string, unknown> & {
     name_es?: string;
     name_pt?: string;
     featured_image?: string;
-    icon?: string;
+    icon?: string | null;
+    icon_preview_url?: string | null;
     color?: string;
 };
 
@@ -30,6 +31,7 @@ type CategoryFormData = {
     name_es: string;
     name_pt: string;
     icon: string;
+    icon_preview_url?: string;
     icon_image: string | File;
     featured_image: string;
     image: string;
@@ -49,7 +51,11 @@ export default function Edit() {
         name_pt: category.name_pt ? category.name_pt : '',
         featured_image: category.featured_image ? category.featured_image : '',
         image: '',
-        icon: category.icon ? category.icon : '',
+        icon: category.icon != null && category.icon !== '' ? String(category.icon) : '',
+        icon_preview_url:
+            category.icon_preview_url != null && category.icon_preview_url !== ''
+                ? String(category.icon_preview_url)
+                : '',
         icon_image: '',
         color: category.color ? category.color : '#1c1c1c',
         parent_id: parent ? parent.id : null,

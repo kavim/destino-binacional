@@ -2,6 +2,7 @@ import { Head } from '@inertiajs/react';
 import SiteLayout from '@/Layouts/SiteLayout';
 import { cn } from '@/lib/utils';
 import { safeGoogleMapsEmbedUrl } from '@/lib/mapsEmbedUrl';
+import { cmsRichTextDisplayClassName } from '@/lib/cmsRichTextDisplay';
 import { sanitizeCmsHtmlForDisplay } from '@/lib/sanitizeHtml';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
@@ -95,7 +96,9 @@ export default function Show({ event }: { event: SiteEventShow }) {
                             Descrição do evento
                         </h2>
                         <div
-                            className="prose prose-stone max-w-none leading-relaxed text-gray-600 dark:prose-invert dark:text-muted-foreground"
+                            className={cmsRichTextDisplayClassName(
+                                'max-w-none text-gray-600 dark:text-muted-foreground',
+                            )}
                             dangerouslySetInnerHTML={{ __html: safeDescription }}
                         />
                     </div>

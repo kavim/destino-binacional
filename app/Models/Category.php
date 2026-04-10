@@ -75,17 +75,51 @@ class Category extends Model implements TranslatableContract
     }
 
     /**
+     * Fix icon paths accidentally stored as absolute URLs (e.g. after save used the accessor)
+     * or as "images/icons/..." so files resolve with the current APP_URL.
+     */
+    protected function normalizeIconStorageValue(?string $value): ?string
+    {
+        if ($value === null || trim($value) === '') {
+            return null;
+        }
+
+        $trimmed = trim($value);
+
+        if (str_starts_with($trimmed, 'http://') || str_starts_with($trimmed, 'https://')) {
+            $path = parse_url($trimmed, PHP_URL_PATH);
+            if (! is_string($path) || $path === '') {
+                return $trimmed;
+            }
+            if (preg_match('#/(?:images/icons|storage/icons)/([^/]+\.(?:svg|png|webp|jpe?g))$#i', $path, $m)) {
+                return $m[1];
+            }
+
+            return $trimmed;
+        }
+
+        $noLeading = ltrim($trimmed, '/');
+        if (str_starts_with($noLeading, 'images/icons/')) {
+            return substr($noLeading, strlen('images/icons/'));
+        }
+
+        return $trimmed;
+    }
+
+    /**
      * Category menu / hero icon (SVG often lives in public/images/icons/).
      */
     protected function resolveIconPublicUrl(?string $value): string
     {
-        $public = $this->publicImagesFileUrl($value);
-        if ($public !== null) {
-            return $public;
-        }
+        $value = $this->normalizeIconStorageValue($value);
 
         if ($value === null || $value === '') {
             return asset('images/icons/default.svg');
+        }
+
+        $public = $this->publicImagesFileUrl($value);
+        if ($public !== null) {
+            return $public;
         }
 
         $basename = basename($value);
@@ -101,6 +135,10 @@ class Category extends Model implements TranslatableContract
 
         if (Storage::disk('public')->exists('icons/'.$value)) {
             return asset('storage/icons/'.$value);
+        }
+
+        if (Storage::disk('public')->exists('icons/'.$basename)) {
+            return asset('storage/icons/'.$basename);
         }
 
         return asset('images/icons/default.svg');
@@ -129,6 +167,13 @@ class Category extends Model implements TranslatableContract
         return Attribute::make(
             get: function (?string $value) {
                 return $this->resolveIconPublicUrl($value);
+            },
+            set: function (?string $value) {
+                if ($value === null || trim((string) $value) === '') {
+                    return ['icon' => null];
+                }
+
+                return ['icon' => $this->normalizeIconStorageValue(trim((string) $value))];
             },
         );
     }

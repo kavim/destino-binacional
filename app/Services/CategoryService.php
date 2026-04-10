@@ -115,9 +115,9 @@ class CategoryService
     public function update(array $validated, Category $category)
     {
         $category->update([
-            'featured_image' => Arr::get($validated, 'image', false) ? $this->storeFeaturedImage($validated['image']) : $category->featured_image,
+            'featured_image' => Arr::get($validated, 'image', false) ? $this->storeFeaturedImage($validated['image']) : $category->getRawOriginal('featured_image'),
             'color' => Arr::get($validated, 'color', false) ? $validated['color'] : $category->color,
-            'icon' => Arr::get($validated, 'icon_image', false) ? $this->storeIcon($validated['icon_image']) : $category->icon,
+            'icon' => Arr::get($validated, 'icon_image', false) ? $this->storeIcon($validated['icon_image']) : $category->getRawOriginal('icon'),
             'parent_id' => Arr::get($validated, 'parent_id', false) ? $validated['parent_id'] : $category->parent_id,
         ]);
 

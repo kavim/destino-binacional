@@ -19,6 +19,8 @@ type CategoryFormData = {
     name_es: string;
     name_pt: string;
     icon: string;
+    /** Resolved icon URL (edit screen preview only; not submitted as canonical storage). */
+    icon_preview_url?: string;
     icon_image: string | File;
     featured_image: string;
     image: string;
@@ -68,10 +70,21 @@ export default function Form({
     };
 
     useEffect(() => {
-        if (data.icon) {
-            setIconImage(data.icon);
+        const preview = data.icon_preview_url?.trim();
+        if (preview) {
+            setIconImage(preview);
+            return;
         }
-    }, [data.icon]);
+        const raw = data.icon?.trim();
+        if (!raw) {
+            return;
+        }
+        if (raw.startsWith("http://") || raw.startsWith("https://") || raw.startsWith("/")) {
+            setIconImage(raw);
+            return;
+        }
+        setIconImage(raw.startsWith("icons/") ? `/images/${raw}` : `/images/icons/${raw}`);
+    }, [data.icon, data.icon_preview_url]);
 
     return (
         <>

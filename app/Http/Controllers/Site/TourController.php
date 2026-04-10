@@ -15,8 +15,8 @@ class TourController
 
     public function index(Request $request): \Inertia\Response
     {
-        $start = $request->has('start') && ! is_null($request->input('start')) ? Carbon::parse($request->input('start')) : null;
-        $end = $request->has('end') && ! is_null($request->input('end')) ? Carbon::parse($request->input('end')) : null;
+        $start = $request->filled('start') ? Carbon::parse($request->string('start')) : null;
+        $end = $request->filled('end') ? Carbon::parse($request->string('end')) : null;
         $tours = $this->tourService->filtered($start, $end);
 
         return Inertia::render('Site/Tour/Index', [

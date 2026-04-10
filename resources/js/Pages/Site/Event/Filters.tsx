@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useForm } from '@inertiajs/react';
+import React, { useMemo, useState } from 'react';
+import { router } from '@inertiajs/react';
 import PrimaryButton from '@/Components/PrimaryButton';
 import { trans } from '@/utils';
 import { cn } from '@/lib/utils';
@@ -14,87 +14,103 @@ import { CalendarRange, ChevronDown, Search, SlidersHorizontal } from 'lucide-re
 
 export type EventFiltersState = { start?: string; end?: string; search?: string };
 
-function formatChipDate(iso: string): string {
-    const d = dayjs(iso);
-    return d.isValid() ? d.locale('pt-br').format('D MMM YYYY') : iso;
+export type NormalizedEventFilters = { start: string; end: string; search: string };
+
+/** Carbon/Inertia enviam ISO; inputs e query usam YYYY-MM-DD. */
+function normalizeEventFilters(f?: EventFiltersState): NormalizedEventFilters {
+    const date = (v: unknown) => {
+        if (v == null || v === '') return '';
+        if (typeof v !== 'string') return '';
+        const m = v.match(/^(\d{4}-\d{2}-\d{2})/);
+        return m ? m[1] : '';
+    };
+    const searchRaw = f?.search;
+    return {
+        start: date(f?.start),
+        end: date(f?.end),
+        search: typeof searchRaw === 'string' ? searchRaw : '',
+    };
 }
+
+function hasActiveFilters(n: NormalizedEventFilters): boolean {
+    return Boolean(n.start || n.end || n.search.trim());
+}
+
+function formatChipDate(ymd: string): string {
+    const d = dayjs(ymd);
+    return d.isValid() ? d.locale('pt-br').format('D MMM YYYY') : ymd;
+}
+
+const visitOpts = {
+    preserveState: true,
+    preserveScroll: true,
+    replace: true as const,
+    only: ['events', 'filters'] as const,
+};
 
 export default function Filters({ filters }: { filters?: EventFiltersState }) {
     dayjs.locale('pt-br');
-    const [showFilters, setShowFilters] = useState(() =>
-        Boolean(
-            filters?.start ||
-                filters?.end ||
-                (typeof filters?.search === 'string' && filters.search.trim() !== ''),
-        ),
-    );
-    const { data, setData, get } = useForm({
-        start: filters?.start || '',
-        end: filters?.end || '',
-        search: filters?.search || '',
-    });
 
-    useEffect(() => {
-        setData({
-            start: filters?.start || '',
-            end: filters?.end || '',
-            search: filters?.search || '',
+    const committed = useMemo(() => normalizeEventFilters(filters), [filters]);
+
+    const [showFilters, setShowFilters] = useState(() => hasActiveFilters(normalizeEventFilters(filters)));
+    const [draft, setDraft] = useState<NormalizedEventFilters>(() => normalizeEventFilters(filters));
+
+    const togglePanel = () => {
+        setShowFilters((open) => {
+            if (open) {
+                setDraft(committed);
+            }
+            return !open;
         });
-    }, [filters?.start, filters?.end, filters?.search]); // eslint-disable-line react-hooks/exhaustive-deps -- sincronizar com URL após visit
-
-    const formatDateForQuery = (date: Date) => {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
     };
 
-    const parseUrlDate = (dateStr: unknown) => {
-        if (!dateStr || typeof dateStr !== 'string') return null;
-        const dateObj = new Date(dateStr.replace(/-/g, '/'));
+    const formatDateForQuery = (date: Date) => {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, '0');
+        const d = String(date.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+    };
+
+    const parseYmdToDate = (ymd: string) => {
+        if (!ymd) return null;
+        const dateObj = new Date(ymd.replace(/-/g, '/'));
         return isNaN(dateObj.getTime()) ? null : dateObj;
     };
 
     const startDataChange = (value: DatePickerValue) => {
         const date = datePickerValueToDate(value);
-        if (date) {
-            setData('start', formatDateForQuery(date));
-        } else {
-            setData('start', '');
-        }
+        setDraft((prev) => ({
+            ...prev,
+            start: date ? formatDateForQuery(date) : '',
+        }));
     };
 
     const endDataChange = (value: DatePickerValue) => {
         const date = datePickerValueToDate(value);
-        if (date) {
-            setData('end', formatDateForQuery(date));
-        } else {
-            setData('end', '');
-        }
-    };
-
-    const limpar = (e: React.MouseEvent<HTMLAnchorElement>) => {
-        e.preventDefault();
-        setData({ start: '', end: '', search: '' });
-        get(route('site.events.index'), {
-            data: { start: '', end: '', search: '' },
-            preserveState: true,
-            replace: true,
-        });
-        setShowFilters(false);
+        setDraft((prev) => ({
+            ...prev,
+            end: date ? formatDateForQuery(date) : '',
+        }));
     };
 
     const applyFilters = () => {
         setShowFilters(false);
-        get(route('site.events.index'), {
-            data: data,
-            preserveState: true,
-            replace: true,
-        });
+        const q: Record<string, string> = {};
+        if (draft.start) q.start = draft.start;
+        if (draft.end) q.end = draft.end;
+        const s = draft.search.trim();
+        if (s) q.search = s;
+        router.get(route('site.events.index'), q, visitOpts);
     };
 
-    const hasRange = Boolean(data.start || data.end);
-    const hasSearch = Boolean(data.search?.trim());
+    const clearFilters = () => {
+        setShowFilters(false);
+        router.get(route('site.events.index'), {}, visitOpts);
+    };
+
+    const chipRange = Boolean(committed.start || committed.end);
+    const chipSearch = Boolean(committed.search.trim());
 
     return (
         <div
@@ -109,24 +125,24 @@ export default function Filters({ filters }: { filters?: EventFiltersState }) {
                         <SlidersHorizontal className="h-4 w-4 shrink-0 text-primary" aria-hidden />
                         <span className="text-sm font-semibold text-foreground">Período dos eventos</span>
                     </div>
-                    {hasRange || hasSearch ? (
+                    {chipRange || chipSearch ? (
                         <div className="flex flex-wrap items-center gap-2">
-                            {hasSearch ? (
+                            {chipSearch ? (
                                 <span className="inline-flex max-w-full items-center gap-1.5 rounded-full bg-muted px-3 py-1 text-xs font-medium text-foreground">
                                     <Search className="h-3.5 w-3.5 shrink-0 opacity-80" aria-hidden />
-                                    <span className="truncate" title={data.search}>
-                                        “{data.search.trim()}”
+                                    <span className="truncate" title={committed.search}>
+                                        “{committed.search.trim()}”
                                     </span>
                                 </span>
                             ) : null}
-                            {hasRange ? (
+                            {chipRange ? (
                                 <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
                                     <CalendarRange className="h-3.5 w-3.5" aria-hidden />
-                                    {data.start ? formatChipDate(data.start) : '…'}
-                                    {data.end ? (
+                                    {committed.start ? formatChipDate(committed.start) : '…'}
+                                    {committed.end ? (
                                         <>
                                             <span className="text-primary/60">→</span>
-                                            {formatChipDate(data.end)}
+                                            {formatChipDate(committed.end)}
                                         </>
                                     ) : null}
                                 </span>
@@ -147,7 +163,7 @@ export default function Filters({ filters }: { filters?: EventFiltersState }) {
                     className={cn(
                         'inline-flex min-h-11 w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:w-auto sm:min-w-[10.5rem]',
                     )}
-                    onClick={() => setShowFilters((o) => !o)}
+                    onClick={togglePanel}
                 >
                     <span className="sm:hidden">Datas</span>
                     <span className="hidden sm:inline">{showFilters ? 'Fechar' : 'Filtros'}</span>
@@ -178,8 +194,8 @@ export default function Filters({ filters }: { filters?: EventFiltersState }) {
                             <input
                                 id="event-search-public"
                                 type="search"
-                                value={data.search}
-                                onChange={(e) => setData('search', e.target.value)}
+                                value={draft.search}
+                                onChange={(e) => setDraft((p) => ({ ...p, search: e.target.value }))}
                                 placeholder="Deixe em branco para listar todos no período"
                                 autoComplete="off"
                                 className="mt-1 flex h-11 w-full min-w-0 rounded-xl border border-input bg-background px-3 text-sm text-foreground shadow-sm outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
@@ -197,12 +213,15 @@ export default function Filters({ filters }: { filters?: EventFiltersState }) {
                                 <DatePicker
                                     id="event-filter-start"
                                     onChange={startDataChange}
-                                    value={parseUrlDate(data.start)}
-                                    clearIcon={data.start ? undefined : null}
+                                    value={parseYmdToDate(draft.start)}
+                                    clearIcon={draft.start ? undefined : null}
                                     className="kimput mt-1 block w-full font-semibold text-foreground"
                                     calendarClassName="rounded-md border border-border bg-popover text-popover-foreground shadow-md"
                                     locale="pt-BR"
                                     format="dd/MM/yyyy"
+                                    portalContainer={
+                                        typeof document !== 'undefined' ? document.body : null
+                                    }
                                 />
                             </div>
                             <div>
@@ -215,24 +234,27 @@ export default function Filters({ filters }: { filters?: EventFiltersState }) {
                                 <DatePicker
                                     id="event-filter-end"
                                     onChange={endDataChange}
-                                    value={parseUrlDate(data.end)}
-                                    clearIcon={data.end ? undefined : null}
+                                    value={parseYmdToDate(draft.end)}
+                                    clearIcon={draft.end ? undefined : null}
                                     className="kimput mt-1 block w-full font-semibold text-foreground"
                                     calendarClassName="rounded-md border border-border bg-popover text-popover-foreground shadow-md"
                                     locale="pt-BR"
                                     format="dd/MM/yyyy"
+                                    portalContainer={
+                                        typeof document !== 'undefined' ? document.body : null
+                                    }
                                 />
                             </div>
                         </div>
 
                         <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
-                            <a
+                            <button
+                                type="button"
                                 className="inline-flex min-h-11 items-center justify-center rounded-xl border border-border bg-background px-4 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                                href={route('site.events.index')}
-                                onClick={limpar}
+                                onClick={clearFilters}
                             >
                                 Limpar filtros
-                            </a>
+                            </button>
                             <PrimaryButton
                                 type="button"
                                 className="min-h-11 w-full sm:w-auto sm:px-8"
