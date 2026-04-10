@@ -80,7 +80,7 @@ function CategoryCard({ cat }: { cat: HomeCategoryCard }) {
                     </div>
                 </div>
 
-                <div className="relative z-10 -mt-5 flex min-h-0 flex-1 flex-col rounded-2xl border border-white/60 bg-white/72 px-5 py-5 shadow-lg backdrop-blur-2xl backdrop-saturate-150 supports-[backdrop-filter]:bg-white/55 dark:border-white/[0.12] dark:bg-zinc-950/55 dark:shadow-black/40 supports-[backdrop-filter]:dark:bg-zinc-950/45 sm:-mt-7 sm:mx-4 sm:mb-4 sm:px-6 sm:py-6">
+                <div className="relative z-10 -mt-5 flex min-h-0 flex-1 flex-col rounded-2xl border border-white/60 bg-white/72 px-5 py-5 shadow-lg backdrop-blur-2xl backdrop-saturate-150 supports-[backdrop-filter]:bg-white/55 dark:border-white/[0.12] dark:bg-zinc-950/55 dark:shadow-black/40 supports-[backdrop-filter]:dark:bg-zinc-950/45 sm:-mt-7 sm:px-6 sm:py-6">
                     {accent ? (
                         <div
                             className="mb-3 h-1 w-10 shrink-0 rounded-full opacity-90"
