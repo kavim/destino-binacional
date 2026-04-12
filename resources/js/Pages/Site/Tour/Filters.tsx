@@ -1,146 +1,102 @@
-import React, { useState } from "react";
-import { Link, router, useForm } from "@inertiajs/react";
-import PrimaryButton from "@/Components/PrimaryButton";
-import { trans } from "@/utils";
-import DatePicker from "react-date-picker";
-import type { DatePickerValue } from "@/lib/datePickerValue";
-import "react-date-picker/dist/DatePicker.css";
-import "react-calendar/dist/Calendar.css";
-import { datePickerValueToDate } from "@/lib/datePickerValue";
+import React, { useMemo } from 'react';
+import { router } from '@inertiajs/react';
+import { cn } from '@/lib/utils';
+import { FolderTree, Tag } from 'lucide-react';
 
-type TourFiltersState = { start?: string; end?: string };
+export type TourFiltersState = { category?: string | null };
 
-export default function Filters({ filters }: { filters: TourFiltersState }) {
-    const [showFilters, setShowFilters] = useState(false);
-    const { data, setData } = useForm({
-        start: filters.start || "",
-        end: filters.end || "",
-    });
+export type TourFilterCategoryOption = {
+    id: number;
+    name: string;
+    slug: string;
+};
 
-    const formatDateForQuery = (date: Date) => {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, "0");
-        const day = String(date.getDate()).padStart(2, "0");
-        return `${year}-${month}-${day}`;
+const visitOpts = {
+    preserveState: true,
+    preserveScroll: true,
+    replace: true as const,
+    only: ['tours', 'filters', 'filterCategories'] as const,
+};
+
+export default function Filters({
+    filters,
+    filterCategories = [],
+}: {
+    filters?: TourFiltersState;
+    filterCategories?: TourFilterCategoryOption[];
+}) {
+    const activeSlug = useMemo(() => {
+        const c = filters?.category;
+        return typeof c === 'string' && c.trim() !== '' ? c.trim() : null;
+    }, [filters?.category]);
+
+    const applyCategory = (slug: string | null) => {
+        const q = slug ? { category: slug } : {};
+        router.get(route('site.tours.index'), q, visitOpts);
     };
 
-    const parseUrlDate = (dateStr: unknown) => {
-        if (!dateStr || typeof dateStr !== "string") return null;
-        const dateObj = new Date(dateStr.replace(/-/g, "/"));
-        return isNaN(dateObj.getTime()) ? null : dateObj;
-    };
-
-    const startDataChange = (value: DatePickerValue) => {
-        const date = datePickerValueToDate(value);
-        if (date) {
-            setData("start", formatDateForQuery(date));
-        } else {
-            setData("start", "");
-        }
-    };
-
-    const endDataChange = (value: DatePickerValue) => {
-        const date = datePickerValueToDate(value);
-        if (date) {
-            setData("end", formatDateForQuery(date));
-        } else {
-            setData("end", "");
-        }
-    };
-
-    const toggleFilters = () => {
-        setShowFilters(!showFilters);
-    };
-
-    const submit = (e: React.FormEvent) => {
-        e.preventDefault();
-        setShowFilters(false);
-        const q: Record<string, string> = {};
-        if (data.start) q.start = data.start;
-        if (data.end) q.end = data.end;
-        router.get(route("site.tours.index"), q, {
-            preserveState: true,
-            replace: true,
-        });
-    };
+    if (filterCategories.length === 0) {
+        return null;
+    }
 
     return (
-        <div className="flex flex-col justify-center rounded-xl border border-border bg-card p-4 shadow-sm dark:shadow-black/20">
-            <div className="w-full flex justify-end bg-card">
-                <button
-                    type="button"
-                    className="inline-flex items-center rounded-md border border-transparent bg-primary px-4 py-2 text-xs font-medium uppercase tracking-widest text-primary-foreground transition duration-150 ease-in-out hover:bg-primary/90 focus:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background active:bg-primary/80"
-                    onClick={toggleFilters}
-                >
-                    <i
-                        className={`fa-solid ${showFilters ? "fa-xmark" : "fa-filter"} mr-2`}
-                    ></i>
-                    {showFilters ? "Fechar" : "Filtros"}
-                </button>
-            </div>
-
-            {showFilters && (
-                <div className="mt-4">
-                    <form onSubmit={submit}>
-                        <div className="mb-4">
-                            <label className="block text-xs font-semibold uppercase text-muted-foreground mb-1 text-left">
-                                De:
-                            </label>
-                            <DatePicker
-                                onChange={startDataChange}
-                                value={parseUrlDate(data.start)}
-                                clearIcon={data.start ? undefined : null}
-                                className="mt-2 block w-full font-semibold text-foreground kimput"
-                                calendarClassName="rounded-md border border-border bg-popover text-popover-foreground shadow-md"
-                                locale="pt-BR"
-                                format="dd/MM/yyyy"
-                                portalContainer={
-                                    typeof document !== "undefined"
-                                        ? document.body
-                                        : null
-                                }
-                            />
+        <div className="overflow-hidden rounded-2xl border border-border/80 bg-card/95 shadow-md shadow-black/[0.04] backdrop-blur-md dark:border-border dark:bg-card/90 dark:shadow-black/20">
+            <div className="flex flex-col gap-4 p-4 sm:p-5">
+                <div className="min-w-0 space-y-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                        <FolderTree className="h-4 w-4 shrink-0 text-primary" aria-hidden />
+                        <span className="text-sm font-semibold text-foreground">Categorias</span>
+                    </div>
+                    {activeSlug ? (
+                        <div className="flex flex-wrap items-center gap-2">
+                            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                                <Tag className="h-3.5 w-3.5" aria-hidden />
+                                {filterCategories.find((c) => c.slug === activeSlug)?.name ??
+                                    activeSlug}
+                            </span>
                         </div>
-
-                        <div className="mb-4">
-                            <label className="block text-xs font-semibold uppercase text-muted-foreground mb-1 text-left">
-                                Até:
-                            </label>
-                            <DatePicker
-                                onChange={endDataChange}
-                                value={parseUrlDate(data.end)}
-                                clearIcon={data.end ? undefined : null}
-                                className="mt-2 block w-full font-semibold text-foreground kimput"
-                                calendarClassName="rounded-md border border-border bg-popover text-popover-foreground shadow-md"
-                                locale="pt-BR"
-                                format="dd/MM/yyyy"
-                                portalContainer={
-                                    typeof document !== "undefined"
-                                        ? document.body
-                                        : null
-                                }
-                            />
-                        </div>
-
-                        <div className="flex justify-between mt-4 mb-6">
-                            <Link
-                                href={route("site.tours.index")}
-                                replace
-                                preserveScroll
-                                preserveState
-                                onClick={() => {
-                                    setData({ start: "", end: "" });
-                                    setShowFilters(false);
-                                }}
-                                className="inline-flex items-center rounded-md border border-border bg-background px-4 py-2 text-xs uppercase tracking-widest text-foreground transition-colors hover:bg-muted/60"
-                            >
-                                reset
-                            </Link>
-                            <PrimaryButton>{trans("buscar")}</PrimaryButton>
-                        </div>
-                    </form>
+                    ) : (
+                        <p className="text-pretty text-sm leading-relaxed text-muted-foreground">
+                            Filtre os tours pelas categorias associadas a cada roteiro.
+                        </p>
+                    )}
                 </div>
-            )}
+
+                <div
+                    className="flex flex-wrap gap-2 border-t border-border/60 pt-4 dark:border-border/80"
+                    role="list"
+                >
+                    <button
+                        type="button"
+                        role="listitem"
+                        onClick={() => applyCategory(null)}
+                        className={cn(
+                            'inline-flex min-h-10 items-center justify-center rounded-full border px-4 py-2 text-sm font-medium transition-colors',
+                            activeSlug === null
+                                ? 'border-primary bg-primary text-primary-foreground shadow-sm'
+                                : 'border-border bg-background text-foreground hover:bg-muted',
+                        )}
+                    >
+                        Todas
+                    </button>
+                    {filterCategories.map((c) => (
+                        <button
+                            key={c.id}
+                            type="button"
+                            role="listitem"
+                            onClick={() => applyCategory(c.slug)}
+                            className={cn(
+                                'inline-flex min-h-10 items-center justify-center rounded-full border px-4 py-2 text-sm font-medium transition-colors',
+                                activeSlug === c.slug
+                                    ? 'border-primary bg-primary text-primary-foreground shadow-sm'
+                                    : 'border-border bg-background text-foreground hover:bg-muted',
+                            )}
+                        >
+                            {c.name}
+                        </button>
+                    ))}
+                </div>
+            </div>
         </div>
     );
 }

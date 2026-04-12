@@ -23,9 +23,9 @@ class TourService
         return $this->tourRepository->index();
     }
 
-    public function filtered(?string $start = null, ?string $end = null, ?int $category_id = null)
+    public function filtered(?int $category_id = null)
     {
-        return $this->tourRepository->filtered($start, $end, $category_id);
+        return $this->tourRepository->filtered($category_id);
     }
 
     public function store(array $data)

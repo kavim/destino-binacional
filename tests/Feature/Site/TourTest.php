@@ -53,69 +53,51 @@ class TourTest extends TestCase
             );
     }
 
-    public function test_tours_page_passes_tours_and_filters(): void
+    public function test_tours_page_passes_tours_filters_and_category_options(): void
     {
         $this->get('/t')
             ->assertInertia(fn (Assert $page) => $page
                 ->has('tours')
                 ->has('filters')
-                ->has('filters.start')
-                ->has('filters.end')
+                ->has('filters.category')
+                ->has('filterCategories')
             );
     }
 
-    // ── Date filtering ───────────────────────────────────────────
+    // ── Category filtering ───────────────────────────────────────
 
-    public function test_filter_by_start_date(): void
+    public function test_filter_by_category_slug(): void
     {
-        $early = $this->makeTour([
-            'title' => 'Early Tour',
-            'slug' => 'early-tour',
-            'start' => now()->subMonth(),
-            'end' => now()->subWeek(),
+        $tagged = $this->makeTour([
+            'title' => 'Tagged Tour',
+            'slug' => 'tagged-tour',
+        ]);
+        $tagged->categories()->attach($this->parentCategory->id);
+
+        $this->makeTour([
+            'title' => 'Other Tour',
+            'slug' => 'other-tour',
         ]);
 
-        $future = $this->makeTour([
-            'title' => 'Future Tour',
-            'slug' => 'future-tour',
-            'start' => now()->addWeek(),
-            'end' => now()->addWeeks(2),
-        ]);
-
-        $start = now()->format('Y-m-d');
-
-        $this->get("/t?start=$start")
+        $this->get('/t?category=cultura')
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->has('tours', 1)
-                ->where('tours.0.id', $future->id)
+                ->where('tours.0.id', $tagged->id)
+                ->where('filters.category', 'cultura')
             );
     }
 
-    public function test_filter_by_date_range(): void
+    public function test_invalid_category_slug_ignored_lists_all_tours(): void
     {
-        $inRange = $this->makeTour([
-            'title' => 'In Range',
-            'slug' => 'in-range',
-            'start' => now()->addDays(5),
-            'end' => now()->addDays(10),
-        ]);
+        $this->makeTour(['title' => 'A', 'slug' => 'tour-a']);
+        $this->makeTour(['title' => 'B', 'slug' => 'tour-b']);
 
-        $outOfRange = $this->makeTour([
-            'title' => 'Out of Range',
-            'slug' => 'out-of-range',
-            'start' => now()->addMonths(6),
-            'end' => now()->addMonths(7),
-        ]);
-
-        $start = now()->format('Y-m-d');
-        $end = now()->addDays(15)->format('Y-m-d');
-
-        $this->get("/t?start=$start&end=$end")
+        $this->get('/t?category=nonexistent-slug-xyz')
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
-                ->has('tours', 1)
-                ->where('tours.0.id', $inRange->id)
+                ->has('tours', 2)
+                ->where('filters.category', null)
             );
     }
 
@@ -131,13 +113,12 @@ class TourTest extends TestCase
             );
     }
 
-    public function test_filters_are_echoed_back(): void
+    public function test_filters_echo_selected_category_slug(): void
     {
-        $this->get('/t?start=2026-06-01&end=2026-12-31')
+        $this->get('/t?category=cultura')
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
-                ->where('filters.start', fn ($v) => str_contains($v, '2026-06-01'))
-                ->where('filters.end', fn ($v) => str_contains($v, '2026-12-31'))
+                ->where('filters.category', 'cultura')
             );
     }
 
