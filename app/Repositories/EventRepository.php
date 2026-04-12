@@ -15,7 +15,7 @@ class EventRepository
 
     public function groupedByStartDateLimited(): Collection
     {
-        return Event::where('start', '>=', now())
+        return Event::whereDate('end', '>=', now())
             ->orderBy('start')
             ->limit(50)
             ->get([
