@@ -20,8 +20,8 @@ return new class extends Migration
             $table->text('description')->nullable();
 
             $table->foreignId('category_id')
-                  ->constrained()
-                  ->onDelete('cascade');
+                ->constrained()
+                ->onDelete('cascade');
             $table->unique(['category_id', 'locale']);
 
             $table->timestamps();

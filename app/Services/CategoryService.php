@@ -15,9 +15,8 @@ use Intervention\Image\Facades\Image;
 class CategoryService
 {
     public function __construct(
-        protected CategoryRepository $categoryRepository = new CategoryRepository(),
-    ) {
-    }
+        protected CategoryRepository $categoryRepository = new CategoryRepository,
+    ) {}
 
     public function index(): Collection
     {
@@ -95,16 +94,16 @@ class CategoryService
 
         $width = config('custom.icons_feature_image.width');
         $height = config('custom.icons_feature_image.height');
-        $path = config('custom.icons_feature_image.path');
+        $dest = public_path('images/icons');
         $featured_image_src = null;
 
         try {
+            $featured_image_src = 'cat_ico_'.time().'.'.$icon->getClientOriginalExtension();
+
             if ($icon->getClientOriginalExtension() === 'svg') {
-                $featured_image_src = 'cat_ico_'.time().'.'.$icon->getClientOriginalExtension();
-                $icon->storeAs($path, $featured_image_src, 'public');
+                $icon->move($dest, $featured_image_src);
             } else {
-                $featured_image_src = 'cat_ico_'.time().'.'.$icon->getClientOriginalExtension();
-                Image::make($icon)->resize($width, $height)->save(storage_path('app/public/'.$path.$featured_image_src));
+                Image::make($icon)->resize($width, $height)->save($dest.'/'.$featured_image_src);
             }
         } catch (Exception $e) {
             Log::error($e);
@@ -116,9 +115,9 @@ class CategoryService
     public function update(array $validated, Category $category)
     {
         $category->update([
-            'featured_image' => Arr::get($validated, 'image', false) ? $this->storeFeaturedImage($validated['image']) : $category->featured_image,
+            'featured_image' => Arr::get($validated, 'image', false) ? $this->storeFeaturedImage($validated['image']) : $category->getRawOriginal('featured_image'),
             'color' => Arr::get($validated, 'color', false) ? $validated['color'] : $category->color,
-            'icon' => Arr::get($validated, 'icon_image', false) ? $this->storeIcon($validated['icon_image']) : $category->icon,
+            'icon' => Arr::get($validated, 'icon_image', false) ? $this->storeIcon($validated['icon_image']) : $category->getRawOriginal('icon'),
             'parent_id' => Arr::get($validated, 'parent_id', false) ? $validated['parent_id'] : $category->parent_id,
         ]);
 

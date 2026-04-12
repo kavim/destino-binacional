@@ -16,7 +16,7 @@ class EventController extends Controller
     public function __construct(
         protected EventService $eventService,
     ) {
-        $this->eventService = new EventService();
+        $this->eventService = new EventService;
     }
 
     /**
@@ -24,20 +24,29 @@ class EventController extends Controller
      */
     public function index()
     {
-        $places = Event::when(request('search'), function ($query, $search) {
+        $hasAnyFilter = request()->has('search') || request()->has('tag_id') || request()->has('parent_tag_id');
+
+        $events = Event::when(request('search'), function ($query, $search) {
             $query->where('slug', 'LIKE', '%'.Str::slug($search).'%');
         })
-            ->when(request('category_id'), function ($query, $category_id) {
-                $query->where('category_id', $category_id);
+            ->when(request('tag_id'), function ($query, $tagId) {
+                return $query->whereHas('tags', function ($q) use ($tagId) {
+                    $q->where('tags.id', $tagId);
+                });
+            })
+            ->when(request('parent_tag_id'), function ($query, $parentTagId) {
+                return $query->whereHas('tags', function ($q) use ($parentTagId) {
+                    $q->where('tags.parent_id', $parentTagId);
+                });
             })
             ->orderBy('id', 'DESC')
-            ->paginate();
+            ->paginate($hasAnyFilter ? 100 : 10);
 
         return Inertia::render('Dashboard/Event/Index', [
-            'events' => $places,
-            'categories' => Category::where('parent_id', null)->get(),
-            'grouped_categories' => Category::where('parent_id', '<>', null)->get()->groupBy('parent_id'),
-            'filters' => request()->all(['search', 'category_id']),
+            'events' => $events,
+            'parent_tags' => Tag::where('parent_id', null)->get(),
+            'grouped_tags' => Tag::where('parent_id', '<>', null)->get()->groupBy('parent_id'),
+            'filters' => request()->all(['search', 'parent_tag_id', 'tag_id']),
         ]);
     }
 

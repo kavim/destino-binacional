@@ -16,9 +16,8 @@ class EventService
     public string $error_message = '';
 
     public function __construct(
-        protected EventRepository $eventRepository = new EventRepository(),
-    ) {
-    }
+        protected EventRepository $eventRepository = new EventRepository,
+    ) {}
 
     public function index()
     {
@@ -30,9 +29,9 @@ class EventService
         return $this->eventRepository->groupedByStartDateLimited();
     }
 
-    public function filtered(?string $start = null, ?string $end = null, ?int $category_id = null)
+    public function filtered(?string $start = null, ?string $end = null, ?int $category_id = null, ?string $search = null)
     {
-        return $this->eventRepository->filtered($start, $end, $category_id);
+        return $this->eventRepository->filtered($start, $end, $category_id, $search);
     }
 
     public function getBySlug(string $slug)
@@ -62,7 +61,7 @@ class EventService
         return $event;
     }
 
-    public function storeFeaturedImage($image): string|null
+    public function storeFeaturedImage($image): ?string
     {
         if (! $image || is_null($image)) {
             return null;

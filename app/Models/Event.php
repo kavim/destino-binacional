@@ -31,6 +31,7 @@ class Event extends Model
     protected $casts = [
         'start' => 'date:Y/m/d',
         'end' => 'date:Y/m/d',
+        'is_online' => 'boolean',
     ];
 
     protected $appends = [
@@ -39,9 +40,11 @@ class Event extends Model
 
     public function getImageAttribute()
     {
-        return is_null($this->featured_image)
-            ? 'https://api.lorem.space/image/house?w=1200&h=720'
-            : asset('/storage/events/'.$this->featured_image);
+        if (is_null($this->featured_image) || $this->featured_image === '') {
+            return asset('images/parque.webp');
+        }
+
+        return asset('storage/events/'.$this->featured_image);
     }
 
     public function city()

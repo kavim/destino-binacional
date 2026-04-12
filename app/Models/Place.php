@@ -62,9 +62,11 @@ class Place extends Model implements TranslatableContract
 
     public function getImageAttribute(): string
     {
-        return is_null($this->featured_image)
-            ? 'https://api.lorem.space/image/burger?w=1200&h=720'
-            : asset('/storage/places/'.$this->featured_image);
+        if (is_null($this->featured_image) || $this->featured_image === '') {
+            return asset('images/parque.webp');
+        }
+
+        return asset('storage/places/'.$this->featured_image);
     }
 
     public function getDescriptionPtAttribute()

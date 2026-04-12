@@ -27,7 +27,7 @@ class GeoService
             return null;
         }
 
-        $cacheKey = 'geo:' . md5($ip);
+        $cacheKey = 'geo:'.md5($ip);
 
         return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($ip) {
             return self::fetchFromApi($ip);
@@ -43,6 +43,7 @@ class GeoService
         if (preg_match('/^(10\.|172\.(1[6-9]|2\d|3[01])\.|192\.168\.)/', $ip)) {
             return true;
         }
+
         return false;
     }
 
@@ -53,7 +54,7 @@ class GeoService
         }
 
         try {
-            $response = Http::timeout(3)->get('http://ip-api.com/json/' . urlencode($ip), [
+            $response = Http::timeout(3)->get('http://ip-api.com/json/'.urlencode($ip), [
                 'fields' => 'status,country,countryCode,regionName,city,timezone',
             ]);
 
@@ -74,6 +75,7 @@ class GeoService
                 'ip' => $ip,
                 'error' => $e->getMessage(),
             ]);
+
             return null;
         }
     }

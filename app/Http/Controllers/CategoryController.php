@@ -12,7 +12,7 @@ class CategoryController extends Controller
     public function __construct(
         protected CategoryService $categoryService,
     ) {
-        $this->categoryService = new CategoryService();
+        $this->categoryService = new CategoryService;
     }
 
     public function index()
@@ -88,8 +88,10 @@ class CategoryController extends Controller
                 'parent_id' => $category->parent_id,
                 'featured_image' => $category->featured_image,
                 'color' => $category->color,
-                'icone' => $category->icone,
-                'icon' => $category->icon,
+                /** Raw DB path / filename; do not use the icon accessor here (resolved URL). */
+                'icon' => $category->getRawOriginal('icon'),
+                /** Resolved URL for dashboard preview only. */
+                'icon_preview_url' => $category->icon,
             ],
             'parent' => $parent,
         ]);

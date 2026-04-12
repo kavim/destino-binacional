@@ -19,7 +19,7 @@ class PlaceController extends Controller
     public function __construct(
         protected PlaceService $placeService,
     ) {
-        $this->placeService = new PlaceService();
+        $this->placeService = new PlaceService;
     }
 
     public function index(): \Inertia\Response
@@ -40,6 +40,7 @@ class PlaceController extends Controller
                     return $query->whereIn('parent_id', [$category_id]);
                 });
             })
+            ->with('city')
             ->orderBy('places.id', 'DESC')
             ->paginate($hasAnyFilter ? 100 : 10);
 
@@ -47,7 +48,7 @@ class PlaceController extends Controller
             'places' => $places,
             'categories' => Category::where('parent_id', null)->get(),
             'grouped_categories' => Category::where('parent_id', '<>', null)->get()->groupBy('parent_id'),
-            'filters' => request()->all(['search', 'category_id']),
+            'filters' => request()->all(['search', 'category_id', 'sub_category_id']),
         ]);
     }
 

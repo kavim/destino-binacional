@@ -19,6 +19,7 @@ class PruneObservabilityData extends Command
         $days = (int) ($this->option('days') ?? config('observability.retention_days'));
         if ($days <= 0) {
             $this->warn('Retenção desativada (retention_days = null) ou inválida. Nada a fazer.');
+
             return self::SUCCESS;
         }
 
@@ -29,6 +30,7 @@ class PruneObservabilityData extends Command
         $perf = ObservabilityPerformance::where('measured_at', '<', $before)->delete();
 
         $this->info("Removidos: {$pv} page views, {$pe} erros, {$perf} registros de performance (antes de {$before->toDateString()}).");
+
         return self::SUCCESS;
     }
 }

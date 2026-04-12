@@ -4,12 +4,12 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ObservabilityController;
 use App\Http\Controllers\PlaceController;
-use App\Http\Controllers\TrackerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Site\HomeController;
 use App\Http\Controllers\Site\LocalizationController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TourController;
+use App\Http\Controllers\TrackerController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 

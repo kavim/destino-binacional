@@ -1,0 +1,1 @@
+function i(e){if(e==null||typeof e!="string")return;const n=e.trim();if(n)try{const o=new URL(n);if(o.protocol!=="https:")return;const t=o.hostname.toLowerCase();return!(t==="www.google.com"||t==="google.com"||t==="maps.google.com"||t.endsWith(".google.com"))||!o.pathname.toLowerCase().includes("/maps/embed")?void 0:o.toString()}catch{return}}export{i as s};

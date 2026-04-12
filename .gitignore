@@ -17,3 +17,6 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+
+# Respostas e análises geradas pelo Cursor
+/.cursor-respostas

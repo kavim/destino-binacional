@@ -1,0 +1,98 @@
+import { Head } from '@inertiajs/react';
+import SiteLayout from '@/Layouts/SiteLayout';
+import { cn } from '@/lib/utils';
+import { safeGoogleMapsEmbedUrl } from '@/lib/mapsEmbedUrl';
+import { sanitizeCmsHtmlForDisplay } from '@/lib/sanitizeHtml';
+import dayjs from 'dayjs';
+import 'dayjs/locale/es';
+
+type SiteTourShow = {
+    title: string;
+    image: string;
+    start?: string;
+    end?: string;
+    description: string;
+    google_maps_src?: string;
+    name?: string;
+};
+
+export default function Show({ tour }: { tour: SiteTourShow }) {
+    dayjs.locale("es");
+
+    const safeDescription = sanitizeCmsHtmlForDisplay(tour.description);
+    const mapEmbed = safeGoogleMapsEmbedUrl(tour.google_maps_src);
+
+    const className = cn(
+        [
+            'text-xl text-center whitespace-nowrap align-baseline font-bold',
+            'inline-block leading-none',
+            'h-[50vh]',
+            'text-sm',
+            'text-white',
+            'flex',
+            'items-center',
+            "bg-[url('" + tour.image + "')]",
+            'bg-cover bg-center',
+        ],
+    );
+
+    return (
+        <SiteLayout>
+            <Head title={tour.title} />
+            <div className="w-full overflow-hidden">
+                <div className={className} style={{ backgroundImage: `url("` + tour.image + `")` }}>
+                    <div className='flex justify-center items-center w-full h-full mx-auto md:px-10 bg-gradient-to-b from-black/30 via-black/50 to-background'>
+                        <div className="flex flex-col justify-center items-center">
+                            <div className='flex flex-col md:flex-row justify-center items-center break-words whitespace-normal'>
+                                <span className='md:text-5xl text-3xl font-extrabold'>
+                                    {tour.title}
+                                </span>
+                            </div>
+                            <div className='w-full flex items-center justify-center md:justify-start p-2 md:p-0 md:mt-4'>
+                                {
+                                    tour.start && (
+                                        tour.start !== tour.end ? (
+                                            <>
+                                                <i className="fa-solid fa-calendar-days mr-2 shadow-sm"></i>
+                                                {dayjs(tour.start).format('DD MMMM')}
+                                                <i className="fa-solid fa-arrows-left-right mx-2 shadow-sm"></i>
+                                                <i className="fa-solid fa-calendar-days mr-2 shadow-sm"></i>
+                                                {dayjs(tour.end).format('DD MMMM')}
+                                            </>
+                                        ) : (
+                                            <>
+                                                <i className="fa-solid fa-calendar-days mr-2"></i>
+                                                {dayjs(tour.start).format('DD MMMM')}
+                                            </>
+                                        )
+                                    )
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className='flex flex-col-reverse md:flex-row'>
+                    <div className='p-3 break-words w-full md:w-2/3 bg-card md:my-2 md:ml-5 rounded-lg'>
+                        <div dangerouslySetInnerHTML={{ __html: safeDescription }} />
+                    </div>
+                    <div className='w-full break-words md:w-1/3 md:my-2 md:mx-5 rounded-xl px-4 py-4 md:py-0'>
+                        <img src={tour.image} alt="" className='rounded-xl' />
+                    </div>
+                </div>
+                <div className='flex flex-col relative md:p-4 md:mt-5'>
+                    {mapEmbed && (
+                        <div className="w-full h-[60vh] md:h-[60vh] rounded-lg">
+                            <iframe
+                                className="w-full h-full md:rounded-lg"
+                                src={mapEmbed}
+                                title={tour.name ?? tour.title}
+                                loading="lazy"
+                                referrerPolicy="strict-origin-when-cross-origin"
+                            />
+                        </div>
+                    )}
+                </div>
+            </div >
+        </SiteLayout>
+    );
+}

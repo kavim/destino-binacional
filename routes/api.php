@@ -32,17 +32,23 @@ Route::post('observability/errors', function (Request $request) {
         'line' => 'nullable|integer',
         'stack' => 'nullable|string|max:10000',
         'level' => 'nullable|string|max:50',
+        'meta' => 'nullable|array|max:40',
+        'meta.*' => 'nullable|string|max:2000',
     ]);
     if ($v->fails()) {
         return response()->json(['message' => 'Invalid payload'], 422);
     }
     $data = $v->validated();
+    $clientMeta = isset($data['meta']) && is_array($data['meta']) ? $data['meta'] : [];
+
     ObservabilityService::recordError('frontend', $data['message'], [
         'url' => $data['url'] ?? null,
         'file' => $data['file'] ?? null,
         'line' => $data['line'] ?? null,
         'stack' => $data['stack'] ?? null,
         'level' => $data['level'] ?? 'error',
+        'client_meta' => $clientMeta,
     ]);
+
     return response()->json(['ok' => true], 201);
 })->middleware('throttle:60,1'); // 60 por minuto

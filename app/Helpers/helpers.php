@@ -1,5 +1,28 @@
 <?php
 
+if (! function_exists('googleMapsEmbedHttpsUrlIsAllowed')) {
+
+    /** Apenas HTTPS + host Google + caminho típico de embed (/maps/embed). */
+    function googleMapsEmbedHttpsUrlIsAllowed(string $url): bool
+    {
+        $parts = parse_url($url);
+        if (($parts['scheme'] ?? '') !== 'https') {
+            return false;
+        }
+        $host = strtolower($parts['host'] ?? '');
+        $isGoogle = $host === 'www.google.com'
+            || $host === 'google.com'
+            || $host === 'maps.google.com'
+            || str_ends_with($host, '.google.com');
+        if (! $isGoogle) {
+            return false;
+        }
+        $path = strtolower($parts['path'] ?? '');
+
+        return str_contains($path, '/maps/embed');
+    }
+}
+
 if (! function_exists('extractSrcFromGmapsIframe')) {
 
     function extractSrcFromGmapsIframe(?string $google_maps_src): ?string
@@ -8,19 +31,30 @@ if (! function_exists('extractSrcFromGmapsIframe')) {
             return null;
         }
 
+        $candidates = [];
+
         if (str_starts_with($google_maps_src, 'http')) {
-            return $google_maps_src;
+            $candidates[] = $google_maps_src;
         }
 
-        preg_match('~iframe.*src="([^"]*)"~', $google_maps_src, $result);
+        if (preg_match('~iframe[^>]+src="([^"]*)"~i', $google_maps_src, $m) && ! empty($m[1])) {
+            $candidates[] = $m[1];
+        }
 
-        return is_array($result) && count($result) > 0 && $result[1] ? $result[1] : null;
+        foreach ($candidates as $raw) {
+            $raw = trim($raw);
+            if ($raw !== '' && googleMapsEmbedHttpsUrlIsAllowed($raw)) {
+                return $raw;
+            }
+        }
+
+        return null;
     }
 
 }
 
 if (! function_exists('parse_money')) {
-    function parse_money(?string $parse_money): string|null
+    function parse_money(?string $parse_money): ?string
     {
         // get only the numbers for example from 20,43 to be 2043, and from 20.43 to be 2043.
         // We have to currency and for pesos Uruguayos we don't need to multiply by 100
@@ -30,18 +64,35 @@ if (! function_exists('parse_money')) {
 }
 
 if (! function_exists('convert_to_cents')) {
-    function convert_to_cents(string $value): int
+    function convert_to_cents(string|int|float|null $value): int
     {
-        // Remove a moeda e espaços em branco
-        $value = str_replace(['UYU', 'BRL', ' ', ' '], '', $value); // Remover 'UYU', 'BRL' e espaços
+        if ($value === null || $value === '') {
+            return 0;
+        }
 
-        // Substituir vírgula por ponto para permitir conversão para float
-        $value = str_replace(',', '.', $value);
+        if (is_int($value) || is_float($value)) {
+            return (int) round((float) $value * 100);
+        }
 
-        // remove qualquer outro caracter deixando apenas os numeros e o ponto
+        // Valor já normalizado do front (ex.: "1234.56") ou máscara legada
+        $value = str_replace(['UYU', 'BRL', 'R$', ' ', ' '], '', (string) $value);
+        $value = trim($value);
+
+        // pt-BR: 1.234,56 → último separador , é decimal
+        if (str_contains($value, ',') && (! str_contains($value, '.') || strrpos($value, ',') > strrpos($value, '.'))) {
+            $value = str_replace('.', '', $value);
+            $value = str_replace(',', '.', $value);
+        } else {
+            // 1,944.50 ou 1234.56
+            $value = str_replace(',', '', $value);
+        }
+
         $value = preg_replace('/[^0-9.]/', '', $value);
 
-        // Converter para float e multiplicar por 100 para obter os centavos
-        return (int) ($value * 100);
+        if ($value === '' || $value === '.') {
+            return 0;
+        }
+
+        return (int) round((float) $value * 100);
     }
 }

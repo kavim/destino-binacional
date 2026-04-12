@@ -1,0 +1,66 @@
+import React, { useState } from 'react';
+import { usePage } from '@inertiajs/react';
+import MultipleCheckbox from './MultipleCheckbox';
+import { Collapsible } from 'collapsible-react-component'
+import 'collapsible-react-component/dist/index.css'
+import { cn } from '@/lib/utils';
+import InputError from '@/Components/InputError';
+
+type TagsProps = {
+    handleCheck: (e: {
+        target: { value?: string | number; checked: boolean };
+    }) => void;
+};
+
+export default function Tags({ handleCheck }: TagsProps) {
+
+    const { parent_tags, errors: fieldErrors } = usePage().props as unknown as {
+        parent_tags: Array<{ id: number; name: string; open?: boolean }>;
+        errors: Record<string, string>;
+    };
+    const [controls, setControls] = useState(parent_tags);
+
+    const toggleControl = (id: number) => {
+        setControls(controls.map(control => {
+            if (control.id === id) {
+                return { ...control, open: !control.open };
+            }
+            return control;
+        }));
+    };
+
+    const isOpen = (id: number): boolean => {
+        const c = controls.find((control) => control.id === id);
+        return Boolean(c?.open);
+    };
+
+    return (
+        <>
+            {Object.keys(parent_tags).map((tag, index) => {
+                return (
+                    <div key={index} className='bg-muted p-3 rounded-lg mb-3 border shadow-sm'>
+                        <div className='flex justify-between cursor-pointer' onClick={() => {
+                            toggleControl(parent_tags[index]['id']);
+                        }}>
+                            <span className='text-md font-bold'>{parent_tags[index]['name']}</span>
+                            <button
+                                type='button'
+                            >
+                                <i className={cn(['fas fa-chevron-down transition ease-in-out duration-250'], { '-rotate-180': isOpen(parent_tags[index]['id']) })} ></i>
+                            </button>
+                        </div>
+                        <Collapsible
+                            open={isOpen(parent_tags[index]!.id)}
+                            revealType='bottomFirst'
+                        >
+                            <div className='my-2'>
+                                <MultipleCheckbox tagId={parent_tags[index]['id']} handleCheck={handleCheck} />
+                            </div>
+                        </Collapsible>
+                        <InputError message={fieldErrors?.tag_ids} className="mt-2" />
+                    </div>
+                );
+            })}
+        </>
+    );
+}
