@@ -1,0 +1,1 @@
+import{a as r}from"./app-b4a9c26c.js";import{S as i}from"./SiteListingHero-9a115378.js";import"./utils-1c8fdc40.js";function n({category:e}){return r(i,{backgroundSrc:e.featured_image,iconSrc:e.icon,kicker:"Categoria",title:e.name,description:"Descubra lugares y servicios de esta categoría en la región."})}export{n as default};

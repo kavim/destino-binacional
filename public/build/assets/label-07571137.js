@@ -1,0 +1,1 @@
+import{r as o,a as s}from"./app-b4a9c26c.js";import{c as t}from"./index-f0eac19d.js";import{c as l}from"./utils-1c8fdc40.js";const m=t("text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"),c=o.forwardRef(({className:a,...e},r)=>s("label",{ref:r,className:l(m(),a),...e}));c.displayName="Label";export{c as L};
