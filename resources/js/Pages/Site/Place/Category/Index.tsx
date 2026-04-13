@@ -18,7 +18,7 @@ const EMPTY_CATEGORY_COPY =
 type SiteCategoryIndexPageProps = {
     category: SiteCategoryShow;
     places: {
-        data: Array<{ slug: string; name: string; image?: string }>;
+        data: Array<{ slug: string; name: string; image?: string; meta?: string | null }>;
         links: PaginationLink[];
     };
 };
@@ -48,9 +48,9 @@ export default function Index() {
 
             <CategoryHeader category={category} />
 
-            <div className="w-full">
+            <div className="relative z-10 -mt-1 w-full">
                 <div
-                    className={`border-y border-border px-4 py-5 text-center text-sm leading-relaxed shadow-sm sm:px-6 sm:py-6 sm:text-base ${!bandBg ? 'bg-primary text-primary-foreground' : ''}`}
+                    className={`border-y border-border/80 px-4 py-5 text-center text-sm leading-relaxed sm:px-6 sm:py-6 sm:text-base ${!bandBg ? 'bg-primary text-primary-foreground' : ''}`}
                     style={bandBg ? { backgroundColor: bandBg, color: bandFg } : undefined}
                 >
                     <p className="mx-auto max-w-3xl text-balance whitespace-pre-line">
@@ -61,9 +61,13 @@ export default function Index() {
                 </div>
             </div>
 
-            <div className="mx-auto my-5 max-w-full px-2 sm:px-4 lg:max-w-7xl lg:px-8">
-                <PlaceCardList places={data} />
-                <Pagination links={links} />
+            <div className="relative z-10 mx-auto min-w-0 max-w-7xl px-3 pb-14 pt-6 sm:px-5 sm:pb-16 lg:px-8">
+                <div className="mx-auto flex max-w-6xl flex-col gap-8 sm:gap-10">
+                    <PlaceCardList places={data} />
+                    <div className="flex justify-center pt-2">
+                        <Pagination links={links} />
+                    </div>
+                </div>
             </div>
         </SiteLayout>
     );

@@ -1,9 +1,11 @@
 import { Head } from '@inertiajs/react';
 import SiteLayout from '@/Layouts/SiteLayout';
+import GoogleMapsEmbedFrame from '@/Components/site/GoogleMapsEmbedFrame';
 import { cn } from '@/lib/utils';
-import { safeGoogleMapsEmbedUrl } from '@/lib/mapsEmbedUrl';
+import { googleMapsOpenUrl, normalizeGoogleMapsEmbedSrc } from '@/lib/mapsEmbedUrl';
 import { cmsRichTextDisplayClassName } from '@/lib/cmsRichTextDisplay';
 import { sanitizeCmsHtmlForDisplay } from '@/lib/sanitizeHtml';
+import { ExternalLink } from 'lucide-react';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 
@@ -29,11 +31,26 @@ export default function Show({ event }: { event: SiteEventShow }) {
     dayjs.locale('es');
 
     const safeDescription = sanitizeCmsHtmlForDisplay(event.description);
-    const mapEmbed = safeGoogleMapsEmbedUrl(event.google_maps_src);
 
     const headerClass = cn(
         'relative flex w-full min-h-[55vh] items-center bg-cover bg-center',
     );
+
+    const locationLine = [
+        event.address?.trim(),
+        event.city?.name,
+        event.city?.state?.name,
+    ]
+        .filter(Boolean)
+        .join(', ');
+
+    const mapEmbed =
+        !event.is_online && event.google_maps_src
+            ? normalizeGoogleMapsEmbedSrc(event.google_maps_src)
+            : undefined;
+    const mapsOpenUrl = !event.is_online
+        ? googleMapsOpenUrl(event.google_maps_src ?? undefined, locationLine || null)
+        : undefined;
 
     return (
         <SiteLayout>
@@ -71,9 +88,7 @@ export default function Show({ event }: { event: SiteEventShow }) {
                                     <div className="flex items-center gap-2 text-stone-200">
                                         <i className="fa-solid fa-location-dot text-white/70" aria-hidden />
                                         <span className="text-center md:text-left">
-                                            {event.address}
-                                            {event.city?.name ? `, ${event.city.name}` : ''}
-                                            {event.city?.state?.name ? `, ${event.city.state.name}` : ''}
+                                            {locationLine || 'Local a confirmar'}
                                         </span>
                                     </div>
                                 )}
@@ -90,104 +105,109 @@ export default function Show({ event }: { event: SiteEventShow }) {
                     </div>
                 </div>
 
-                <div className="mx-auto flex max-w-6xl flex-col gap-10 px-5 pb-20 pt-12 md:flex-row">
-                    <div className="w-full break-words md:w-2/3">
-                        <h2 className="mb-6 border-b border-gray-100 pb-2 text-2xl font-bold text-gray-800 dark:border-border dark:text-foreground">
-                            Descrição do evento
-                        </h2>
-                        <div
-                            className={cmsRichTextDisplayClassName(
-                                'max-w-none text-gray-600 dark:text-muted-foreground',
-                            )}
-                            dangerouslySetInnerHTML={{ __html: safeDescription }}
-                        />
-                    </div>
-
-                    <div className="mt-8 w-full md:mt-0 md:w-1/3">
-                        <div className="sticky top-5 overflow-hidden rounded-xl bg-white md:border md:border-gray-100 md:shadow-lg dark:border-border dark:bg-card">
-                            <div className="flex flex-wrap items-center gap-3 border-b border-gray-100 bg-gray-50 px-6 py-4 font-bold text-gray-800 dark:border-border dark:bg-muted dark:text-foreground">
-                                {event.is_online ? (
-                                    <>
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="20"
-                                            height="20"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            className="text-blue-600 dark:text-primary"
-                                            aria-hidden
-                                        >
-                                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-                                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-                                        </svg>
-                                        <h3>Acesso Digital</h3>
-                                    </>
-                                ) : (
-                                    <>
-                                        <i className="fa-solid fa-location-dot text-blue-400" aria-hidden />
-                                        <h3>Localização</h3>
-                                    </>
-                                )}
+                <div className="mx-auto max-w-6xl px-5 pb-20 pt-12">
+                    <div className="flex flex-col gap-10 md:flex-row">
+                        <div className="w-full break-words md:w-2/3">
+                            <div className="overflow-hidden rounded-xl border border-border bg-white p-6 shadow-lg dark:bg-card">
+                                <h2 className="mb-6 border-b border-gray-100 pb-2 text-2xl font-bold text-gray-800 dark:border-border dark:text-foreground">
+                                    Descrição do evento
+                                </h2>
+                                <div
+                                    className={cmsRichTextDisplayClassName(
+                                        'max-w-none text-gray-600 dark:text-muted-foreground',
+                                    )}
+                                    dangerouslySetInnerHTML={{ __html: safeDescription }}
+                                />
                             </div>
+                        </div>
 
-                            <div className="p-6">
-                                {event.is_online ? (
-                                    <div className="space-y-6 text-center md:text-left">
-                                        <p className="text-sm leading-relaxed text-gray-600 dark:text-muted-foreground">
-                                            Este evento será realizado de forma digital. Clique no botão abaixo
-                                            para ser redirecionado ao link oficial de participação.
-                                        </p>
-                                        {event.link ? (
-                                            <a
-                                                href={event.link}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="group flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-4 font-bold text-white shadow-md transition-all hover:bg-blue-700 dark:bg-primary dark:hover:bg-primary/90"
+                        <div className="mt-8 w-full md:mt-0 md:w-1/3">
+                            <div className="sticky top-5 overflow-hidden rounded-xl bg-white md:border md:border-gray-100 md:shadow-lg dark:border-border dark:bg-card">
+                                <div className="flex flex-wrap items-center gap-3 border-b border-gray-100 bg-gray-50 px-6 py-4 font-bold text-gray-800 dark:border-border dark:bg-muted dark:text-foreground">
+                                    {event.is_online ? (
+                                        <>
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="20"
+                                                height="20"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                strokeWidth="2"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                className="text-blue-600 dark:text-primary"
+                                                aria-hidden
                                             >
-                                                <span>Ir para o evento</span>
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    width="18"
-                                                    height="18"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    strokeWidth="2"
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    className="transition-transform group-hover:translate-x-1"
-                                                    aria-hidden
+                                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                                            </svg>
+                                            <h3>Acesso Digital</h3>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <i className="fa-solid fa-location-dot text-blue-400" aria-hidden />
+                                            <h3>Localização</h3>
+                                        </>
+                                    )}
+                                </div>
+
+                                <div className="p-6">
+                                    {event.is_online ? (
+                                        <div className="space-y-6 text-center md:text-left">
+                                            <p className="text-sm leading-relaxed text-gray-600 dark:text-muted-foreground">
+                                                Este evento será realizado de forma digital. Clique no botão abaixo
+                                                para ser redirecionado ao link oficial de participação.
+                                            </p>
+                                            {event.link ? (
+                                                <a
+                                                    href={event.link}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="group flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-4 font-bold text-white shadow-md transition-all hover:bg-blue-700 dark:bg-primary dark:hover:bg-primary/90"
                                                 >
-                                                    <path d="M5 12h14" />
-                                                    <path d="m12 5 7 7-7 7" />
-                                                </svg>
-                                            </a>
-                                        ) : null}
-                                    </div>
-                                ) : (
-                                    <div className="space-y-6">
-                                        <p className="text-sm font-medium leading-relaxed text-gray-600 dark:text-muted-foreground">
-                                            {event.address}
-                                            {event.city?.name ? `, ${event.city.name}` : ''}
-                                            {event.city?.state?.name ? `, ${event.city.state.name}` : ''}
-                                        </p>
-                                        {mapEmbed ? (
-                                            <div className="h-[250px] w-full overflow-hidden rounded-lg border border-gray-200 dark:border-border">
-                                                <iframe
-                                                    className="h-full w-full"
-                                                    src={mapEmbed}
-                                                    title="Mapa"
-                                                    loading="lazy"
-                                                    referrerPolicy="strict-origin-when-cross-origin"
-                                                />
-                                            </div>
-                                        ) : null}
-                                    </div>
-                                )}
+                                                    <span>Ir para o evento</span>
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        width="18"
+                                                        height="18"
+                                                        viewBox="0 0 24 24"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="2"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        className="transition-transform group-hover:translate-x-1"
+                                                        aria-hidden
+                                                    >
+                                                        <path d="M5 12h14" />
+                                                        <path d="m12 5 7 7-7 7" />
+                                                    </svg>
+                                                </a>
+                                            ) : null}
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-4">
+                                            <p className="text-sm font-medium leading-relaxed text-gray-600 dark:text-muted-foreground">
+                                                {locationLine || 'Endereço não informado.'}
+                                            </p>
+                                            {mapsOpenUrl ? (
+                                                <a
+                                                    href={mapsOpenUrl}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-4 py-3 text-sm font-semibold text-primary transition hover:bg-primary/15 dark:border-primary/40"
+                                                >
+                                                    Abrir no Google Maps
+                                                    <ExternalLink className="h-4 w-4" aria-hidden />
+                                                </a>
+                                            ) : null}
+                                            {mapEmbed ? (
+                                                <GoogleMapsEmbedFrame src={mapEmbed} title="Mapa" />
+                                            ) : null}
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>

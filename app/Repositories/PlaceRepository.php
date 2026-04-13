@@ -17,13 +17,16 @@ class PlaceRepository
         return Place::whereHas('categories', function ($query) use ($parent_id) {
             return $query->whereIn('parent_id', [$parent_id]);
         })
+            ->with(['city.state', 'placeType'])
             ->orderBy('order', 'DESC')
             ->paginate();
     }
 
     public function getByPlaceIdentifier(string $slug)
     {
-        return Place::where('slug', $slug)
+        return Place::query()
+            ->where('slug', $slug)
+            ->with(['city.state', 'placeType', 'categories'])
             ->firstOrFail();
     }
 }

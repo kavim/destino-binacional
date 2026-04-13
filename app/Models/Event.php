@@ -40,11 +40,7 @@ class Event extends Model
 
     public function getImageAttribute()
     {
-        if (is_null($this->featured_image) || $this->featured_image === '') {
-            return asset('images/parque.webp');
-        }
-
-        return asset('storage/events/'.$this->featured_image);
+        return public_storage_file_url($this->featured_image, 'events');
     }
 
     public function city()

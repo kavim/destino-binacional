@@ -19,9 +19,9 @@ class PlaceImage extends Model
         }
 
         if (substr($this->url, 0, 6) === 'places') {
-            return asset('/storage/'.$this->url);
+            return public_href(public_storage_url($this->url));
         }
 
-        return asset('/storage/places/'.$this->url);
+        return public_href(public_storage_url('places/'.$this->url));
     }
 }

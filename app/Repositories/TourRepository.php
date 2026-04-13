@@ -27,24 +27,15 @@ class TourRepository
             ->firstOrFail();
     }
 
-    public function filtered($start = null, $end = null, $category_id = null)
+    public function filtered(?int $category_id = null)
     {
-        if (is_null($start)) {
-            //            $start = now();
-        }
-
-        return Tour::orderBy('start')
-            ->when($start, function ($query, $start) {
-                $query->where('start', '>=', $start);
-            })
-            ->when($end, function ($query, $end) {
-                $query->where('end', '<=', $end);
-            })
+        return Tour::query()
             ->when($category_id, function ($query, $category_id) {
-                $query->whereHas('categories', function ($query) use ($category_id) {
-                    $query->where('id', $category_id);
+                $query->whereHas('categories', function ($q) use ($category_id) {
+                    $q->where('categories.id', $category_id);
                 });
             })
+            ->orderBy('title')
             ->limit(250)
             ->get();
     }

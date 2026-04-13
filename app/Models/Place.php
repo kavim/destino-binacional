@@ -62,11 +62,7 @@ class Place extends Model implements TranslatableContract
 
     public function getImageAttribute(): string
     {
-        if (is_null($this->featured_image) || $this->featured_image === '') {
-            return asset('images/parque.webp');
-        }
-
-        return asset('storage/places/'.$this->featured_image);
+        return public_storage_file_url($this->featured_image, 'places');
     }
 
     public function getDescriptionPtAttribute()

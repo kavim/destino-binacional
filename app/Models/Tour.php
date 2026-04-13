@@ -39,11 +39,7 @@ class Tour extends Model
 
     public function getImageAttribute()
     {
-        if (is_null($this->featured_image) || $this->featured_image === '') {
-            return asset('images/parque.webp');
-        }
-
-        return asset('storage/tours/'.$this->featured_image);
+        return public_storage_file_url($this->featured_image, 'tours');
     }
 
     public function categories(): \Illuminate\Database\Eloquent\Relations\BelongsToMany

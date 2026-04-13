@@ -1,1 +1,0 @@
-import{a as e}from"./app-47bd84d1.js";import{S as a}from"./SelectInput-a5d2804b.js";function o({category:l}){return e("div",{className:"w-full",children:e("div",{children:e(a,{label:"",className:"w-full",name:"category",value:"",onChange:()=>{},children:e("option",{value:"",children:"Select"})})})})}export{o as default};

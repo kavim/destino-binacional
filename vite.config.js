@@ -37,6 +37,13 @@ export default defineConfig(({ command }) => {
                 hmr: {
                     host: process.env.APP_URL,
                 },
+                // Se abrires o dev server do Vite diretamente, /storage continua a servir-se do Laravel.
+                proxy: {
+                    '^/storage': {
+                        target: process.env.VITE_LARAVEL_ORIGIN || 'http://127.0.0.1:8000',
+                        changeOrigin: true,
+                    },
+                },
             },
             define: {
                 "global": {},

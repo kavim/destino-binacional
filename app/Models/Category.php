@@ -47,7 +47,7 @@ class Category extends Model implements TranslatableContract
         }
 
         if (str_starts_with($value, 'icons/')) {
-            return asset('images/'.$value);
+            return public_href(public_asset_path('images/'.$value));
         }
 
         return null;
@@ -64,14 +64,14 @@ class Category extends Model implements TranslatableContract
         }
 
         if ($value === null || $value === '') {
-            return asset('images/parque.webp');
+            return public_href(public_asset_path('images/parque.webp'));
         }
 
         if (Storage::disk('public')->exists('categories/'.$value)) {
-            return asset('storage/categories/'.$value);
+            return public_href(public_storage_url('categories/'.$value));
         }
 
-        return asset('images/parque.webp');
+        return public_href(public_asset_path('images/parque.webp'));
     }
 
     /**
@@ -114,7 +114,7 @@ class Category extends Model implements TranslatableContract
         $value = $this->normalizeIconStorageValue($value);
 
         if ($value === null || $value === '') {
-            return asset('images/icons/default.svg');
+            return public_href(public_asset_path('images/icons/default.svg'));
         }
 
         $public = $this->publicImagesFileUrl($value);
@@ -129,19 +129,19 @@ class Category extends Model implements TranslatableContract
         ];
         foreach ($candidates as $relative) {
             if (is_file(public_path($relative))) {
-                return asset($relative);
+                return public_href(public_asset_path($relative));
             }
         }
 
         if (Storage::disk('public')->exists('icons/'.$value)) {
-            return asset('storage/icons/'.$value);
+            return public_href(public_storage_url('icons/'.$value));
         }
 
         if (Storage::disk('public')->exists('icons/'.$basename)) {
-            return asset('storage/icons/'.$basename);
+            return public_href(public_storage_url('icons/'.$basename));
         }
 
-        return asset('images/icons/default.svg');
+        return public_href(public_asset_path('images/icons/default.svg'));
     }
 
     protected function image(): Attribute
@@ -191,6 +191,11 @@ class Category extends Model implements TranslatableContract
     public function places()
     {
         return $this->belongsToMany(Place::class);
+    }
+
+    public function tours(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Tour::class);
     }
 
     /**

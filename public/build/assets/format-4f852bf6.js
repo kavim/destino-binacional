@@ -1,0 +1,1 @@
+function a(t,e){const o=e==="UYU"||e==="BRL"?e:"BRL",r=typeof t=="number"&&!Number.isNaN(t)?t/100:0,n=o==="UYU"?"es-UY":"pt-BR";return new Intl.NumberFormat(n,{style:"currency",currency:o}).format(r)}export{a as f};
