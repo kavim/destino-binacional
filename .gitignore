@@ -20,3 +20,6 @@ yarn-error.log
 
 # Respostas e análises geradas pelo Cursor
 /.cursor-respostas
+
+# Specs locais (SDD) — não versionar
+/specs/
