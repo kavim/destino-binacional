@@ -10,6 +10,9 @@ return [
         'path' => 'events/',
         'width' => null,
         'height' => null,
+        // Nginx em prod bloqueia .webp em /storage/events/; JPEG é servido normalmente.
+        'output_format' => 'jpg',
+        'output_quality' => 85,
     ],
     'tours_feature_image' => [
         'path' => 'tours/',

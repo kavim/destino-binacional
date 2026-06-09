@@ -67,6 +67,15 @@ class CheckPublicStorage extends Command
             }
         }
 
+        $eventWebpCount = Event::query()
+            ->whereNotNull('featured_image')
+            ->where('featured_image', 'like', '%.webp')
+            ->count();
+
+        if ($eventWebpCount > 0) {
+            $this->warn("{$eventWebpCount} evento(s) com imagem .webp — em alguns servidores /storage/events/*.webp retorna 403. Reenvie a imagem (passará a .jpg) ou converta no disco.");
+        }
+
         return $ok ? self::SUCCESS : self::FAILURE;
     }
 

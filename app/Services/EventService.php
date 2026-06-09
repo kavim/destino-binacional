@@ -71,6 +71,8 @@ class EventService
             'prefix' => 'event_',
             'width' => $config['width'],
             'height' => $config['height'],
+            'output_format' => $config['output_format'] ?? null,
+            'output_quality' => $config['output_quality'] ?? 85,
         ]);
     }
 
