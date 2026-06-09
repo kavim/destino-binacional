@@ -13,7 +13,14 @@ class FeaturedImageStorage
     /**
      * Persist a base64 data-URI image on the public disk.
      *
-     * @param  array{path: string, prefix: string, width?: int|null, height?: int|null}  $options
+     * @param  array{
+     *     path: string,
+     *     prefix: string,
+     *     width?: int|null,
+     *     height?: int|null,
+     *     output_format?: string|null,
+     *     output_quality?: int|null
+     * }  $options
      *
      * @throws RuntimeException
      */
@@ -27,8 +34,10 @@ class FeaturedImageStorage
         $prefix = $options['prefix'];
         $width = $options['width'] ?? null;
         $height = $options['height'] ?? null;
+        $outputFormat = isset($options['output_format']) ? strtolower((string) $options['output_format']) : null;
+        $outputQuality = $options['output_quality'] ?? 85;
 
-        $extension = $this->extensionFromDataUri($image);
+        $extension = $outputFormat ?? $this->extensionFromDataUri($image);
         $filename = $prefix.time().'.'.$extension;
         $relativePath = $directory.'/'.$filename;
 
@@ -43,6 +52,8 @@ class FeaturedImageStorage
 
         Storage::disk('public')->makeDirectory($directory);
 
+        $fullPath = storage_path('app/public/'.$relativePath);
+
         try {
             $imageInstance = Image::make($decoded);
 
@@ -50,7 +61,12 @@ class FeaturedImageStorage
                 $imageInstance->resize($width, $height);
             }
 
-            $imageInstance->save(storage_path('app/public/'.$relativePath));
+            if ($outputFormat !== null) {
+                $imageInstance->encode($outputFormat, $outputQuality);
+            }
+
+            $imageInstance->save($fullPath);
+            @chmod($fullPath, 0644);
         } catch (Throwable $e) {
             Log::error('Featured image save failed', [
                 'path' => $relativePath,

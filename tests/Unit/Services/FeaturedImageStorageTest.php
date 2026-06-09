@@ -63,4 +63,19 @@ class FeaturedImageStorageTest extends TestCase
             'prefix' => 'event_',
         ]);
     }
+
+    public function test_store_from_base64_can_force_output_format(): void
+    {
+        $filename = $this->storage->storeFromBase64($this->base64Pixel, [
+            'path' => 'events/',
+            'prefix' => 'event_',
+            'output_format' => 'jpg',
+        ]);
+
+        $this->assertNotNull($filename);
+        $this->assertStringEndsWith('.jpg', $filename);
+        $this->assertFileExists(storage_path('app/public/events/'.$filename));
+
+        @unlink(storage_path('app/public/events/'.$filename));
+    }
 }
