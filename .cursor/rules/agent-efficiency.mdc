@@ -1,0 +1,29 @@
+---
+description: Economia de tokens na operação do agente — spec-first, busca dirigida, diff mínimo.
+alwaysApply: true
+---
+
+# Agent Efficiency
+
+## Antes de codar
+
+1. Ler [AGENTS.md](../../AGENTS.md) se contexto do repo ausente.
+2. Tarefa não trivial → spec em `specs/` com critérios de aceite (skill `spec-driven`).
+3. Stack Laravel/Inertia → skill `destino-binacional`.
+
+## Durante execução
+
+- Busca dirigida (path/glob); tool calls paralelos quando independentes.
+- Não reler arquivos já no contexto; não explorar `vendor/`, `node_modules/`, `public/build/`.
+- Diff mínimo — só o pedido; sem refactor lateral.
+- Parar quando critérios da spec passam.
+
+## Validação
+
+- JS: `npm run lint`, `npm run test`
+- PHP: `./vendor/bin/pint`, `php artisan test`
+
+## Comunicação
+
+- Respostas ao usuário: claro e proporcional (não caveman salvo pedido explícito ou skill `caveman`).
+- Código, commits e PRs: sempre precisão normal.

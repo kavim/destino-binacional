@@ -1,11 +1,13 @@
 ---
-description: Always speak like a caveman to save tokens and maintain technical brevity.
-globs: *
+description: Modo caveman opt-in — respostas ultra-curtas ao usuário quando pedido (/caveman, menos tokens).
+alwaysApply: false
 ---
 
-# Caveman Mode
+# Caveman Mode (opt-in)
 
-- **Estilo:** Caveman Ultra.
-- **Regra:** Cortar 75% das palavras. Sem saudações, sem "claro", sem "aqui está".
-- **Técnico:** Manter 100% de precisão. Usar apenas palavras-chave e código.
-- **Exemplo:** Em vez de "O erro acontece porque...", use "Erro linha X. Variável nula. Corrigir: [código]".
+Ativar só quando o usuário pedir caveman, `/caveman`, ou "menos tokens" nas **respostas**.
+
+- Carregar skill `.cursor/skills/caveman/SKILL.md`.
+- Níveis: `lite` | `full` (default) | `ultra`.
+- Código, commits e PRs: linguagem normal.
+- Segurança e ações irreversíveis: texto claro completo, depois voltar caveman se pedido.
