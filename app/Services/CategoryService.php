@@ -8,6 +8,7 @@ use App\Repositories\CategoryRepository;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
@@ -16,6 +17,7 @@ class CategoryService
 {
     public function __construct(
         protected CategoryRepository $categoryRepository = new CategoryRepository,
+        protected FeaturedImageStorage $featuredImageStorage = new FeaturedImageStorage,
     ) {}
 
     public function index(): Collection
@@ -40,50 +42,42 @@ class CategoryService
 
     public function store(array $validated)
     {
-        $category = Category::create([
-            'featured_image' => Arr::get($validated, 'image', false) ? $this->storeFeaturedImage($validated['image']) : 'icons/default.svg',
-            'color' => Arr::get($validated, 'color', null),
-            'icon' => Arr::get($validated, 'icon_image', false) ? $this->storeIcon($validated['icon_image']) : 'turistico.webp',
-            'parent_id' => Arr::get($validated, 'parent_id', false),
-        ]);
+        return DB::transaction(function () use ($validated) {
+            $category = Category::create([
+                'featured_image' => Arr::get($validated, 'image', false) ? $this->storeFeaturedImage($validated['image']) : 'icons/default.svg',
+                'color' => Arr::get($validated, 'color', null),
+                'icon' => Arr::get($validated, 'icon_image', false) ? $this->storeIcon($validated['icon_image']) : 'turistico.webp',
+                'parent_id' => Arr::get($validated, 'parent_id', false),
+            ]);
 
-        CategoryTranslation::create([
-            'locale' => 'es',
-            'name' => $validated['name_es'],
-            'slug' => Str::slug($validated['name_es']),
-            'category_id' => $category->id,
-        ]);
+            CategoryTranslation::create([
+                'locale' => 'es',
+                'name' => $validated['name_es'],
+                'slug' => Str::slug($validated['name_es']),
+                'category_id' => $category->id,
+            ]);
 
-        CategoryTranslation::create([
-            'locale' => 'pt',
-            'name' => $validated['name_pt'],
-            'slug' => Str::slug($validated['name_pt']),
-            'category_id' => $category->id,
-        ]);
+            CategoryTranslation::create([
+                'locale' => 'pt',
+                'name' => $validated['name_pt'],
+                'slug' => Str::slug($validated['name_pt']),
+                'category_id' => $category->id,
+            ]);
 
-        return $category;
+            return $category;
+        });
     }
 
-    public function storeFeaturedImage($image): string
+    public function storeFeaturedImage($image): ?string
     {
-        if (! $image || is_null($image)) {
-            return null;
-        }
+        $config = config('custom.categories_feature_image');
 
-        $width = config('custom.feature_image.width');
-        $height = config('custom.feature_image.height');
-        $path = config('custom.categories_feature_image.path');
-        $featured_image_src = null;
-
-        try {
-            $file = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $image));
-            $featured_image_src = 'place_'.time().'.'.explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
-            Image::make($file)->resize($width, $height)->save(storage_path('app/public/'.$path.$featured_image_src));
-        } catch (Exception $e) {
-            Log::error($e);
-        }
-
-        return $featured_image_src;
+        return $this->featuredImageStorage->storeFromBase64($image, [
+            'path' => $config['path'],
+            'prefix' => 'place_',
+            'width' => $config['width'],
+            'height' => $config['height'],
+        ]);
     }
 
     public function storeIcon($icon)
@@ -114,45 +108,47 @@ class CategoryService
 
     public function update(array $validated, Category $category)
     {
-        $category->update([
-            'featured_image' => Arr::get($validated, 'image', false) ? $this->storeFeaturedImage($validated['image']) : $category->getRawOriginal('featured_image'),
-            'color' => Arr::get($validated, 'color', false) ? $validated['color'] : $category->color,
-            'icon' => Arr::get($validated, 'icon_image', false) ? $this->storeIcon($validated['icon_image']) : $category->getRawOriginal('icon'),
-            'parent_id' => Arr::get($validated, 'parent_id', false) ? $validated['parent_id'] : $category->parent_id,
-        ]);
+        return DB::transaction(function () use ($validated, $category) {
+            $category->update([
+                'featured_image' => Arr::get($validated, 'image', false) ? $this->storeFeaturedImage($validated['image']) : $category->getRawOriginal('featured_image'),
+                'color' => Arr::get($validated, 'color', false) ? $validated['color'] : $category->color,
+                'icon' => Arr::get($validated, 'icon_image', false) ? $this->storeIcon($validated['icon_image']) : $category->getRawOriginal('icon'),
+                'parent_id' => Arr::get($validated, 'parent_id', false) ? $validated['parent_id'] : $category->parent_id,
+            ]);
 
-        $cat = CategoryTranslation::firstOrCreate(
-            [
-                'category_id' => $category->id,
-                'locale' => 'es',
-            ],
-            [
+            $cat = CategoryTranslation::firstOrCreate(
+                [
+                    'category_id' => $category->id,
+                    'locale' => 'es',
+                ],
+                [
+                    'name' => $validated['name_es'],
+                    'slug' => Str::slug($validated['name_es']),
+                ]
+            );
+
+            $cat->update([
                 'name' => $validated['name_es'],
                 'slug' => Str::slug($validated['name_es']),
-            ]
-        );
+            ]);
 
-        $cat->update([
-            'name' => $validated['name_es'],
-            'slug' => Str::slug($validated['name_es']),
-        ]);
+            $cat2 = CategoryTranslation::firstOrCreate(
+                [
+                    'category_id' => $category->id,
+                    'locale' => 'pt',
+                ],
+                [
+                    'name' => $validated['name_pt'],
+                    'slug' => Str::slug($validated['name_pt']),
+                ]
+            );
 
-        $cat2 = CategoryTranslation::firstOrCreate(
-            [
-                'category_id' => $category->id,
-                'locale' => 'pt',
-            ],
-            [
+            $cat2->update([
                 'name' => $validated['name_pt'],
                 'slug' => Str::slug($validated['name_pt']),
-            ]
-        );
+            ]);
 
-        $cat2->update([
-            'name' => $validated['name_pt'],
-            'slug' => Str::slug($validated['name_pt']),
-        ]);
-
-        return $category;
+            return $category;
+        });
     }
 }

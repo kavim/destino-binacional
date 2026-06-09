@@ -3,9 +3,11 @@
 namespace Tests\Feature\Dashboard;
 
 use App\Models\Event;
+use App\Services\FeaturedImageStorage;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Inertia\Testing\AssertableInertia as Assert;
+use RuntimeException;
 use Tests\TestCase;
 use Tests\Traits\SeedsTestData;
 
@@ -305,7 +307,23 @@ class EventControllerTest extends TestCase
 
         $event = Event::where('slug', 'festival-de-jazz')->first();
         $this->assertNotNull($event->featured_image);
+        $this->assertFileExists(storage_path('app/public/events/'.$event->featured_image));
         $this->assertTrue($event->tags->contains('id', $this->childTag->id));
+    }
+
+    public function test_store_returns_error_when_image_save_fails(): void
+    {
+        $this->mock(FeaturedImageStorage::class, function ($mock) {
+            $mock->shouldReceive('storeFromBase64')->once()->andThrow(new RuntimeException('fail'));
+        });
+
+        $this->actingAs($this->user)
+            ->from('/events/create')
+            ->post('/events', $this->validEventPayload())
+            ->assertRedirect('/events/create')
+            ->assertSessionHasErrors('featured_image');
+
+        $this->assertDatabaseMissing('events', ['slug' => 'festival-de-jazz']);
     }
 
     // ── Edit ─────────────────────────────────────────────────────

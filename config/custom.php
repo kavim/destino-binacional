@@ -6,6 +6,11 @@ return [
         'width' => 1280,
         'height' => 720,
     ],
+    'events_feature_image' => [
+        'path' => 'events/',
+        'width' => null,
+        'height' => null,
+    ],
     'tours_feature_image' => [
         'path' => 'tours/',
         'width' => 1280,
