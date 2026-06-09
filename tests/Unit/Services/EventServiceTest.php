@@ -55,7 +55,10 @@ class EventServiceTest extends TestCase
 
         $this->assertNotNull($filename);
         $this->assertStringStartsWith('event_', $filename);
+        $this->assertStringEndsWith('.jpg', $filename);
         $this->assertFileExists(storage_path('app/public/events/'.$filename));
+
+        @unlink(storage_path('app/public/events/'.$filename));
     }
 
     public function test_store_featured_image_throws_on_invalid_data(): void
