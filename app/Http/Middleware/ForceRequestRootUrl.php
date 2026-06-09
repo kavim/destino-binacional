@@ -15,6 +15,10 @@ class ForceRequestRootUrl
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if (app()->environment('production') || config('app.force_https')) {
+            URL::forceScheme('https');
+        }
+
         URL::forceRootUrl($request->root());
 
         return $next($request);
