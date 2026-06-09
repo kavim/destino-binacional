@@ -15,9 +15,7 @@ class EventController extends Controller
 {
     public function __construct(
         protected EventService $eventService,
-    ) {
-        $this->eventService = new EventService;
-    }
+    ) {}
 
     /**
      * Display a listing of the resource.
@@ -123,9 +121,9 @@ class EventController extends Controller
             'address' => ['required_if:is_online,false'],
             'city_id' => ['required_if:is_online,false'],
             'category_id' => ['nullable'],
-            'image' => ['required'],
-            'featured_image' => ['nullable'],
-            'tag_ids' => ['nullable'],
+            'image' => 'required_if:featured_image,null',
+            'featured_image' => 'required_if:image,==,null',
+            'tag_ids' => ['required', 'array'],
         ]);
 
         $this->eventService->update($validated, $event);

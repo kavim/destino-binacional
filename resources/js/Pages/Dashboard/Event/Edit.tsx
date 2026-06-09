@@ -33,7 +33,7 @@ export default function Edit() {
         google_maps_src: event.google_maps_src ? String(event.google_maps_src) : '',
         address: event.address ? String(event.address) : '',
         city_id: event.city_id != null ? String(event.city_id) : '',
-        category_id: null,
+        category_id: event.category_id != null ? Number(event.category_id) : null,
         price: event.price != null ? String(event.price) : '',
         door_time: event.door_time ? String(event.door_time) : '',
         start: event.start ? String(event.start) : '',

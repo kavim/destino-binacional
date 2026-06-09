@@ -29,7 +29,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/tracker', [TrackerController::class, 'index'])->name('tracker.index');
 
     Route::resource('places', PlaceController::class);
-    Route::resource('events', EventController::class);
+    Route::resource('events', EventController::class)->except(['show']);
     Route::resource('tags', TagController::class);
     Route::resource('tours', TourController::class);
     Route::resource('categories', CategoryController::class);

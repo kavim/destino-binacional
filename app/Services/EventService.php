@@ -70,6 +70,8 @@ class EventService
         $width = config('custom.feature_image.width');
         $height = config('custom.feature_image.height');
 
+        $featured_image_src = null;
+
         try {
             $file = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $image));
             $featured_image_src = 'event_'.time().'.'.explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
@@ -104,7 +106,9 @@ class EventService
             'featured_image' => $the_feature_image ?? $event->featured_image,
         ]);
 
-        $event->tags()->sync(Arr::get($data, 'tag_ids'));
+        if (array_key_exists('tag_ids', $data)) {
+            $event->tags()->sync(Arr::get($data, 'tag_ids', []));
+        }
 
         return $event;
     }
