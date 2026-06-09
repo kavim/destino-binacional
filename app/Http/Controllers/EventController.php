@@ -10,6 +10,7 @@ use App\Services\EventService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use RuntimeException;
 
 class EventController extends Controller
 {
@@ -82,7 +83,13 @@ class EventController extends Controller
             'tag_ids' => 'required',
         ]);
 
-        $this->eventService->store($validated);
+        try {
+            $this->eventService->store($validated);
+        } catch (RuntimeException) {
+            return back()
+                ->withErrors(['featured_image' => 'No se pudo guardar la imagen del evento. Verifique permisos de storage e intente de nuevo.'])
+                ->withInput();
+        }
 
         return redirect()->route('events.index')
             ->with('success', 'Evento creado con éxito.');
@@ -126,7 +133,13 @@ class EventController extends Controller
             'tag_ids' => ['required', 'array'],
         ]);
 
-        $this->eventService->update($validated, $event);
+        try {
+            $this->eventService->update($validated, $event);
+        } catch (RuntimeException) {
+            return back()
+                ->withErrors(['featured_image' => 'No se pudo guardar la imagen del evento. Verifique permisos de storage e intente de nuevo.'])
+                ->withInput();
+        }
 
         return redirect()->route('events.index')
             ->with('success', 'Evento actualizado con éxito.');

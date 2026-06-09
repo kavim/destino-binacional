@@ -4,8 +4,10 @@ namespace Tests\Unit\Services;
 
 use App\Models\Event;
 use App\Services\EventService;
+use App\Services\FeaturedImageStorage;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
+use RuntimeException;
 use Tests\TestCase;
 use Tests\Traits\SeedsTestData;
 
@@ -54,6 +56,44 @@ class EventServiceTest extends TestCase
         $this->assertNotNull($filename);
         $this->assertStringStartsWith('event_', $filename);
         $this->assertFileExists(storage_path('app/public/events/'.$filename));
+    }
+
+    public function test_store_featured_image_throws_on_invalid_data(): void
+    {
+        $this->expectException(RuntimeException::class);
+
+        $this->eventService->storeFeaturedImage('invalid-image-data');
+    }
+
+    public function test_store_does_not_persist_event_when_image_save_fails(): void
+    {
+        $this->mock(FeaturedImageStorage::class, function ($mock) {
+            $mock->shouldReceive('storeFromBase64')->once()->andThrow(new RuntimeException('fail'));
+        });
+
+        $service = app(EventService::class);
+
+        try {
+            $service->store([
+                'title' => 'Broken Upload Event',
+                'description' => 'Test',
+                'start' => now()->addWeek()->format('Y-m-d'),
+                'end' => now()->addWeeks(2)->format('Y-m-d'),
+                'is_online' => false,
+                'link' => '',
+                'google_maps_src' => 'https://maps.google.com/embed',
+                'address' => 'Test address',
+                'city_id' => $this->city->id,
+                'category_id' => $this->childCategory->id,
+                'featured_image' => $this->base64Pixel,
+                'tag_ids' => [$this->childTag->id],
+            ]);
+            $this->fail('Expected RuntimeException was not thrown.');
+        } catch (RuntimeException) {
+            // expected
+        }
+
+        $this->assertDatabaseMissing('events', ['slug' => 'broken-upload-event']);
     }
 
     public function test_update_preserves_featured_image_when_not_in_payload(): void
