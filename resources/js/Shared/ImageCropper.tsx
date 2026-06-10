@@ -1,5 +1,5 @@
 import PrimaryButton from "@/Components/PrimaryButton";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Cropper from "react-easy-crop";
 
 type CroppedArea = {
@@ -15,11 +15,77 @@ interface ImageCropperProps {
     onCropCancel: () => void;
 }
 
+const FALLBACK_ASPECT_RATIO = 4 / 3;
+
+const ASPECT_RATIO_OPTIONS = [
+    { id: "original", label: "Original" },
+    { id: "1:1", label: "1:1", value: 1 / 1 },
+    { id: "4:5", label: "4:5 Feed Instagram", value: 4 / 5 },
+    { id: "9:16", label: "9:16 Story / Reels", value: 9 / 16 },
+    { id: "16:9", label: "16:9 Web", value: 16 / 9 },
+    { id: "4:3", label: "4:3", value: 4 / 3 },
+    { id: "3:2", label: "3:2", value: 3 / 2 },
+] as const;
+
+type AspectRatioOption = (typeof ASPECT_RATIO_OPTIONS)[number]["id"];
+
+const getAspectRatio = (
+    option: AspectRatioOption,
+    naturalAspectRatio: number,
+) => {
+    const selected = ASPECT_RATIO_OPTIONS.find((item) => item.id === option);
+
+    if (selected && "value" in selected) {
+        return selected.value;
+    }
+
+    return naturalAspectRatio;
+};
+
 function ImageCropper({ image, onCropDone, onCropCancel }: ImageCropperProps) {
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
     const [croppedArea, setCroppedArea] = useState<CroppedArea | null>(null);
-    const [aspectRatio, setAspectRatio] = useState<number>(4 / 3);
+    const [naturalAspectRatio, setNaturalAspectRatio] = useState(
+        FALLBACK_ASPECT_RATIO,
+    );
+    const [aspectRatioOption, setAspectRatioOption] =
+        useState<AspectRatioOption>("original");
+    const aspectRatio = getAspectRatio(aspectRatioOption, naturalAspectRatio);
+
+    useEffect(() => {
+        if (!image) {
+            setNaturalAspectRatio(FALLBACK_ASPECT_RATIO);
+            setAspectRatioOption("original");
+            return;
+        }
+
+        let isMounted = true;
+        const previewImage = new Image();
+
+        previewImage.onload = () => {
+            if (!isMounted) {
+                return;
+            }
+
+            const naturalWidth = previewImage.naturalWidth;
+            const naturalHeight = previewImage.naturalHeight;
+
+            if (naturalWidth > 0 && naturalHeight > 0) {
+                setNaturalAspectRatio(naturalWidth / naturalHeight);
+            }
+
+            setAspectRatioOption("original");
+            setCrop({ x: 0, y: 0 });
+            setZoom(1);
+        };
+
+        previewImage.src = image;
+
+        return () => {
+            isMounted = false;
+        };
+    }, [image]);
 
     const onCropComplete = (
         _croppedAreaPercentage: unknown,
@@ -31,8 +97,14 @@ function ImageCropper({ image, onCropDone, onCropCancel }: ImageCropperProps) {
     const onAspectRatioChange = (
         event: React.ChangeEvent<HTMLInputElement>,
     ) => {
-        const value = Number(event.target.value);
-        setAspectRatio(Number.isFinite(value) && value > 0 ? value : 4 / 3);
+        const value = event.target.value as AspectRatioOption;
+        const nextValue = ASPECT_RATIO_OPTIONS.some((item) => item.id === value)
+            ? value
+            : "original";
+
+        setAspectRatioOption(nextValue);
+        setCrop({ x: 0, y: 0 });
+        setZoom(1);
     };
 
     return (
@@ -51,25 +123,24 @@ function ImageCropper({ image, onCropDone, onCropCancel }: ImageCropperProps) {
 
             <div className="m-2 p-2">
                 <span>Por favor, seleccione la relación de aspecto</span>
-                <div className="p-5 flex justify-between items-center" onChange={onAspectRatioChange}>
-                    <label htmlFor="11" className="flex justify-center align-middle items-center p-1">
-                        <input id="11" type="radio" value={1 / 1} name="ratio" className="mx-2" /> 1:1
-                    </label>
-                    <label htmlFor="54">
-                        <input id="54" type="radio" value={5 / 4} name="ratio" /> 5:4
-                    </label>
-                    <label htmlFor="43">
-                        <input id="43" type="radio" value={4 / 3} name="ratio" /> 4:3
-                    </label>
-                    <label htmlFor="32">
-                        <input id="32" type="radio" value={3 / 2} name="ratio" /> 3:2
-                    </label>
-                    <label htmlFor="53">
-                        <input id="53" type="radio" value={5 / 3} name="ratio" /> 5:3
-                    </label>
-                    <label htmlFor="169">
-                        <input id="169" type="radio" value={16 / 9} name="ratio" /> 16:9
-                    </label>
+                <div className="grid grid-cols-2 gap-3 p-5 sm:grid-cols-4">
+                    {ASPECT_RATIO_OPTIONS.map((option) => (
+                        <label
+                            key={option.id}
+                            htmlFor={`aspect-${option.id}`}
+                            className="flex items-center gap-2 rounded-md border border-input px-3 py-2 text-sm"
+                        >
+                            <input
+                                id={`aspect-${option.id}`}
+                                type="radio"
+                                value={option.id}
+                                name="aspect-ratio"
+                                checked={aspectRatioOption === option.id}
+                                onChange={onAspectRatioChange}
+                            />
+                            {option.label}
+                        </label>
+                    ))}
                 </div>
 
                 <div className="flex flex-row justify-between">
