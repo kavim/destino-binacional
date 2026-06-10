@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Tour;
 use App\Repositories\TourRepository;
+use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -15,6 +16,7 @@ class TourService
     public function __construct(
         protected TourRepository $tourRepository = new TourRepository,
         protected FeaturedImageStorage $featuredImageStorage = new FeaturedImageStorage,
+        protected GallerySyncService $gallerySyncService = new GallerySyncService,
     ) {}
 
     public function index()
@@ -27,9 +29,9 @@ class TourService
         return $this->tourRepository->filtered($category_id);
     }
 
-    public function store(array $data)
+    public function store(array $data, ?Request $request = null)
     {
-        return DB::transaction(function () use ($data) {
+        return DB::transaction(function () use ($data, $request) {
             $featured_image_src = $this->storeFeaturedImage(Arr::get($data, 'featured_image'));
             $google_maps_src = Arr::get($data, 'google_maps_src');
             $google_maps_src = extractSrcFromGmapsIframe($google_maps_src);
@@ -59,6 +61,14 @@ class TourService
 
             $tour->categories()->sync(Arr::get($data, 'category_ids'));
 
+            if ($request) {
+                $this->gallerySyncService->sync(
+                    $tour,
+                    $request,
+                    $this->gallerySyncService->mapNewFilesFromRequest($request),
+                );
+            }
+
             return $tour;
         });
     }
@@ -75,9 +85,9 @@ class TourService
         ]);
     }
 
-    public function update(array $data, Tour $tour): Tour
+    public function update(array $data, Tour $tour, ?Request $request = null): Tour
     {
-        return DB::transaction(function () use ($data, $tour) {
+        return DB::transaction(function () use ($data, $tour, $request) {
             $the_feature_image = null;
             $start = Arr::get($data, 'start', null);
             $end = Arr::get($data, 'end', null);
@@ -104,7 +114,23 @@ class TourService
 
             $tour->categories()->sync(Arr::get($data, 'category_ids'));
 
+            if ($request) {
+                $this->gallerySyncService->sync(
+                    $tour,
+                    $request,
+                    $this->gallerySyncService->mapNewFilesFromRequest($request),
+                );
+            }
+
             return $tour;
+        });
+    }
+
+    public function destroy(Tour $tour): void
+    {
+        DB::transaction(function () use ($tour) {
+            $this->gallerySyncService->deleteAllFor($tour);
+            $tour->delete();
         });
     }
 

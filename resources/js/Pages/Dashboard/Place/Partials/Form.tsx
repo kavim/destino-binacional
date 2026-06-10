@@ -7,9 +7,11 @@ import SelectInput from '@/Shared/SelectInput';
 import InputError from '@/Components/InputError';
 import CmsRichTextEditor from '@/Components/CmsRichTextEditor';
 import ImagicLoader from '@/Components/ImagicLoader';
+import GalleryManager from '@/Components/GalleryManager';
 import Categories from './Categories';
 import DeleteButton from '@/Shared/DeleteButton';
 import { Card, CardContent } from '@/Components/ui/card';
+import type { GalleryImageDto, GalleryState } from '@/lib/galleryForm';
 
 type PlaceFormData = {
     name: string;
@@ -21,6 +23,7 @@ type PlaceFormData = {
     address?: string;
     city_id?: string | number;
     place_type_id?: string | number;
+    current_image?: string;
     order?: string | number;
     category_ids: number[];
 };
@@ -39,6 +42,8 @@ export default function Form({
     processing,
     onDelete = null,
     onCorte: onCorteFromParent,
+    initialGallery = [],
+    onGalleryChange = () => {},
 }: {
     handleOnChange: (e: FormChangeEvent | React.ChangeEvent<HTMLInputElement>) => void;
     submit: (e: React.FormEvent) => void;
@@ -47,6 +52,8 @@ export default function Form({
     processing: boolean;
     onDelete?: (() => void) | null;
     onCorte?: (image: string) => void;
+    initialGallery?: GalleryImageDto[];
+    onGalleryChange?: (state: GalleryState) => void;
 }) {
     const { cities, place_types } = usePage().props as unknown as {
         cities: Record<string, { id: string | number; name: string }>;
@@ -101,6 +108,10 @@ export default function Form({
                     <InputError message={errors.image} className="mt-2" />
                 </CardContent>
             </Card>
+
+            <GalleryManager initialGallery={initialGallery} onChange={onGalleryChange} />
+            <InputError message={errors.gallery} className="mt-2" />
+
             <div className="my-3">
                 <InputLabel htmlFor="name" value="Nombre" />
                 <TextInput
@@ -205,7 +216,7 @@ export default function Form({
                     ))}
                 </SelectInput>
 
-                <InputError message={errors.type_id} className="mt-2" />
+                <InputError message={errors.place_type_id} className="mt-2" />
             </div>
             <div className="my-3">
                 <InputLabel htmlFor="order" value="Ordem" />

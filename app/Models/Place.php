@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasGallery;
 use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
 use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Place extends Model implements TranslatableContract
 {
-    use HasFactory, SoftDeletes, Translatable;
+    use HasFactory, HasGallery, SoftDeletes, Translatable;
 
     public $useTranslationFallback = true;
 

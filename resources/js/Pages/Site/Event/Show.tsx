@@ -5,6 +5,9 @@ import { cn } from '@/lib/utils';
 import { googleMapsOpenUrl, normalizeGoogleMapsEmbedSrc } from '@/lib/mapsEmbedUrl';
 import { cmsRichTextDisplayClassName } from '@/lib/cmsRichTextDisplay';
 import { sanitizeCmsHtmlForDisplay } from '@/lib/sanitizeHtml';
+import SiteShowGalleryBlock from '@/Components/site/SiteShowGalleryBlock';
+import { type SiteGalleryImage } from '@/Components/site/ImageGallery';
+import { isLongCmsDescription } from '@/lib/cmsDescriptionLength';
 import { ExternalLink } from 'lucide-react';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
@@ -25,6 +28,7 @@ type SiteEventShow = {
     link?: string | null;
     address?: string | null;
     city?: CityLite | null;
+    gallery?: SiteGalleryImage[];
 };
 
 export default function Show({ event }: { event: SiteEventShow }) {
@@ -51,6 +55,10 @@ export default function Show({ event }: { event: SiteEventShow }) {
     const mapsOpenUrl = !event.is_online
         ? googleMapsOpenUrl(event.google_maps_src ?? undefined, locationLine || null)
         : undefined;
+
+    const gallery = event.gallery ?? [];
+    const hasGallery = gallery.length > 0;
+    const galleryInSidebar = hasGallery && isLongCmsDescription(event.description);
 
     return (
         <SiteLayout>
@@ -119,10 +127,20 @@ export default function Show({ event }: { event: SiteEventShow }) {
                                     dangerouslySetInnerHTML={{ __html: safeDescription }}
                                 />
                             </div>
+
+                            {hasGallery && !galleryInSidebar ? (
+                                <div className="mt-8">
+                                    <SiteShowGalleryBlock images={gallery} />
+                                </div>
+                            ) : null}
                         </div>
 
                         <div className="mt-8 w-full md:mt-0 md:w-1/3">
-                            <div className="sticky top-5 overflow-hidden rounded-xl bg-white md:border md:border-gray-100 md:shadow-lg dark:border-border dark:bg-card">
+                            <div className="sticky top-5 space-y-6">
+                                {galleryInSidebar ? (
+                                    <SiteShowGalleryBlock images={gallery} />
+                                ) : null}
+                                <div className="overflow-hidden rounded-xl bg-white md:border md:border-gray-100 md:shadow-lg dark:border-border dark:bg-card">
                                 <div className="flex flex-wrap items-center gap-3 border-b border-gray-100 bg-gray-50 px-6 py-4 font-bold text-gray-800 dark:border-border dark:bg-muted dark:text-foreground">
                                     {event.is_online ? (
                                         <>
@@ -207,6 +225,7 @@ export default function Show({ event }: { event: SiteEventShow }) {
                                             ) : null}
                                         </div>
                                     )}
+                                </div>
                                 </div>
                             </div>
                         </div>
