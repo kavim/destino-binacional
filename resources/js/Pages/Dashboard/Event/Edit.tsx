@@ -3,6 +3,13 @@ import { useForm, usePage, router } from '@inertiajs/react';
 import { Card, CardContent } from '@/Components/ui/card';
 import Form, { type FormChangeEvent } from './Partials/Form';
 import type React from 'react';
+import { useCallback, useRef } from 'react';
+import {
+    createGalleryState,
+    submitEntityWithGallery,
+    type GalleryImageDto,
+    type GalleryState,
+} from '@/lib/galleryForm';
 
 type EventRecord = Record<string, unknown> & {
     id: number;
@@ -21,13 +28,19 @@ type EventRecord = Record<string, unknown> & {
 };
 
 export default function Edit() {
-    const { auth, event, tag_ids } = usePage().props as unknown as {
+    const { auth, event, tag_ids, gallery = [] } = usePage().props as unknown as {
         auth: unknown;
         event: EventRecord;
         tag_ids: number[];
+        gallery: GalleryImageDto[];
     };
 
-    const { data, setData, errors, put, processing } = useForm({
+    const galleryStateRef = useRef<GalleryState>(createGalleryState(gallery));
+    const handleGalleryChange = useCallback((state: GalleryState) => {
+        galleryStateRef.current = state;
+    }, []);
+
+    const { data, setData, errors, processing } = useForm({
         title: event.title ?? '',
         description: String(event.description ?? ''),
         google_maps_src: event.google_maps_src ? String(event.google_maps_src) : '',
@@ -62,14 +75,20 @@ export default function Edit() {
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-        put(route('events.update', event.id), { preserveScroll: true });
+        submitEntityWithGallery(
+            route('events.update', event.id),
+            'put',
+            data as Record<string, unknown>,
+            galleryStateRef.current,
+            { preserveScroll: true },
+        );
     };
 
     function onDelete() {
         if (confirm('Borrar este evento? ' + event.title)) {
             router.visit(route('events.destroy', event.id), {
                 method: 'delete',
-            })
+            });
         }
     }
 
@@ -84,7 +103,17 @@ export default function Edit() {
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                     <Card className="shadow-sm">
                         <CardContent className="p-4 sm:p-8">
-                            <Form handleOnChange={handleOnChange} submit={submit} data={data} errors={errors} processing={processing} onCorte={onCorte} onDelete={onDelete}></Form>
+                            <Form
+                                handleOnChange={handleOnChange}
+                                submit={submit}
+                                data={data}
+                                errors={errors}
+                                processing={processing}
+                                onCorte={onCorte}
+                                onDelete={onDelete}
+                                initialGallery={gallery}
+                                onGalleryChange={handleGalleryChange}
+                            />
                         </CardContent>
                     </Card>
                 </div>

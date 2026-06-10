@@ -5,6 +5,9 @@ import { cn } from '@/lib/utils';
 import { googleMapsOpenUrl, normalizeGoogleMapsEmbedSrc } from '@/lib/mapsEmbedUrl';
 import { cmsRichTextDisplayClassName } from '@/lib/cmsRichTextDisplay';
 import { sanitizeCmsHtmlForDisplay } from '@/lib/sanitizeHtml';
+import SiteShowGalleryBlock from '@/Components/site/SiteShowGalleryBlock';
+import { type SiteGalleryImage } from '@/Components/site/ImageGallery';
+import { isLongCmsDescription } from '@/lib/cmsDescriptionLength';
 import { Building2, ExternalLink, MapPin } from 'lucide-react';
 
 type CityLite = {
@@ -22,6 +25,7 @@ type SitePlaceShow = {
     city?: CityLite | null;
     place_type?: { name: string } | null;
     categories?: Array<{ name: string; slug: string }>;
+    gallery?: SiteGalleryImage[];
 };
 
 export default function Show({ place }: { place: SitePlaceShow }) {
@@ -42,6 +46,10 @@ export default function Show({ place }: { place: SitePlaceShow }) {
 
     const mapEmbed = normalizeGoogleMapsEmbedSrc(place.google_maps_src);
     const mapsOpenUrl = googleMapsOpenUrl(place.google_maps_src ?? undefined, locationLine || null);
+
+    const gallery = place.gallery ?? [];
+    const hasGallery = gallery.length > 0;
+    const galleryInSidebar = hasGallery && isLongCmsDescription(place.description);
 
     return (
         <SiteLayout>
@@ -108,10 +116,20 @@ export default function Show({ place }: { place: SitePlaceShow }) {
                                     dangerouslySetInnerHTML={{ __html: safeDescription }}
                                 />
                             </div>
+
+                            {hasGallery && !galleryInSidebar ? (
+                                <div className="mt-8">
+                                    <SiteShowGalleryBlock images={gallery} />
+                                </div>
+                            ) : null}
                         </div>
 
                         <div className="mt-8 w-full md:mt-0 md:w-1/3">
-                            <div className="sticky top-5 overflow-hidden rounded-xl border border-border bg-card shadow-lg dark:bg-card">
+                            <div className="sticky top-5 space-y-6">
+                                {galleryInSidebar ? (
+                                    <SiteShowGalleryBlock images={gallery} />
+                                ) : null}
+                                <div className="overflow-hidden rounded-xl border border-border bg-card shadow-lg dark:bg-card">
                                 <div className="flex flex-wrap items-center gap-3 border-b border-border bg-muted px-6 py-4 font-bold text-foreground">
                                     <MapPin className="h-5 w-5 text-primary" aria-hidden />
                                     <h3>Ubicación</h3>
@@ -143,6 +161,7 @@ export default function Show({ place }: { place: SitePlaceShow }) {
                                             <GoogleMapsEmbedFrame src={mapEmbed} title="Mapa" />
                                         ) : null}
                                     </div>
+                                </div>
                                 </div>
                             </div>
                         </div>

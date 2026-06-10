@@ -2,20 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Concerns\ValidatesGalleryUpload;
 use App\Models\Category;
 use App\Models\CategoryTranslation;
 use App\Models\City;
 use App\Models\Place;
 use App\Models\PlaceType;
 use App\Services\PlaceService;
+use App\Support\GalleryPresenter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use RuntimeException;
 
 class PlaceController extends Controller
 {
+    use ValidatesGalleryUpload;
+
     public function __construct(
         protected PlaceService $placeService,
     ) {
@@ -72,7 +77,7 @@ class PlaceController extends Controller
 
     public function store(Request $request): mixed
     {
-        $request->validate([
+        $request->validate(array_merge([
             'name' => 'required|max:255',
             'address' => 'required|max:255',
             'city_id' => 'required|exists:cities,id',
@@ -83,9 +88,19 @@ class PlaceController extends Controller
             'featured_image' => 'required',
             'order' => 'required|numeric|min:0|max:9999',
             'category_ids' => ['nullable'],
-        ]);
+        ], $this->galleryValidationRules()));
 
-        $this->placeService->store($request->all(), $request);
+        try {
+            $this->placeService->store($request->all(), $request);
+        } catch (RuntimeException $e) {
+            return back()
+                ->withErrors([
+                    'gallery' => str_contains($e->getMessage(), 'gallery image')
+                        ? 'No se pudo guardar una imagen de la galería. Use JPG o PNG e intente de nuevo.'
+                        : $e->getMessage(),
+                ])
+                ->withInput();
+        }
 
         return redirect()->route('places.index')
             ->with('success', 'Place created successfully.');
@@ -93,9 +108,12 @@ class PlaceController extends Controller
 
     public function edit(Place $place)
     {
+        $place->load('galleryImages');
+
         return Inertia::render('Dashboard/Place/Edit', [
             'place' => $place,
             'current_image' => $place->image,
+            'gallery' => GalleryPresenter::forEntity($place),
             'parent_categories' => Category::where('parent_id', null)->get(),
             'grouped_categories' => Category::where('parent_id', '<>', null)->get()->groupBy('parent_id'),
             'cities' => City::get(['id', 'name']),
@@ -106,7 +124,11 @@ class PlaceController extends Controller
 
     public function update(Request $request, Place $place): RedirectResponse
     {
-        $request->validate([
+        if (! $request->filled('place_type_id') && $place->place_type_id) {
+            $request->merge(['place_type_id' => $place->place_type_id]);
+        }
+
+        $request->validate(array_merge([
             'name' => 'required',
             'address' => 'required',
             'city_id' => 'required',
@@ -118,9 +140,19 @@ class PlaceController extends Controller
             'image' => 'required_if:featured_image,==,null',
             'category_ids' => ['required', 'array', 'min:1'],
             'category_ids.*' => ['required', 'exists:categories,id'],
-        ]);
+        ], $this->galleryValidationRules()));
 
-        $this->placeService->update($request->all(), $request, $place);
+        try {
+            $this->placeService->update($request->all(), $request, $place);
+        } catch (RuntimeException $e) {
+            return back()
+                ->withErrors([
+                    'gallery' => str_contains($e->getMessage(), 'gallery image')
+                        ? 'No se pudo guardar una imagen de la galería. Use JPG o PNG e intente de nuevo.'
+                        : $e->getMessage(),
+                ])
+                ->withInput();
+        }
 
         return redirect()->route('places.index')
             ->with('success', 'Place created successfully.');
@@ -165,7 +197,7 @@ class PlaceController extends Controller
 
     public function destroy(Place $place): RedirectResponse
     {
-        $place->delete();
+        $this->placeService->destroy($place);
 
         return redirect()->route('places.index')
             ->with('success', 'Place deleted successfully.');

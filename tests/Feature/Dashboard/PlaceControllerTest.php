@@ -329,6 +329,7 @@ class PlaceControllerTest extends TestCase
         $this->assertDatabaseHas('places', [
             'name' => 'Museo de Rivera',
             'slug' => 'museo-de-rivera',
+            'place_type_id' => $this->placeType->id,
         ]);
     }
 

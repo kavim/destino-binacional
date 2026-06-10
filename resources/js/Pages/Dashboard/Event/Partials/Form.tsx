@@ -6,6 +6,8 @@ import SelectInput from '@/Shared/SelectInput';
 import InputError from '@/Components/InputError';
 import CmsRichTextEditor from '@/Components/CmsRichTextEditor';
 import ImagicLoader from '@/Components/ImagicLoader';
+import GalleryManager from '@/Components/GalleryManager';
+import type { GalleryImageDto, GalleryState } from '@/lib/galleryForm';
 import DataPickerInputStart from '@/Shared/DataPickerInputStart';
 import DataPickerInputEnd from '@/Shared/DataPickerInputEnd';
 import type { DatePickerValue } from '@/lib/datePickerValue';
@@ -43,6 +45,8 @@ export default function Form({
     processing,
     onDelete,
     onCorte: onCorteFromParent,
+    initialGallery = [],
+    onGalleryChange = () => {},
 }: {
     handleOnChange: (e: FormChangeEvent | React.ChangeEvent<HTMLInputElement>) => void;
     submit: (e: React.FormEvent) => void;
@@ -51,6 +55,8 @@ export default function Form({
     processing: boolean;
     onDelete?: () => void;
     onCorte?: (image: string) => void;
+    initialGallery?: GalleryImageDto[];
+    onGalleryChange?: (state: GalleryState) => void;
 }) {
     const { cities } = usePage().props as unknown as {
         cities: Record<string, { id: string | number; name: string }>;
@@ -125,6 +131,9 @@ export default function Form({
                     <InputError message={errors.image} className="mt-2" />
                 </CardContent>
             </Card>
+
+            <GalleryManager initialGallery={initialGallery} onChange={onGalleryChange} />
+            <InputError message={errors.gallery} className="mt-2" />
 
             <div className="divider mt-10">Identificación</div>
 

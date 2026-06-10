@@ -17,6 +17,7 @@ class PlaceService
     public function __construct(
         protected PlaceRepository $placeRepository = new PlaceRepository,
         protected FeaturedImageStorage $featuredImageStorage = new FeaturedImageStorage,
+        protected GallerySyncService $gallerySyncService = new GallerySyncService,
     ) {}
 
     public function index()
@@ -26,7 +27,7 @@ class PlaceService
 
     public function store(array $data, Request $request)
     {
-        return DB::transaction(function () use ($data) {
+        return DB::transaction(function () use ($data, $request) {
             $featured_image_src = $this->storeFeaturedImage(Arr::get($data, 'featured_image'));
 
             $place = Place::create([
@@ -34,6 +35,7 @@ class PlaceService
                 'slug' => Str::slug(Arr::get($data, 'name')),
                 'address' => Arr::get($data, 'address'),
                 'city_id' => Arr::get($data, 'city_id'),
+                'place_type_id' => Arr::get($data, 'place_type_id'),
                 'category_id' => Arr::get($data, 'category_id'),
                 'featured_image' => $featured_image_src,
                 'google_maps_src' => extractSrcFromGmapsIframe(Arr::get($data, 'google_maps_src')) ?? 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2035.7206938642744!2d-55.53435751721623!3d-30.89615794116233!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95a9fe587b122a5b%3A0xa18c901cc947fe5a!2sPlaza%20Internacional!5e0!3m2!1ses-419!2sbr!4v1687316146073!5m2!1ses-419!2sbr',
@@ -59,6 +61,12 @@ class PlaceService
             ]);
 
             $place->categories()->sync(Arr::get($data, 'category_ids'));
+
+            $this->gallerySyncService->sync(
+                $place,
+                $request,
+                $this->gallerySyncService->mapNewFilesFromRequest($request),
+            );
 
             return $place;
         });
@@ -112,7 +120,21 @@ class PlaceService
 
             $place->categories()->sync(Arr::get($data, 'category_ids'));
 
+            $this->gallerySyncService->sync(
+                $place,
+                $request,
+                $this->gallerySyncService->mapNewFilesFromRequest($request),
+            );
+
             return $place;
+        });
+    }
+
+    public function destroy(Place $place): void
+    {
+        DB::transaction(function () use ($place) {
+            $this->gallerySyncService->deleteAllFor($place);
+            $place->delete();
         });
     }
 

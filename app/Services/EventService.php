@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Event;
 use App\Repositories\EventRepository;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -16,6 +17,7 @@ class EventService
     public function __construct(
         protected EventRepository $eventRepository = new EventRepository,
         protected FeaturedImageStorage $featuredImageStorage = new FeaturedImageStorage,
+        protected GallerySyncService $gallerySyncService = new GallerySyncService,
     ) {}
 
     public function index()
@@ -38,9 +40,9 @@ class EventService
         return $this->eventRepository->getBySlug($slug);
     }
 
-    public function store(array $data): Event
+    public function store(array $data, ?Request $request = null): Event
     {
-        return DB::transaction(function () use ($data) {
+        return DB::transaction(function () use ($data, $request) {
             $event = Event::create([
                 'title' => Arr::get($data, 'title'),
                 'slug' => Str::slug(Arr::get($data, 'title')),
@@ -57,6 +59,14 @@ class EventService
             ]);
 
             $event->tags()->sync(Arr::get($data, 'tag_ids'));
+
+            if ($request) {
+                $this->gallerySyncService->sync(
+                    $event,
+                    $request,
+                    $this->gallerySyncService->mapNewFilesFromRequest($request),
+                );
+            }
 
             return $event;
         });
@@ -76,9 +86,9 @@ class EventService
         ]);
     }
 
-    public function update(array $data, Event $event)
+    public function update(array $data, Event $event, ?Request $request = null)
     {
-        return DB::transaction(function () use ($data, $event) {
+        return DB::transaction(function () use ($data, $event, $request) {
             $the_feature_image = null;
 
             if (! is_null(Arr::get($data, 'featured_image'))) {
@@ -104,12 +114,23 @@ class EventService
                 $event->tags()->sync(Arr::get($data, 'tag_ids', []));
             }
 
+            if ($request) {
+                $this->gallerySyncService->sync(
+                    $event,
+                    $request,
+                    $this->gallerySyncService->mapNewFilesFromRequest($request),
+                );
+            }
+
             return $event;
         });
     }
 
-    public function destroy(Event $event)
+    public function destroy(Event $event): void
     {
-        $event->delete();
+        DB::transaction(function () use ($event) {
+            $this->gallerySyncService->deleteAllFor($event);
+            $event->delete();
+        });
     }
 }

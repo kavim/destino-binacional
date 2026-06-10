@@ -39,6 +39,10 @@ vi.mock('@/Components/ImagicLoader', () => ({
   default: () => <div data-testid="imagic-loader" />,
 }));
 
+vi.mock('@/Components/GalleryManager', () => ({
+  default: () => <div data-testid="gallery-manager" />,
+}));
+
 vi.mock('@/Shared/DataPickerInputStart', () => ({
   default: () => <input />,
 }));
