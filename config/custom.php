@@ -6,6 +6,14 @@ return [
         'width' => 1280,
         'height' => 720,
     ],
+    'events_feature_image' => [
+        'path' => 'events/',
+        'width' => null,
+        'height' => null,
+        // Nginx em prod bloqueia .webp em /storage/events/; JPEG é servido normalmente.
+        'output_format' => 'jpg',
+        'output_quality' => 85,
+    ],
     'tours_feature_image' => [
         'path' => 'tours/',
         'width' => 1280,
@@ -15,6 +23,28 @@ return [
         'path' => 'categories/',
         'width' => 1280,
         'height' => 720,
+    ],
+    'places_gallery_image' => [
+        'path' => 'places/gallery/',
+        'max_edge' => 1920,
+        'output_format' => 'webp',
+        'output_quality' => 85,
+    ],
+    'events_gallery_image' => [
+        'path' => 'events/gallery/',
+        'max_edge' => 1920,
+        'output_format' => 'jpg',
+        'output_quality' => 85,
+    ],
+    'tours_gallery_image' => [
+        'path' => 'tours/gallery/',
+        'max_edge' => 1920,
+        'output_format' => 'webp',
+        'output_quality' => 85,
+    ],
+    'gallery_limits' => [
+        'max_files' => 30,
+        'max_file_size_kb' => 10240,
     ],
     'icons_feature_image' => [
         'path' => 'icons/',

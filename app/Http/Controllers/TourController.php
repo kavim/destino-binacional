@@ -2,15 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Concerns\ValidatesGalleryUpload;
 use App\Models\Category;
 use App\Models\Tour;
 use App\Services\TourService;
+use App\Support\GalleryPresenter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use RuntimeException;
 
 class TourController extends Controller
 {
+    use ValidatesGalleryUpload;
+
     public function __construct(
         protected TourService $tourService,
     ) {
@@ -57,7 +62,7 @@ class TourController extends Controller
 
     public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
-        $request->validate([
+        $request->validate(array_merge([
             'title' => 'required|max:255',
             'meeting_point' => 'required|max:255',
             'start' => 'nullable',
@@ -69,9 +74,21 @@ class TourController extends Controller
             'google_maps_src' => 'nullable',
             'featured_image' => 'required',
             'category_ids' => ['nullable'],
-        ]);
+        ], $this->galleryValidationRules()));
 
-        $this->tourService->store($request->all(), $request);
+        try {
+            $this->tourService->store($request->all(), $request);
+        } catch (RuntimeException $e) {
+            $field = str_contains($e->getMessage(), 'gallery image') ? 'gallery' : 'featured_image';
+
+            return back()
+                ->withErrors([
+                    $field => $field === 'gallery'
+                        ? 'No se pudo guardar una imagen de la galería. Use JPG o PNG e intente de nuevo.'
+                        : 'No se pudo guardar la imagen del tour.',
+                ])
+                ->withInput();
+        }
 
         return redirect()->route('tours.index')
             ->with('success', 'Tour created successfully.');
@@ -86,12 +103,14 @@ class TourController extends Controller
 
     public function edit(Tour $tour): \Inertia\Response
     {
+        $tour->load('galleryImages');
         $tour->price = $tour->price / 100;
         $tour->recurrence_day_hour = $tour->recurrence_day_hour ?? config('custom.working_hours');
 
         return Inertia::render('Dashboard/Tour/Edit', [
             'tour' => $tour,
             'current_image' => $tour->image,
+            'gallery' => GalleryPresenter::forEntity($tour),
             'parent_categories' => Category::where('parent_id', null)->get(),
             'grouped_categories' => Category::where('parent_id', '<>', null)->get()->groupBy('parent_id'),
             'category_ids' => $tour->categories->pluck('id')->map(fn ($id) => (int) $id),
@@ -100,7 +119,7 @@ class TourController extends Controller
 
     public function update(Request $request, Tour $tour): \Illuminate\Http\RedirectResponse
     {
-        $validated = $request->validate([
+        $validated = $request->validate(array_merge([
             'title' => 'required|max:255',
             'meeting_point' => 'required|max:255',
             'start' => 'nullable',
@@ -114,9 +133,21 @@ class TourController extends Controller
             'category_ids' => 'nullable',
             'recurrence_enabled' => 'nullable|boolean',
             'recurrence_day_hour' => 'nullable|array',
-        ]);
+        ], $this->galleryValidationRules()));
 
-        $this->tourService->update($validated, $tour);
+        try {
+            $this->tourService->update($validated, $tour, $request);
+        } catch (RuntimeException $e) {
+            $field = str_contains($e->getMessage(), 'gallery image') ? 'gallery' : 'featured_image';
+
+            return back()
+                ->withErrors([
+                    $field => $field === 'gallery'
+                        ? 'No se pudo guardar una imagen de la galería. Use JPG o PNG e intente de nuevo.'
+                        : 'No se pudo guardar la imagen del tour.',
+                ])
+                ->withInput();
+        }
 
         return redirect()->route('tours.index')
             ->with('success', 'Tour updated successfully.');
@@ -124,7 +155,7 @@ class TourController extends Controller
 
     public function destroy(Tour $tour): \Illuminate\Http\RedirectResponse
     {
-        $tour->delete();
+        $this->tourService->destroy($tour);
 
         return redirect()->route('tours.index')
             ->with('success', 'Tour deleted successfully.');

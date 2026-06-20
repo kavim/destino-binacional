@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Site;
 
 use App\Http\Controllers\Controller;
 use App\Services\EventService;
+use App\Support\GalleryPresenter;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -36,10 +37,12 @@ class EventController extends Controller
     public function show(Request $request, string $slug)
     {
         $event = $this->eventService->getBySlug($slug);
-        $event->load('city.state');
+        $event->load(['city.state', 'galleryImages']);
 
         return Inertia::render('Site/Event/Show', [
-            'event' => $event,
+            'event' => array_merge($event->toArray(), [
+                'gallery' => GalleryPresenter::forSite($event),
+            ]),
         ]);
     }
 }

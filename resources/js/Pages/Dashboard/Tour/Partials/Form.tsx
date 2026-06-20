@@ -5,6 +5,8 @@ import TextInput from '@/Components/TextInput';
 import InputError from '@/Components/InputError';
 import CmsRichTextEditor from '@/Components/CmsRichTextEditor';
 import ImagicLoader from '@/Components/ImagicLoader';
+import GalleryManager from '@/Components/GalleryManager';
+import type { GalleryImageDto, GalleryState } from '@/lib/galleryForm';
 import Categories from './Categories';
 import DeleteButton from '@/Shared/DeleteButton';
 import TimeInput  from '@/Components/TimeInput';
@@ -49,6 +51,8 @@ export default function Form({
     processing,
     onDelete = null,
     onCorte: onCorteFromParent,
+    initialGallery = [],
+    onGalleryChange = () => {},
 }: {
     handleOnChange: (e: FormChangeEvent | React.ChangeEvent<HTMLInputElement>) => void;
     submit: (e: React.FormEvent) => void;
@@ -57,6 +61,8 @@ export default function Form({
     processing: boolean;
     onDelete?: (() => void) | null;
     onCorte?: (image: string) => void;
+    initialGallery?: GalleryImageDto[];
+    onGalleryChange?: (state: GalleryState) => void;
 }) {
     const onCorte =
         onCorteFromParent ??
@@ -170,6 +176,10 @@ export default function Form({
                     <InputError message={errors.image} className="mt-2"/>
                 </CardContent>
             </Card>
+
+            <GalleryManager initialGallery={initialGallery} onChange={onGalleryChange} />
+            <InputError message={errors.gallery} className="mt-2" />
+
             <div className="my-5">
                 <InputLabel htmlFor="title" value="Titulo"/>
                 <TextInput

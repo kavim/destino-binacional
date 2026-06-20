@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Place;
 use App\Services\CategoryService;
 use App\Services\PlaceService;
+use App\Support\GalleryPresenter;
 use Inertia\Inertia;
 
 class PlaceController extends Controller
@@ -51,6 +52,7 @@ class PlaceController extends Controller
     public function getByPlaceIdentifier(string $slug): \Inertia\Response
     {
         $place = $this->placeService->getByPlaceIdentifier($slug);
+        $place->load('galleryImages');
 
         $city = $place->city;
         $state = $city?->state;
@@ -74,6 +76,7 @@ class PlaceController extends Controller
                     'name' => $c->name,
                     'slug' => $c->slug,
                 ])->values(),
+                'gallery' => GalleryPresenter::forSite($place),
             ],
         ]);
     }

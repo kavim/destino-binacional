@@ -108,6 +108,18 @@ php artisan serve
 
 ---
 
+## Desenvolvimento com agentes de IA
+
+Este repositório usa **spec-driven development** e skills Cursor para trabalho assistido por IA:
+
+- **[AGENTS.md](./AGENTS.md)** — ponto de entrada para agentes (fluxo, skills, economia de tokens)
+- **[specs/](./specs/)** — especificações antes de features não triviais
+- **`.cursor/skills/`** — `destino-binacional`, `spec-driven`, `agent-workflow`, `caveman`
+
+Para respostas mais curtas no chat: `/caveman` ou "use caveman".
+
+---
+
 ## Desenvolvimento
 
 ```bash

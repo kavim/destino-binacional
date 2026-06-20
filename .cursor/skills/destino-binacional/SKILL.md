@@ -8,6 +8,8 @@ description: >-
 
 # Destino Binacional
 
+Leia também [AGENTS.md](../../../AGENTS.md). Features não triviais: spec em `specs/` antes de codar (skill `spec-driven`).
+
 ## Stack
 
 - **Backend**: PHP 8.2+, Laravel 11, Inertia Laravel, Sanctum, Ziggy (named routes in JS)

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Site;
 use App\Models\Category;
 use App\Services\CategoryService;
 use App\Services\TourService;
+use App\Support\GalleryPresenter;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -54,7 +55,7 @@ class TourController
     public function show(string $slug): \Inertia\Response
     {
         $tour = $this->tourService->getBySlug($slug);
-        $tour->load('categories');
+        $tour->load(['categories', 'galleryImages']);
 
         $mapRaw = $tour->getRawOriginal('google_maps_src');
         $googleMaps = is_string($mapRaw) ? $mapRaw : null;
@@ -77,6 +78,7 @@ class TourController
                     'name' => $c->name,
                     'slug' => $c->slug,
                 ])->values(),
+                'gallery' => GalleryPresenter::forSite($tour),
             ],
         ]);
     }

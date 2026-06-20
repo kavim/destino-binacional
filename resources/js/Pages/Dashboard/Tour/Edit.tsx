@@ -4,12 +4,20 @@ import { Card, CardContent } from '@/Components/ui/card';
 import Form, { type FormChangeEvent } from './Partials/Form';
 import type { DayWorkingHours } from '@/Components/WorkingHours';
 import type React from 'react';
+import { useCallback, useRef } from 'react';
+import {
+    createGalleryState,
+    submitEntityWithGallery,
+    type GalleryImageDto,
+    type GalleryState,
+} from '@/lib/galleryForm';
 
 export default function Edit() {
-    const { auth, tour, category_ids } = usePage().props as unknown as {
+    const { auth, tour, category_ids, gallery = [] } = usePage().props as unknown as {
         auth: unknown;
         tour: Record<string, unknown> & { id: number; title?: string };
         category_ids: number[];
+        gallery: GalleryImageDto[];
     };
 
     const recurrenceRaw = tour.recurrence_day_hour;
@@ -17,7 +25,12 @@ export default function Edit() {
         ? (recurrenceRaw as DayWorkingHours[])
         : [];
 
-    const { data, setData, errors, put, processing } = useForm({
+    const galleryStateRef = useRef<GalleryState>(createGalleryState(gallery));
+    const handleGalleryChange = useCallback((state: GalleryState) => {
+        galleryStateRef.current = state;
+    }, []);
+
+    const { data, setData, errors, processing } = useForm({
         title: String(tour.title ?? ''),
         description: String(tour.description ?? ''),
         price: String(tour.price ?? ''),
@@ -42,14 +55,20 @@ export default function Edit() {
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-        put(route('tours.update', tour.id), { preserveScroll: true });
+        submitEntityWithGallery(
+            route('tours.update', tour.id),
+            'put',
+            data as Record<string, unknown>,
+            galleryStateRef.current,
+            { preserveScroll: true },
+        );
     };
 
     function onDelete() {
         if (confirm('Borrar este tour? ' + tour.title)) {
             router.visit(route('tours.destroy', tour.id), {
                 method: 'delete',
-            })
+            });
         }
     }
 
@@ -62,7 +81,16 @@ export default function Edit() {
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                     <Card className="shadow-sm">
                         <CardContent className="p-4 sm:p-8">
-                            <Form handleOnChange={handleOnChange} submit={submit} data={data} errors={errors} processing={processing} onDelete={onDelete}></Form>
+                            <Form
+                                handleOnChange={handleOnChange}
+                                submit={submit}
+                                data={data}
+                                errors={errors}
+                                processing={processing}
+                                onDelete={onDelete}
+                                initialGallery={gallery}
+                                onGalleryChange={handleGalleryChange}
+                            />
                         </CardContent>
                     </Card>
                 </div>
