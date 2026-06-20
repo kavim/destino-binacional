@@ -2,6 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { useForm, usePage } from '@inertiajs/react';
 import { Card, CardContent } from '@/Components/ui/card';
 import Form, { type FormChangeEvent } from './Partials/Form';
+import { EVENT_FORM_FIELD_ORDER, notifyFormValidationErrors } from '@/lib/formValidationFeedback';
 import type React from 'react';
 import { useCallback, useRef } from 'react';
 import { createGalleryState, submitEntityWithGallery, type GalleryState } from '@/lib/galleryForm';
@@ -45,7 +46,12 @@ export default function Create() {
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-        submitEntityWithGallery(route('events.store'), 'post', data as Record<string, unknown>, galleryStateRef.current);
+        submitEntityWithGallery(route('events.store'), 'post', data as Record<string, unknown>, galleryStateRef.current, {
+            preserveScroll: true,
+            onError: (validationErrors) => {
+                notifyFormValidationErrors(validationErrors, EVENT_FORM_FIELD_ORDER);
+            },
+        });
     };
 
     return (

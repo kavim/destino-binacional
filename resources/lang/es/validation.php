@@ -125,15 +125,15 @@ return [
     'prohibited_unless' => 'The :attribute field is prohibited unless :other is in :values.',
     'prohibits' => 'The :attribute field prohibits :other from being present.',
     'regex' => 'The :attribute field format is invalid.',
-    'required' => 'The :attribute field is required.',
-    'required_array_keys' => 'The :attribute field must contain entries for: :values.',
-    'required_if' => 'The :attribute field is required when :other is :value.',
-    'required_if_accepted' => 'The :attribute field is required when :other is accepted.',
-    'required_unless' => 'The :attribute field is required unless :other is in :values.',
-    'required_with' => 'The :attribute field is required when :values is present.',
-    'required_with_all' => 'The :attribute field is required when :values are present.',
-    'required_without' => 'The :attribute field is required when :values is not present.',
-    'required_without_all' => 'The :attribute field is required when none of :values are present.',
+    'required' => 'El campo :attribute es obligatorio.',
+    'required_array_keys' => 'El campo :attribute debe contener entradas para: :values.',
+    'required_if' => 'El campo :attribute es obligatorio cuando :other es :value.',
+    'required_if_accepted' => 'El campo :attribute es obligatorio cuando :other está marcado.',
+    'required_unless' => 'El campo :attribute es obligatorio salvo que :other esté en :values.',
+    'required_with' => 'El campo :attribute es obligatorio cuando :values está presente.',
+    'required_with_all' => 'El campo :attribute es obligatorio cuando :values están presentes.',
+    'required_without' => 'El campo :attribute es obligatorio cuando :values no está presente.',
+    'required_without_all' => 'El campo :attribute es obligatorio cuando ninguno de :values está presente.',
     'same' => 'The :attribute field must match :other.',
     'size' => [
         'array' => 'The :attribute field must contain :size items.',
@@ -179,6 +179,20 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'title' => 'título',
+        'description' => 'descripción',
+        'start' => 'fecha de inicio',
+        'end' => 'fecha de cierre',
+        'is_online' => 'evento online',
+        'link' => 'enlace del evento',
+        'google_maps_src' => 'enlace de Google Maps',
+        'address' => 'dirección',
+        'city_id' => 'ciudad',
+        'featured_image' => 'imagen destacada',
+        'image' => 'imagen',
+        'tag_ids' => 'tags',
+        'category_id' => 'categoría',
+    ],
 
 ];

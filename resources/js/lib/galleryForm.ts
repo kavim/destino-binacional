@@ -136,7 +136,7 @@ export function appendEntityFormData(formData: FormData, data: Record<string, un
 
 type SubmitOptions = {
     preserveScroll?: boolean;
-    onError?: () => void;
+    onError?: (errors: Record<string, string>) => void;
 };
 
 export function submitEntityWithGallery(

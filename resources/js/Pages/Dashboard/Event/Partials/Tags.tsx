@@ -10,13 +10,13 @@ type TagsProps = {
     handleCheck: (e: {
         target: { value?: string | number; checked: boolean };
     }) => void;
+    tagError?: string;
 };
 
-export default function Tags({ handleCheck }: TagsProps) {
+export default function Tags({ handleCheck, tagError }: TagsProps) {
 
-    const { parent_tags, errors: fieldErrors } = usePage().props as unknown as {
+    const { parent_tags } = usePage().props as unknown as {
         parent_tags: Array<{ id: number; name: string; open?: boolean }>;
-        errors: Record<string, string>;
     };
     const [controls, setControls] = useState(parent_tags);
 
@@ -35,7 +35,7 @@ export default function Tags({ handleCheck }: TagsProps) {
     };
 
     return (
-        <>
+        <div data-validation-field="tag_ids">
             {Object.keys(parent_tags).map((tag, index) => {
                 return (
                     <div key={index} className='bg-muted p-3 rounded-lg mb-3 border shadow-sm'>
@@ -57,10 +57,10 @@ export default function Tags({ handleCheck }: TagsProps) {
                                 <MultipleCheckbox tagId={parent_tags[index]['id']} handleCheck={handleCheck} />
                             </div>
                         </Collapsible>
-                        <InputError message={fieldErrors?.tag_ids} className="mt-2" />
                     </div>
                 );
             })}
-        </>
+            <InputError message={tagError} className="mt-2" />
+        </div>
     );
 }

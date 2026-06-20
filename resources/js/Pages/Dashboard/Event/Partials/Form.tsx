@@ -15,6 +15,8 @@ import { datePickerValueToDate } from '@/lib/datePickerValue';
 import DeleteButton from '@/Shared/DeleteButton';
 import Tags from './Tags';
 import { Card, CardContent } from '@/Components/ui/card';
+import FormValidationAlert from '@/Components/FormValidationAlert';
+import { EVENT_FORM_FIELD_ORDER } from '@/lib/formValidationFeedback';
 
 type EventFormData = {
     title: string;
@@ -107,7 +109,9 @@ export default function Form({
 
     return (
         <form onSubmit={submit}>
-            <Card className="mb-5 overflow-hidden">
+            <FormValidationAlert errors={errors} fieldOrder={EVENT_FORM_FIELD_ORDER} />
+
+            <Card className="mb-5 overflow-hidden" data-validation-field="featured_image">
                 <CardContent className="space-y-3 p-4 sm:p-5">
                     <div className="flex justify-center">
                     {data.featured_image ? (
@@ -137,7 +141,7 @@ export default function Form({
 
             <div className="divider mt-10">Identificación</div>
 
-            <div className="my-5">
+            <div className="my-5" data-validation-field="title">
                 <InputLabel htmlFor="title" value="Title" />
                 <TextInput
                     type="text"
@@ -150,7 +154,7 @@ export default function Form({
                 />
                 <InputError message={errors.title} className="mt-2" />
             </div>
-            <div className="my-5">
+            <div className="my-5" data-validation-field="description">
                 <InputLabel htmlFor="description" value="Descripción del Evento" className="mb-1" />
                 <CmsRichTextEditor
                     id="description"
@@ -164,7 +168,7 @@ export default function Form({
                 <InputError message={errors.description} className="mt-2" />
             </div>
 
-            <div className="my-5">
+            <div className="my-5" data-validation-field="start">
                 <InputLabel htmlFor="start" value="Fecha de inicio del Evento" />
                 <DataPickerInputStart
                     start={data.start ?? ''}
@@ -174,7 +178,7 @@ export default function Form({
                 <InputError message={errors.start} className="mt-2" />
             </div>
 
-            <div className="my-5">
+            <div className="my-5" data-validation-field="end">
                 <InputLabel htmlFor="end" value="Fecha de cierre del Evento" />
                 <DataPickerInputEnd
                     end={data.end ?? ''}
@@ -213,7 +217,7 @@ export default function Form({
 
             <div className="divider mt-10">Tags</div>
             <div className="my-5">
-                <Tags handleCheck={handleCheck} />
+                <Tags handleCheck={handleCheck} tagError={errors.tag_ids} />
             </div>
 
             <div className="divider mt-10">Detalles para ubicar el evento</div>
@@ -228,7 +232,7 @@ export default function Form({
             {
                 !data.is_online ? (
                     <>
-                        <div className="my-3">
+                        <div className="my-3" data-validation-field="google_maps_src">
                             <InputLabel htmlFor="google_maps_src" value="Google Maps link" />
                             <TextInput
                                 type="text"
@@ -240,7 +244,7 @@ export default function Form({
                             <InputError message={errors.google_maps_src} className="mt-2" />
                         </div>
 
-                        <div className="my-3">
+                        <div className="my-3" data-validation-field="address">
                             <InputLabel htmlFor="address" value="Dirección" />
                             <TextInput
                                 type="text"
@@ -253,7 +257,7 @@ export default function Form({
                             <InputError message={errors.address} className="mt-2" />
                         </div>
 
-                        <div className="my-3">
+                        <div className="my-3" data-validation-field="city_id">
                             <InputLabel htmlFor="city_id" value="Ciudad" />
                             <SelectInput
                                 name="city_id"
@@ -275,8 +279,8 @@ export default function Form({
                         </div>
                     </>
                 ) : (
-                    <div className="my-3">
-                        <InputLabel htmlFor="link" value="Web del Evento (opcional)" />
+                    <div className="my-3" data-validation-field="link">
+                        <InputLabel htmlFor="link" value="Web del Evento" />
                         <TextInput
                             type="text"
                             name="link"
