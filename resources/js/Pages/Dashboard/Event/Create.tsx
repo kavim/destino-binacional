@@ -2,6 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { useForm, usePage } from '@inertiajs/react';
 import { Card, CardContent } from '@/Components/ui/card';
 import Form, { type FormChangeEvent } from './Partials/Form';
+import { EVENT_FORM_FIELD_ORDER, notifyFormValidationErrors } from '@/lib/formValidationFeedback';
 import type React from 'react';
 
 export default function Create() {
@@ -38,7 +39,12 @@ export default function Create() {
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('events.store'));
+        post(route('events.store'), {
+            preserveScroll: true,
+            onError: (validationErrors) => {
+                notifyFormValidationErrors(validationErrors, EVENT_FORM_FIELD_ORDER);
+            },
+        });
     };
 
     return (

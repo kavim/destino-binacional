@@ -2,6 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { useForm, usePage, router } from '@inertiajs/react';
 import { Card, CardContent } from '@/Components/ui/card';
 import Form, { type FormChangeEvent } from './Partials/Form';
+import { EVENT_FORM_FIELD_ORDER, notifyFormValidationErrors } from '@/lib/formValidationFeedback';
 import type React from 'react';
 
 type EventRecord = Record<string, unknown> & {
@@ -62,7 +63,12 @@ export default function Edit() {
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-        put(route('events.update', event.id), { preserveScroll: true });
+        put(route('events.update', event.id), {
+            preserveScroll: true,
+            onError: (validationErrors) => {
+                notifyFormValidationErrors(validationErrors, EVENT_FORM_FIELD_ORDER);
+            },
+        });
     };
 
     function onDelete() {
