@@ -1,0 +1,1 @@
+import{a as n}from"./app-d80d588d.js";import{B as i}from"./button-ce55fac7.js";function f({className:t="",disabled:r,children:a,...o}){return n(i,{variant:"default",disabled:r,className:t,...o,children:a})}export{f as P};
