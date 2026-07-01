@@ -102,6 +102,7 @@ export default function Events() {
     const [searchExpanded, setSearchExpanded] = useState(false);
     const [selectedDateKey, setSelectedDateKey] = useState<string | null>(null);
     const [activeIndex, setActiveIndex] = useState(0);
+    const [touchStart, setTouchStart] = useState<number | null>(null);
 
     const allFlat = useMemo(() => flattenGrouped(grouped_events), [grouped_events]);
 
@@ -404,15 +405,26 @@ export default function Events() {
                     </button>
 
                     <div
-                        className="relative mx-auto flex h-[min(22rem,58vw)] items-center justify-center [transform-style:preserve-3d] sm:h-[min(26rem,50vw)] md:h-[28rem]"
+                        className="relative mx-auto flex h-[min(24rem,90vw)] items-center justify-center [transform-style:preserve-3d] sm:h-[min(26rem,50vw)] md:h-[28rem]"
                         style={{ perspective: '1200px' }}
+                        onTouchStart={(e) => setTouchStart(e.touches[0].clientX)}
+                        onTouchMove={(e) => {
+                            if (touchStart === null) return;
+                            const diff = touchStart - e.touches[0].clientX;
+                            if (Math.abs(diff) > 50) {
+                                if (diff > 0) goNext();
+                                else goPrev();
+                                setTouchStart(null);
+                            }
+                        }}
+                        onTouchEnd={() => setTouchStart(null)}
                     >
                         {visibleEvents.map((event, i) => {
                             const offset = i - activeIndex;
                             const dist = Math.abs(offset);
                             if (dist > 3) return null;
 
-                            const translateX = offset * 240;
+                            const translateX = offset * (window.innerWidth < 640 ? 160 : 240);
                             const rotateY = -offset * 22;
                             const scale = Math.max(0.72, 1 - dist * 0.11);
                             const opacity = Math.max(0, 1 - dist * 0.28);
@@ -430,7 +442,7 @@ export default function Events() {
                                     key={event.slug}
                                     href={route('site.events.show', event.slug)}
                                     className={cn(
-                                        'absolute left-1/2 top-1/2 w-[min(20rem,85vw)] origin-center overflow-hidden rounded-2xl border border-border/80 bg-card shadow-2xl ring-1 ring-black/[0.04] transition-[transform,opacity,filter] duration-500 ease-out motion-reduce:transition-none dark:ring-white/[0.06] sm:w-[22rem]',
+                                        'absolute left-1/2 top-1/2 w-[min(20rem,75vw)] origin-center overflow-hidden rounded-2xl border border-border/80 bg-card shadow-2xl ring-1 ring-black/[0.04] transition-[transform,opacity,filter] duration-500 ease-out motion-reduce:transition-none dark:ring-white/[0.06] sm:w-[22rem]',
                                         dist === 0 && 'ring-2 ring-primary/30',
                                     )}
                                     style={{
