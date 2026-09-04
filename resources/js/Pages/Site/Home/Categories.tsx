@@ -27,7 +27,7 @@ function CategoryCard({ cat }: { cat: HomeCategoryCard }) {
                 <div className="relative aspect-[16/10] shrink-0 overflow-hidden bg-muted">
                     <img
                         src={featuredSrc}
-                        alt=""
+                        alt={cat.name}
                         width={1280}
                         height={800}
                         loading="lazy"

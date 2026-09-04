@@ -31,7 +31,7 @@ function PlaceCardItem({ place }: { place: PlaceCard }) {
                 <figure className="relative aspect-[16/10] w-full shrink-0 overflow-hidden bg-muted">
                     <img
                         src={imgSrc}
-                        alt=""
+                        alt={place.name}
                         width={800}
                         height={500}
                         loading="lazy"

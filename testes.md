@@ -55,13 +55,14 @@ docker compose exec app php artisan test --filter=AuthenticationTest
 # Filtrar por grupo/diretório
 docker compose exec app php artisan test --filter=Dashboard
 
-# Com cobertura (requer Xdebug ou PCOV)
+# Com cobertura (PCOV na imagem local — rebuild após mudar o Dockerfile)
 docker compose exec app php artisan test --coverage
 ```
 
 > **Nota:** O `phpunit.xml` está configurado com **SQLite :memory:** para testes.
 > Isso significa que **não depende** do MySQL estar rodando — os testes criam
-> e destroem o banco em memória a cada suite.
+> e destroem o banco em memória a cada suite. Cobertura PHP usa **PCOV** no
+> `Dockerfile` local (`docker compose build app` depois de puxar esta mudança).
 
 ### 1.2 Testes Frontend (Vitest)
 

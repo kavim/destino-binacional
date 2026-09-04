@@ -48,7 +48,7 @@ export default function SiteListingHero({
             >
                 <img
                     src={bgSrc}
-                    alt=""
+                    alt={typeof title === 'string' ? title : ''}
                     width={1920}
                     height={1080}
                     decoding="async"

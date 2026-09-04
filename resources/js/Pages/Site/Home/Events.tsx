@@ -68,9 +68,11 @@ function calendarMonthStrip(d: dayjs.Dayjs): string {
 
 function CarouselPoster({
     src,
+    alt,
     className,
 }: {
     src: string;
+    alt: string;
     className?: string;
 }) {
     const initial = src || PLACEHOLDER_IMG;
@@ -82,7 +84,7 @@ function CarouselPoster({
     return (
         <img
             src={imgSrc}
-            alt=""
+            alt={alt}
             className={className}
             width={440}
             height={550}
@@ -446,6 +448,7 @@ export default function Events() {
                                     <div className="aspect-[3/4] w-full overflow-hidden bg-muted sm:aspect-[4/5]">
                                         <CarouselPoster
                                             src={img}
+                                            alt={event.title}
                                             className="h-full w-full object-cover"
                                         />
                                         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-80" />

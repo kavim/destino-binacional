@@ -49,7 +49,7 @@ function TourListCard({ tour }: { tour: TourRow }) {
                 <figure className="relative aspect-[16/10] w-full shrink-0 overflow-hidden bg-muted">
                     <img
                         src={imgSrc}
-                        alt=""
+                        alt={tour.title}
                         width={800}
                         height={500}
                         loading="lazy"
