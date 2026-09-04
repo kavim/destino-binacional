@@ -12,7 +12,10 @@ class UpdatePlaceRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return true;
+        $place = $this->route('place');
+
+        return $place instanceof Place
+            && ($this->user()?->can('update', $place) ?? false);
     }
 
     protected function prepareForValidation(): void

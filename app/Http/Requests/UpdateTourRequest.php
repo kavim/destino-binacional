@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Http\Requests\Concerns\ValidatesGalleryUpload;
+use App\Models\Tour;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateTourRequest extends FormRequest
@@ -11,7 +12,10 @@ class UpdateTourRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return true;
+        $tour = $this->route('tour');
+
+        return $tour instanceof Tour
+            && ($this->user()?->can('update', $tour) ?? false);
     }
 
     /**

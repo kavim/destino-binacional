@@ -18,7 +18,9 @@ class EventController extends Controller
 {
     public function __construct(
         protected EventService $eventService,
-    ) {}
+    ) {
+        $this->authorizeResource(Event::class);
+    }
 
     /**
      * Display a listing of the resource.

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Http\Requests\Concerns\ValidatesGalleryUpload;
+use App\Models\Place;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StorePlaceRequest extends FormRequest
@@ -11,7 +12,7 @@ class StorePlaceRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return true;
+        return $this->user()?->can('create', Place::class) ?? false;
     }
 
     /**

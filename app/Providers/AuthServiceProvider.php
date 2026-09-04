@@ -2,23 +2,37 @@
 
 namespace App\Providers;
 
-// use Illuminate\Support\Facades\Gate;
+use App\Models\Category;
+use App\Models\Event;
+use App\Models\ObservabilityPageView;
+use App\Models\Place;
+use App\Models\Tag;
+use App\Models\Tour;
+use App\Models\User;
+use App\Policies\CategoryPolicy;
+use App\Policies\EventPolicy;
+use App\Policies\ObservabilityPageViewPolicy;
+use App\Policies\PlacePolicy;
+use App\Policies\TagPolicy;
+use App\Policies\TourPolicy;
+use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
 {
     /**
-     * The model to policy mappings for the application.
-     *
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+        Place::class => PlacePolicy::class,
+        Event::class => EventPolicy::class,
+        Tour::class => TourPolicy::class,
+        Category::class => CategoryPolicy::class,
+        Tag::class => TagPolicy::class,
+        ObservabilityPageView::class => ObservabilityPageViewPolicy::class,
+        User::class => UserPolicy::class,
     ];
 
-    /**
-     * Register any authentication / authorization services.
-     */
     public function boot(): void
     {
         //

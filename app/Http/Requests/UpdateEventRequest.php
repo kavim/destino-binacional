@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Http\Requests\Concerns\ValidatesGalleryUpload;
+use App\Models\Event;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateEventRequest extends FormRequest
@@ -11,7 +12,10 @@ class UpdateEventRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return true;
+        $event = $this->route('event');
+
+        return $event instanceof Event
+            && ($this->user()?->can('update', $event) ?? false);
     }
 
     /**

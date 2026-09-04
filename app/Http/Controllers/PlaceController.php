@@ -19,7 +19,9 @@ class PlaceController extends Controller
 {
     public function __construct(
         protected PlaceService $placeService,
-    ) {}
+    ) {
+        $this->authorizeResource(Place::class);
+    }
 
     public function index(): \Inertia\Response
     {

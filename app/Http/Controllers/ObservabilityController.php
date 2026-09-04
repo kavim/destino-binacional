@@ -14,6 +14,7 @@ class ObservabilityController extends Controller
 {
     public function index(Request $request)
     {
+        $this->authorize('viewAny', ObservabilityPageView::class);
         $days = min(max((int) $request->get('days', 14), 1), 90);
         $since = Carbon::today()->subDays($days);
 

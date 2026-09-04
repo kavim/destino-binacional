@@ -18,6 +18,8 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
+        $this->authorize('update', $request->user());
+
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
@@ -29,6 +31,8 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
+        $this->authorize('update', $request->user());
+
         $request->user()->fill($request->validated());
 
         if ($request->user()->isDirty('email')) {
@@ -50,6 +54,8 @@ class ProfileController extends Controller
         ]);
 
         $user = $request->user();
+
+        $this->authorize('delete', $user);
 
         Auth::logout();
 

@@ -14,7 +14,9 @@ class CategoryController extends Controller
 {
     public function __construct(
         protected CategoryService $categoryService,
-    ) {}
+    ) {
+        $this->authorizeResource(Category::class);
+    }
 
     public function index()
     {
@@ -48,9 +50,8 @@ class CategoryController extends Controller
         return redirect()->route('categories.index');
     }
 
-    public function edit(int $id)
+    public function edit(Category $category)
     {
-        $category = Category::findOrFail($id);
         $parent = $category->parent ? $category->parent : null;
 
         return Inertia::render('Dashboard/Category/Edit', [
@@ -73,10 +74,8 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCategoryRequest $request, int $id)
+    public function update(UpdateCategoryRequest $request, Category $category)
     {
-        $category = Category::findOrfail($id);
-
         $this->categoryService->update($request->validated(), $category);
 
         return redirect()->route('categories.index');

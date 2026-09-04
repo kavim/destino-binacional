@@ -16,7 +16,9 @@ class TourController extends Controller
 {
     public function __construct(
         protected TourService $tourService,
-    ) {}
+    ) {
+        $this->authorizeResource(Tour::class);
+    }
 
     public function index(): \Inertia\Response|\Inertia\ResponseFactory
     {
