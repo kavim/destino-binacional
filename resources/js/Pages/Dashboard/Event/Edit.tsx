@@ -11,14 +11,16 @@ import {
     type GalleryImageDto,
     type GalleryState,
 } from '@/lib/galleryForm';
+import type { PageProps } from '@/types/inertia';
 
-type EventRecord = Record<string, unknown> & {
+export type EventRecord = {
     id: number;
     title?: string;
     description?: string;
     google_maps_src?: string;
     address?: string;
     city_id?: string | number;
+    category_id?: string | number | null;
     price?: string | number;
     door_time?: string;
     start?: string;
@@ -28,13 +30,14 @@ type EventRecord = Record<string, unknown> & {
     image?: string;
 };
 
+type EventEditPageProps = PageProps<{
+    event: EventRecord;
+    tag_ids: number[];
+    gallery?: GalleryImageDto[];
+}>;
+
 export default function Edit() {
-    const { auth, event, tag_ids, gallery = [] } = usePage().props as unknown as {
-        auth: unknown;
-        event: EventRecord;
-        tag_ids: number[];
-        gallery: GalleryImageDto[];
-    };
+    const { auth, event, tag_ids, gallery = [] } = usePage<EventEditPageProps>().props;
 
     const galleryStateRef = useRef<GalleryState>(createGalleryState(gallery));
     const handleGalleryChange = useCallback((state: GalleryState) => {

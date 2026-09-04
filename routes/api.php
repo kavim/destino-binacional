@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\PlaceController;
 use App\Services\ObservabilityService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -12,7 +11,7 @@ use Illuminate\Support\Facades\Validator;
 |--------------------------------------------------------------------------
 |
 | Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
+| routes are loaded from bootstrap/app.php and all of them will
 | be assigned to the "api" middleware group. Make something great!
 |
 */
@@ -20,8 +19,6 @@ use Illuminate\Support\Facades\Validator;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
-Route::post('import-places', [PlaceController::class, 'importPlaces']);
 
 // Observabilidade: erros do frontend (throttle para evitar abuso)
 Route::post('observability/errors', function (Request $request) {

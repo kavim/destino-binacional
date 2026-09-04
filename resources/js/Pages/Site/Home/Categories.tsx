@@ -7,15 +7,15 @@ const FALLBACK_ICON = "/images/icons/default.svg";
 type HomeCategoryCard = {
     slug: string;
     name: string;
-    description: string | null;
-    featured_image: string;
-    icon: string;
+    description?: string | null;
+    featured_image?: string | null;
+    icon?: string | null;
     color?: string | null;
 };
 
 function CategoryCard({ cat }: { cat: HomeCategoryCard }) {
-    const [featuredSrc, setFeaturedSrc] = useState(cat.featured_image);
-    const [iconSrc, setIconSrc] = useState(cat.icon);
+    const [featuredSrc, setFeaturedSrc] = useState(cat.featured_image || FALLBACK_FEATURED);
+    const [iconSrc, setIconSrc] = useState(cat.icon || FALLBACK_ICON);
     const accent = cat.color?.trim() || null;
 
     return (
@@ -127,10 +127,8 @@ function CategoryCard({ cat }: { cat: HomeCategoryCard }) {
 }
 
 export default function Categories() {
-    const { cats } = usePage().props as unknown as {
-        cats?: { categories?: HomeCategoryCard[] };
-    };
-    const categories = cats?.categories ?? [];
+    const { cats } = usePage().props;
+    const categories = cats.categories ?? [];
 
     if (!categories.length) {
         return null;

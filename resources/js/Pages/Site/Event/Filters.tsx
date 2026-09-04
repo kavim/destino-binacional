@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { router } from '@inertiajs/react';
-import PrimaryButton from '@/Components/PrimaryButton';
+import { Button } from '@/Components/ui/button';
 import { trans } from '@/utils';
 import { cn } from '@/lib/utils';
 import DatePicker from 'react-date-picker';
@@ -255,13 +255,13 @@ export default function Filters({ filters }: { filters?: EventFiltersState }) {
                             >
                                 Limpar filtros
                             </button>
-                            <PrimaryButton
+                            <Button
                                 type="button"
                                 className="min-h-11 w-full sm:w-auto sm:px-8"
                                 onClick={applyFilters}
                             >
                                 {trans('buscar')}
-                            </PrimaryButton>
+                            </Button>
                         </div>
                     </div>
                 ) : null}

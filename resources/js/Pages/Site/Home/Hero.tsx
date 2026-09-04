@@ -1,12 +1,23 @@
-import LottiePlayer from '@/Components/LottiePlayer';
+import { lazy, Suspense } from 'react';
 import { trans } from '@/utils';
+
+const LottiePlayer = lazy(() => import('@/Components/LottiePlayer'));
 
 export default function Hero() {
     return (
         <>
             <div className="mx-0 mt-5 flex flex-col items-center justify-center gap-4 rounded-xl border border-border bg-card p-4 shadow-sm dark:shadow-black/20 sm:p-6 md:mx-4 md:flex-row md:p-5">
                 <div className="flex w-full shrink-0 justify-center md:w-auto md:max-w-[45%]">
-                    <LottiePlayer />
+                    <Suspense
+                        fallback={
+                            <div
+                                className="mx-auto aspect-square w-full max-w-[min(22rem,90vw)] bg-muted/40 sm:max-w-sm"
+                                aria-hidden
+                            />
+                        }
+                    >
+                        <LottiePlayer />
+                    </Suspense>
                 </div>
                 <div className="w-full min-w-0 break-words md:flex-1">
                     <h2 className="mb-2 text-2xl font-bold sm:text-3xl md:text-4xl">

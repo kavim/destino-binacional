@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import type { Moment } from "moment";
 import TimePicker from "rc-time-picker";
 
+/** moment stays for this picker + WorkingHours (rc-time-picker). Site dates use dayjs. */
+
 export type TimeRangeChangePayload = {
     day: string;
     newStart: Moment;

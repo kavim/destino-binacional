@@ -16,6 +16,7 @@ import {
     ChevronRight,
     Search,
 } from 'lucide-react';
+import type { PageProps } from '@/types/inertia';
 
 type HomeEventItem = {
     slug: string;
@@ -94,9 +95,7 @@ function CarouselPoster({
 
 export default function Events() {
     dayjs.locale('pt-br');
-    const { grouped_events } = usePage().props as unknown as {
-        grouped_events: GroupedEventsMap;
-    };
+    const { grouped_events } = usePage<PageProps<{ grouped_events: GroupedEventsMap }>>().props;
 
     const [searchQuery, setSearchQuery] = useState('');
     const [searchExpanded, setSearchExpanded] = useState(false);

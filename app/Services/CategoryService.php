@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
+use RuntimeException;
 
 class CategoryService
 {
@@ -42,7 +43,7 @@ class CategoryService
 
     public function store(array $validated)
     {
-        return DB::transaction(function () use ($validated) {
+        $category = DB::transaction(function () use ($validated) {
             $category = Category::create([
                 'featured_image' => Arr::get($validated, 'image', false) ? $this->storeFeaturedImage($validated['image']) : 'icons/default.svg',
                 'color' => Arr::get($validated, 'color', null),
@@ -66,6 +67,10 @@ class CategoryService
 
             return $category;
         });
+
+        CategoryNavCache::flush();
+
+        return $category;
     }
 
     public function storeFeaturedImage($image): ?string
@@ -108,7 +113,7 @@ class CategoryService
 
     public function update(array $validated, Category $category)
     {
-        return DB::transaction(function () use ($validated, $category) {
+        $category = DB::transaction(function () use ($validated, $category) {
             $category->update([
                 'featured_image' => Arr::get($validated, 'image', false) ? $this->storeFeaturedImage($validated['image']) : $category->getRawOriginal('featured_image'),
                 'color' => Arr::get($validated, 'color', false) ? $validated['color'] : $category->color,
@@ -150,5 +155,23 @@ class CategoryService
 
             return $category;
         });
+
+        CategoryNavCache::flush();
+
+        return $category;
+    }
+
+    public function destroy(Category $category): void
+    {
+        if ($category->children()->exists()) {
+            throw new RuntimeException('Cannot delete a category that has subcategories.');
+        }
+
+        if ($category->places()->exists() || $category->tours()->exists()) {
+            throw new RuntimeException('Cannot delete a category that is still linked to places or tours.');
+        }
+
+        $category->delete();
+        CategoryNavCache::flush();
     }
 }

@@ -1,63 +1,90 @@
-import React, { useState, useEffect } from "react";
-import { Button } from "@/Components/ui/button";
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Button } from '@/Components/ui/button';
+import {
+    getCookieConsent,
+    loadAnalytics,
+    setCookieConsent,
+    type CookieConsentValue,
+} from '@/analytics';
 
 const CookieConsent = () => {
-    const [showCookieConsent, setShowCookieConsent] = useState(false);
+    const [visible, setVisible] = useState(false);
+    const dialogRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        const cookies = document.cookie.split("; ");
-        const hasAcceptedCookies = cookies.some((cookie) =>
-            cookie.includes("cookies_accepted=true")
-        );
+    const persist = useCallback((value: CookieConsentValue) => {
+        setCookieConsent(value);
+        setVisible(false);
 
-        if (!hasAcceptedCookies) {
-            setShowCookieConsent(true);
+        if (value === 'accepted') {
+            loadAnalytics();
         }
     }, []);
 
-    const acceptCookies = () => {
-        document.cookie =
-            "cookies_accepted=true; max-age=" +
-            365 * 24 * 60 * 60 +
-            "; SameSite=None; Secure";
-        setShowCookieConsent(false);
-    };
+    useEffect(() => {
+        setVisible(getCookieConsent() === null);
+    }, []);
 
-    const openPrivacyPolicy = () => {
-        window.location.href = "/privacy-policy";
-    };
+    useEffect(() => {
+        if (!visible) {
+            return;
+        }
 
-    if (!showCookieConsent) {
+        dialogRef.current?.focus();
+
+        const onKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                persist('rejected');
+            }
+        };
+
+        document.addEventListener('keydown', onKeyDown);
+
+        return () => document.removeEventListener('keydown', onKeyDown);
+    }, [visible, persist]);
+
+    if (!visible) {
         return null;
     }
 
     return (
         <div
-            className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-popover/95 p-4 text-popover-foreground shadow-lg backdrop-blur-md supports-[backdrop-filter]:bg-popover/85"
+            ref={dialogRef}
+            tabIndex={-1}
+            className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-popover/95 p-4 text-popover-foreground shadow-lg backdrop-blur-md outline-none supports-[backdrop-filter]:bg-popover/85"
             role="dialog"
-            aria-label="Consentimento de cookies"
+            aria-modal="true"
+            aria-labelledby="cookie-consent-title"
+            aria-describedby="cookie-consent-description"
         >
             <div className="mx-auto flex max-w-screen-xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-sm leading-relaxed">
-                    Este site utiliza cookies para garantir a melhor experiência
-                    possível. Ao continuar utilizando o site, você concorda com a
-                    nossa{" "}
-                    <button
+                <div>
+                    <p id="cookie-consent-title" className="text-sm font-medium">
+                        Cookies e analytics
+                    </p>
+                    <p id="cookie-consent-description" className="mt-1 text-sm leading-relaxed">
+                        Usamos cookies essenciais e, se você aceitar, Google Analytics e Hotjar.
+                        Recusar não impede a navegação.{' '}
+                        <a
+                            href="/privacy-policy"
+                            className="font-medium text-primary underline-offset-4 transition-colors hover:underline"
+                        >
+                            Política de Privacidade
+                        </a>
+                        .
+                    </p>
+                </div>
+                <div className="flex shrink-0 flex-col gap-2 sm:flex-row sm:min-w-[16rem]">
+                    <Button
                         type="button"
-                        className="font-medium text-primary underline-offset-4 transition-colors hover:underline"
-                        onClick={openPrivacyPolicy}
+                        variant="outline"
+                        onClick={() => persist('rejected')}
                     >
-                        Política de Privacidade
-                    </button>
-                    .
-                </p>
-                <Button
-                    type="button"
-                    onClick={acceptCookies}
-                    className="shrink-0 sm:min-w-[10rem]"
-                >
-                    Aceitar cookies
-                </Button>
+                        Recusar
+                    </Button>
+                    <Button type="button" onClick={() => persist('accepted')}>
+                        Aceitar cookies
+                    </Button>
+                </div>
             </div>
         </div>
     );

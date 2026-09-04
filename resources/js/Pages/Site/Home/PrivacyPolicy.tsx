@@ -1,8 +1,16 @@
+import SeoHead from "@/Components/SeoHead";
 import SiteLayout from "@/Layouts/SiteLayout";
+import { trans } from "@/utils";
+import { SEO_FALLBACK_IMAGE } from "@/lib/seo";
 
 export default function PrivacyPolicy() {
     return (
         <SiteLayout>
+            <SeoHead
+                title="Política de Privacidade"
+                description={trans("seo.privacy_description")}
+                image={SEO_FALLBACK_IMAGE}
+            />
             <div className="sm:max-w-full lg:max-w-7xl mx-auto md:my-5">
                 <div className="container mx-auto py-8">
                     <h1 className="text-3xl font-bold text-center mb-8">
@@ -133,6 +141,13 @@ export default function PrivacyPolicy() {
                     </h2>
 
                     <p className="mb-4">
+                        Utilizamos cookies essenciais ao funcionamento do site.
+                        Google Analytics e Hotjar só são carregados depois que
+                        você aceita o banner de cookies. Recusar impede esses
+                        scripts; a escolha fica salva neste navegador.
+                    </p>
+
+                    <p className="mb-4">
                         Utilizamos cookies para armazenar informação, tais como
                         as suas preferências pessoais quando visita o nosso
                         website. Isto poderá incluir um simples popup, ou uma
@@ -141,14 +156,10 @@ export default function PrivacyPolicy() {
                     </p>
 
                     <p className="mb-4">
-                        Em adição, também utilizamos publicidade de terceiros no
-                        nosso website para suportar os custos de manutenção.
-                        Alguns destes publicitários poderão utilizar tecnologias
-                        como os cookies e/ou web beacons quando publicitam no
-                        nosso website, o que fará com que esses publicitários
-                        (como o Google através do Google AdSense) também recebam
-                        a sua informação pessoal, como o endereço IP, o seu ISP,
-                        o seu browser, etc.
+                        Em adição, se você aceitar analytics, o Google Analytics
+                        e o Hotjar podem tratar dados de uso (incluindo
+                        identificadores técnicos). Não carregamos esses
+                        serviços sem o seu aceite no banner.
                     </p>
 
                     <p className="mb-4">

@@ -1,4 +1,5 @@
-import { Head, Link } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
+import SeoHead from '@/Components/SeoHead';
 import SiteLayout from '@/Layouts/SiteLayout';
 import GoogleMapsEmbedFrame from '@/Components/site/GoogleMapsEmbedFrame';
 import { cn } from '@/lib/utils';
@@ -66,7 +67,7 @@ export default function Show({ tour }: { tour: SiteTourShow }) {
 
     return (
         <SiteLayout>
-            <Head title={tour.title} />
+            <SeoHead title={tour.title} htmlDescription={tour.description} image={tour.image} />
             <div className="w-full overflow-hidden">
                 <div className={headerClass} style={{ backgroundImage: `url("${tour.image}")` }}>
                     <div className="absolute inset-0 bg-stone-900/80 backdrop-blur-md" />
@@ -149,7 +150,7 @@ export default function Show({ tour }: { tour: SiteTourShow }) {
                         <div className="flex w-full justify-center md:w-2/5 md:justify-end">
                             <img
                                 src={tour.image}
-                                alt=""
+                                alt={tour.title}
                                 className="max-h-[50vh] rounded-xl border border-white/10 object-contain shadow-2xl"
                             />
                         </div>

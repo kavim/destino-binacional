@@ -1,0 +1,1 @@
+import{a as n}from"./tiptap-fdb4a3d0.js";import{B as i}from"./button-b9a11a2c.js";function f({className:t="",disabled:r,children:a,...o}){return n(i,{variant:"default",disabled:r,className:t,...o,children:a})}export{f as P};

@@ -35,10 +35,13 @@ RUN echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/opcache.ini \
 WORKDIR /var/www
 
 COPY --from=builder /app /var/www
+COPY docker/php/prod-entrypoint.sh /usr/local/bin/prod-entrypoint.sh
+RUN chmod +x /usr/local/bin/prod-entrypoint.sh
 
 RUN cp -r /var/www/public /var/www/public_dist \
     && chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
 EXPOSE 9000
+ENTRYPOINT ["prod-entrypoint.sh"]
 CMD ["php-fpm"]

@@ -29,6 +29,6 @@ return [
     /*
     | Store full IP address. Set to false to only keep ip_hash (e.g. for GDPR).
     */
-    'store_ip' => env('OBSERVABILITY_STORE_IP', true),
+    'store_ip' => env('OBSERVABILITY_STORE_IP', false),
 
 ];

@@ -7,6 +7,7 @@ use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Site\HomeController;
 use App\Http\Controllers\Site\LocalizationController;
+use App\Http\Controllers\Site\SitemapController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TourController;
 use App\Http\Controllers\TrackerController;
@@ -16,21 +17,26 @@ use Inertia\Inertia;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
+Route::get('/sitemap.xml', [SitemapController::class, 'xml'])->name('sitemap');
+Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
+
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'admin'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
+Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/observability', [ObservabilityController::class, 'index'])->name('observability.index');
     Route::get('/tracker', [TrackerController::class, 'index'])->name('tracker.index');
 
     Route::resource('places', PlaceController::class);
     Route::resource('events', EventController::class)->except(['show']);
-    Route::resource('tags', TagController::class);
+    Route::resource('tags', TagController::class)->only(['index']);
     Route::resource('tours', TourController::class);
     Route::resource('categories', CategoryController::class);
 });

@@ -199,4 +199,13 @@ class EventTest extends TestCase
         $this->get('/eventos/nonexistent-event')
             ->assertNotFound();
     }
+
+    public function test_show_returns_404_for_soft_deleted_event(): void
+    {
+        $event = $this->makeEvent(['slug' => 'evento-apagado']);
+        $event->delete();
+
+        $this->get('/eventos/evento-apagado')
+            ->assertNotFound();
+    }
 }

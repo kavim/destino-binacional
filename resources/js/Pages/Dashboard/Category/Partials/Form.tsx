@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import type React from "react";
 import InputLabel from "@/Components/InputLabel";
-import PrimaryButton from "@/Components/PrimaryButton";
-import TextInput from "@/Components/TextInput";
 import InputError from "@/Components/InputError";
+import { Button } from "@/Components/ui/button";
+import { Input } from "@/Components/ui/input";
 import ImagicLoader from "@/Components/ImagicLoader";
 import DeleteButton from "@/Shared/DeleteButton";
 import { Card, CardContent } from "@/Components/ui/card";
@@ -93,7 +93,7 @@ export default function Form({
 
                 <div className="my-5">
                     <InputLabel htmlFor="name_es" value="Nombre" />
-                    <TextInput
+                    <Input
                         type="text"
                         name="name_es"
                         value={data.name_es}
@@ -106,7 +106,7 @@ export default function Form({
                 </div>
                 <div className="my-5">
                     <InputLabel htmlFor="name_pt" value="Nome" />
-                    <TextInput
+                    <Input
                         type="text"
                         name="name_pt"
                         value={data.name_pt}
@@ -158,7 +158,7 @@ export default function Form({
                         </Card>
                         <div className="my-5">
                             <InputLabel htmlFor="color" value="Color" />
-                            <TextInput
+                            <Input
                                 type="text"
                                 name="color"
                                 value={data.color}
@@ -214,11 +214,11 @@ export default function Form({
                         <DeleteButton type="button" onDelete={onDelete}>
                             Delete
                         </DeleteButton>
-                        <PrimaryButton disabled={processing}>Save</PrimaryButton>
+                        <Button disabled={processing}>Save</Button>
                     </div>
                 ) : (
                     <div className="mt-5 flex justify-end">
-                        <PrimaryButton disabled={processing}>Save</PrimaryButton>
+                        <Button disabled={processing}>Save</Button>
                     </div>
                 )}
             </form>

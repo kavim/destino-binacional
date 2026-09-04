@@ -3,6 +3,7 @@ import { Link, usePage } from '@inertiajs/react';
 import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br';
 import { CalendarDays, ChevronRight } from 'lucide-react';
+import type { PageProps } from '@/types/inertia';
 
 const TOUR_IMG_FALLBACK = '/images/parque.webp';
 
@@ -86,7 +87,7 @@ function TourListCard({ tour }: { tour: TourRow }) {
 }
 
 export default function TourList() {
-    const { tours } = usePage().props as unknown as { tours?: TourRow[] };
+    const { tours } = usePage<PageProps<{ tours?: TourRow[] }>>().props;
     const list = Array.isArray(tours) ? tours : [];
     dayjs.locale('pt-br');
 

@@ -3,6 +3,7 @@
 namespace Tests\Feature\Dashboard;
 
 use App\Models\Category;
+use App\Models\CategoryTranslation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
@@ -251,5 +252,39 @@ class CategoryControllerTest extends TestCase
                 'name_pt' => 'Teste',
             ])
             ->assertNotFound();
+    }
+
+    public function test_destroy_parent_with_children_returns_422(): void
+    {
+        $this->actingAs($this->user)
+            ->delete("/categories/{$this->parentCategory->id}")
+            ->assertStatus(422);
+
+        $this->assertNotSoftDeleted('categories', ['id' => $this->parentCategory->id]);
+    }
+
+    public function test_destroy_leaf_category_soft_deletes(): void
+    {
+        $leaf = Category::create([
+            'color' => '#000000',
+            'icon' => null,
+            'active' => 1,
+            'featured_image' => null,
+            'type' => 'place',
+            'parent_id' => $this->parentCategory->id,
+        ]);
+        CategoryTranslation::create([
+            'category_id' => $leaf->id,
+            'locale' => 'es',
+            'name' => 'Hoja',
+            'slug' => 'hoja',
+            'description' => null,
+        ]);
+
+        $this->actingAs($this->user)
+            ->delete("/categories/{$leaf->id}")
+            ->assertRedirect('/categories');
+
+        $this->assertSoftDeleted('categories', ['id' => $leaf->id]);
     }
 }

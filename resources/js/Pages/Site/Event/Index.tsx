@@ -1,8 +1,11 @@
+import SeoHead from '@/Components/SeoHead';
 import SiteLayout from '@/Layouts/SiteLayout';
-import { Head, usePage } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
 import Header from './Header';
 import EventList from './EventsList';
 import Filters, { type EventFiltersState } from './Filters';
+import { trans } from '@/utils';
+import { SEO_FALLBACK_IMAGE } from '@/lib/seo';
 
 export default function Index({
     filters,
@@ -15,7 +18,11 @@ export default function Index({
 
     return (
         <SiteLayout>
-            <Head title="Eventos" />
+            <SeoHead
+                title="Eventos"
+                description={trans('seo.events_description')}
+                image={SEO_FALLBACK_IMAGE}
+            />
 
             <Header />
 

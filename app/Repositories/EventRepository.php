@@ -7,9 +7,9 @@ use Illuminate\Support\Collection;
 
 class EventRepository
 {
-    public function index(): Collection
+    public function index()
     {
-        return Event::orderBy('name')
+        return Event::orderBy('title')
             ->paginate();
     }
 

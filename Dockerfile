@@ -11,8 +11,9 @@ RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     libonig-dev \
     libxml2-dev \
+    libsqlite3-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
-    && docker-php-ext-install pdo_mysql zip mbstring exif pcntl bcmath gd \
+    && docker-php-ext-install pdo_mysql pdo_sqlite zip mbstring exif pcntl bcmath gd \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -26,7 +27,8 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 COPY . .
 
-RUN chmod -R 775 storage bootstrap/cache 2>/dev/null || true
+RUN mkdir -p storage/framework/views storage/framework/cache/data storage/framework/sessions storage/logs bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
 
 EXPOSE 8000
 

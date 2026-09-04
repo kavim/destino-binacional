@@ -3,6 +3,7 @@ import { Link, usePage } from '@inertiajs/react';
 import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br';
 import { CalendarDays, ChevronRight } from 'lucide-react';
+import type { PageProps } from '@/types/inertia';
 
 const EVENT_IMG_FALLBACK = '/images/parque.webp';
 
@@ -76,8 +77,8 @@ function EventListCard({ event }: { event: SiteEventRow }) {
 }
 
 export default function EventList() {
-    const raw = usePage().props as unknown as { events?: SiteEventRow[] };
-    const events = Array.isArray(raw.events) ? raw.events : [];
+    const { events: rawEvents } = usePage<PageProps<{ events?: SiteEventRow[] }>>().props;
+    const events = Array.isArray(rawEvents) ? rawEvents : [];
     dayjs.locale('pt-br');
 
     if (!events.length) {

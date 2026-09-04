@@ -16,6 +16,8 @@ class TrackerController extends Controller
 
     public function index(Request $request)
     {
+        abort_unless((bool) config('tracker.enabled'), 404);
+
         $days = min(max((int) $request->get('days', 14), 1), 90);
         $since = Carbon::today()->subDays($days);
 

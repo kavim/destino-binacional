@@ -1,8 +1,8 @@
 import { useRef } from 'react';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
+import { Button } from '@/Components/ui/button';
+import { Input } from '@/Components/ui/input';
 import { useForm } from '@inertiajs/react';
 
 export default function UpdatePasswordForm({ className }: { className?: string }) {
@@ -49,7 +49,7 @@ export default function UpdatePasswordForm({ className }: { className?: string }
                 <div>
                     <InputLabel htmlFor="current_password" value="Current Password" />
 
-                    <TextInput
+                    <Input
                         id="current_password"
                         ref={currentPasswordInput}
                         value={data.current_password}
@@ -65,7 +65,7 @@ export default function UpdatePasswordForm({ className }: { className?: string }
                 <div>
                     <InputLabel htmlFor="password" value="New Password" />
 
-                    <TextInput
+                    <Input
                         id="password"
                         ref={passwordInput}
                         value={data.password}
@@ -81,7 +81,7 @@ export default function UpdatePasswordForm({ className }: { className?: string }
                 <div>
                     <InputLabel htmlFor="password_confirmation" value="Confirm Password" />
 
-                    <TextInput
+                    <Input
                         id="password_confirmation"
                         value={data.password_confirmation}
                         onChange={(e) => setData('password_confirmation', e.target.value)}
@@ -94,7 +94,7 @@ export default function UpdatePasswordForm({ className }: { className?: string }
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <PrimaryButton disabled={processing}>Save</PrimaryButton>
+                    <Button type="submit" disabled={processing}>Save</Button>
 
                     <p className={`text-sm text-muted-foreground transition-opacity duration-300 ${recentlySuccessful ? 'opacity-100' : 'opacity-0'}`}>
                         Saved.

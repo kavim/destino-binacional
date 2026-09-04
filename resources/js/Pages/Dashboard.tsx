@@ -1,7 +1,6 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
+import { Head, Link, usePage } from "@inertiajs/react";
 import { trans } from "@/utils";
-import { Link } from "@inertiajs/react";
 import { Card, CardContent } from "@/Components/ui/card";
 import { Badge } from "@/Components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -17,6 +16,7 @@ const shortcutCardClass = cn(
 );
 
 export default function Dashboard(props: DashboardProps) {
+  const { tracker_enabled } = usePage().props;
   return (
     <AuthenticatedLayout
       header={
@@ -112,6 +112,7 @@ export default function Dashboard(props: DashboardProps) {
                     </CardContent>
                   </Card>
                 </Link>
+                {tracker_enabled ? (
                 <Link
                   href={route("tracker.index")}
                   className="min-w-[140px] flex-1 sm:max-w-[200px]"
@@ -127,6 +128,7 @@ export default function Dashboard(props: DashboardProps) {
                     </CardContent>
                   </Card>
                 </Link>
+                ) : null}
               </div>
             </CardContent>
           </Card>

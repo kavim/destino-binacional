@@ -15,11 +15,6 @@ export default function Index() {
                     <i className="fa-solid fa-tags mr-2"></i>
                     <span className="">Tags</span>
                 </div>
-                <div className='px-2'>
-                    <div className="inline-flex items-center justify-center rounded-md bg-success px-6 py-3 text-sm font-medium text-success-foreground shadow hover:bg-success/90 transition-colors">
-                        Crear nuevo
-                    </div>
-                </div>
             </div>
         }>
             <Head title="Tags" />

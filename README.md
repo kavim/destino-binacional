@@ -6,13 +6,15 @@
 
 Este sistema foi criado para promover e compartilhar o rico patrimônio cultural, natural e histórico de Rivera e Santana do Livramento. Seja planejando uma visita ou simplesmente curioso sobre a região, esta plataforma é o seu portal para descobrir tudo o que Rivera e Santana do Livramento têm a oferecer.
 
+Roadmap técnico de melhorias: [specs/README.md](specs/README.md).
+
 ---
 
 ## Tech Stack
 
 | Camada | Tecnologia |
 |--------|-----------|
-| Backend | PHP 8.2 · Laravel 10 · Inertia.js |
+| Backend | PHP 8.2 · Laravel 11 · Inertia.js |
 | Frontend | React 18 · TypeScript · Tailwind CSS 3 · shadcn/ui |
 | Banco | MySQL 8.0 |
 | Infra | Docker · Docker Compose |
@@ -51,7 +53,7 @@ npm install
 docker compose exec app cp .env.example .env
 docker compose exec app php artisan key:generate
 
-# 5. Rode as migrations e seeders
+# 5. Rode as migrations e seeders (ADMIN_EMAIL / ADMIN_PASSWORD no .env)
 docker compose exec app php artisan migrate --seed
 
 # 6. Compile os assets
@@ -98,7 +100,7 @@ php artisan key:generate
 # DB_USERNAME=root
 # DB_PASSWORD=
 
-# 5. Migrations + Seeders
+# 5. Migrations + Seeders (defina ADMIN_EMAIL e ADMIN_PASSWORD no .env)
 php artisan migrate --seed
 
 # 6. Compile e sirva
@@ -113,7 +115,7 @@ php artisan serve
 Este repositório usa **spec-driven development** e skills Cursor para trabalho assistido por IA:
 
 - **[AGENTS.md](./AGENTS.md)** — ponto de entrada para agentes (fluxo, skills, economia de tokens)
-- **[specs/](./specs/)** — especificações antes de features não triviais
+- Specs SDD em `specs/` — locais, **não sobem no git** (ver `.gitignore`)
 - **`.cursor/skills/`** — `destino-binacional`, `spec-driven`, `agent-workflow`, `caveman`
 
 Para respostas mais curtas no chat: `/caveman` ou "use caveman".
@@ -199,6 +201,18 @@ npm run test:coverage
 | `phpmyadmin` | 8080 | Interface de administração do banco |
 | `init_tracker` | — | Inicializador do banco de tracking |
 
+### Produção (`docker-compose.prod.yml`)
+
+Não inclui phpMyAdmin. Sobe `app` (php-fpm), `nginx`, `mysql`, `init_tracker`, `scheduler` (`schedule:work`) e `queue` (`queue:work` — page views de observabilidade). `scheduler` e `queue` correm como `www-data`; o master do php-fpm permanece root (os workers do pool já são `www-data`).
+
+Ordem:
+
+1. `npm run build`
+2. Exportar no host **`APP_KEY`** (a chave atual; uma chave nova invalida sessões), `DB_PASSWORD` e `MYSQL_ROOT_PASSWORD`
+3. `docker compose -f docker-compose.prod.yml build && docker compose -f docker-compose.prod.yml up -d`
+
+Sem `APP_KEY` o Compose recusa subir o stack.
+
 ### Comandos Docker frequentes
 
 ```bash
@@ -212,13 +226,13 @@ docker compose exec app php artisan tinker   # Laravel REPL
 
 ---
 
-## Tracker
+## Tracker vs Observability
 
-O módulo de tracking está **desabilitado por padrão**. Para ativar, configure no `.env`:
+O painel usa **Observability** (`/observability`, Insights). O PragmaRX Tracker **não** entra no grupo `web` e fica desligado (`TRACKER_ENABLED=false` no `.env.example` e default em `config/tracker.php`).
 
-```
-TRACKER_ENABLED=true
-```
+Para religar temporariamente (não recomendado): `TRACKER_ENABLED=true` e acrescentar o middleware Tracker no grupo `web` em `bootstrap/app.php` — o schema `tracker` no MySQL não é dropado neste PR.
+
+Analytics de terceiros (GA/Hotjar) no site público exigem aceite no banner de cookies. Observabilidade do painel, por padrão, **não** guarda IP completo (`OBSERVABILITY_STORE_IP=false`).
 
 ---
 

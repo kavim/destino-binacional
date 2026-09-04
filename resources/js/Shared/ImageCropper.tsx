@@ -1,4 +1,4 @@
-import PrimaryButton from "@/Components/PrimaryButton";
+import { Button } from "@/Components/ui/button";
 import React, { useEffect, useState } from "react";
 import Cropper from "react-easy-crop";
 
@@ -149,14 +149,14 @@ function ImageCropper({ image, onCropDone, onCropCancel }: ImageCropperProps) {
                         Cancelar
                     </button>
 
-                    <PrimaryButton
+                    <Button
                         onClick={() => {
                             onCropDone(croppedArea);
                         }}
                     >
                         <i className="fa-solid fa-crop-simple mr-2"></i>
                         Listo
-                    </PrimaryButton>
+                    </Button>
                 </div>
             </div>
         </div>

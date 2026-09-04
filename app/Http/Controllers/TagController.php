@@ -9,9 +9,7 @@ class TagController extends Controller
 {
     public function __construct(
         protected TagService $tagService,
-    ) {
-        $this->tagService = new TagService;
-    }
+    ) {}
 
     public function index()
     {

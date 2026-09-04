@@ -13,8 +13,8 @@ use Inertia\Inertia;
 class PlaceController extends Controller
 {
     public function __construct(
-        protected PlaceService $placeService = new PlaceService,
-        protected CategoryService $categoryService = new CategoryService,
+        protected PlaceService $placeService,
+        protected CategoryService $categoryService,
     ) {}
 
     public function getByCategoryParentID($CategoryParentIdentifier = null): \Inertia\Response

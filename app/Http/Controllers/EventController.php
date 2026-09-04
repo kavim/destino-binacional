@@ -2,22 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Concerns\ValidatesGalleryUpload;
+use App\Http\Requests\StoreEventRequest;
+use App\Http\Requests\UpdateEventRequest;
 use App\Models\Category;
 use App\Models\City;
 use App\Models\Event;
 use App\Models\Tag;
 use App\Services\EventService;
 use App\Support\GalleryPresenter;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use RuntimeException;
 
 class EventController extends Controller
 {
-    use ValidatesGalleryUpload;
-
     public function __construct(
         protected EventService $eventService,
     ) {}
@@ -70,22 +68,9 @@ class EventController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreEventRequest $request)
     {
-        $validated = $request->validate(array_merge([
-            'title' => 'required',
-            'description' => 'required',
-            'start' => 'required',
-            'end' => 'required',
-            'is_online' => 'required',
-            'link' => 'required_if:is_online,true',
-            'google_maps_src' => 'required_if:is_online,false',
-            'address' => 'required_if:is_online,false',
-            'city_id' => 'required_if:is_online,false',
-            'category_id' => 'nullable',
-            'featured_image' => 'required',
-            'tag_ids' => 'required',
-        ], $this->galleryValidationRules()));
+        $validated = $request->validated();
 
         try {
             $this->eventService->store($validated, $request);
@@ -125,23 +110,9 @@ class EventController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Event $event)
+    public function update(UpdateEventRequest $request, Event $event)
     {
-        $validated = $request->validate(array_merge([
-            'title' => ['required'],
-            'description' => ['required'],
-            'start' => ['required'],
-            'end' => ['required'],
-            'is_online' => ['required'],
-            'link' => ['required_if:is_online,true'],
-            'google_maps_src' => ['required_if:is_online,false'],
-            'address' => ['required_if:is_online,false'],
-            'city_id' => ['required_if:is_online,false'],
-            'category_id' => ['nullable'],
-            'image' => 'required_if:featured_image,null',
-            'featured_image' => 'required_if:image,==,null',
-            'tag_ids' => ['required', 'array'],
-        ], $this->galleryValidationRules()));
+        $validated = $request->validated();
 
         try {
             $this->eventService->update($validated, $event, $request);

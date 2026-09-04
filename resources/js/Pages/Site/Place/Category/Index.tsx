@@ -3,6 +3,7 @@ import { Head, usePage } from '@inertiajs/react';
 import Pagination, { type PaginationLink } from '@/Shared/Pagination';
 import CategoryHeader from './CategoryHeader';
 import PlaceCardList from '../PlaceCardList';
+import type { PageProps } from '@/types/inertia';
 
 type SiteCategoryShow = {
     name: string;
@@ -15,13 +16,13 @@ type SiteCategoryShow = {
 const EMPTY_CATEGORY_COPY =
     'Próximamente compartiremos más detalles sobre esta categoría.';
 
-type SiteCategoryIndexPageProps = {
+type SiteCategoryIndexPageProps = PageProps<{
     category: SiteCategoryShow;
     places: {
         data: Array<{ slug: string; name: string; image?: string; meta?: string | null }>;
         links: PaginationLink[];
     };
-};
+}>;
 
 function foregroundForHex(hex: string | null | undefined): string {
     if (!hex || typeof hex !== 'string' || hex.length < 7) return '#ffffff';
@@ -36,7 +37,7 @@ function foregroundForHex(hex: string | null | undefined): string {
 }
 
 export default function Index() {
-    const { places, category } = usePage().props as unknown as SiteCategoryIndexPageProps;
+    const { places, category } = usePage<SiteCategoryIndexPageProps>().props;
     const { data, links } = places;
 
     const bandBg = category.color?.trim() || undefined;

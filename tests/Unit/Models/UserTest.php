@@ -14,6 +14,7 @@ class UserTest extends TestCase
         $this->assertContains('name', $user->getFillable());
         $this->assertContains('email', $user->getFillable());
         $this->assertContains('password', $user->getFillable());
+        $this->assertNotContains('is_admin', $user->getFillable());
     }
 
     public function test_hidden_attributes_include_password_and_token(): void
@@ -31,5 +32,7 @@ class UserTest extends TestCase
 
         $this->assertArrayHasKey('email_verified_at', $casts);
         $this->assertSame('datetime', $casts['email_verified_at']);
+        $this->assertArrayHasKey('is_admin', $casts);
+        $this->assertSame('boolean', $casts['is_admin']);
     }
 }

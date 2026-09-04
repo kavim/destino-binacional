@@ -1,6 +1,35 @@
-# Prod: Nginx + PHP-FPM + MySQL
+# Prod: Nginx + PHP-FPM + MySQL + scheduler
 # Use: docker compose -f docker-compose.prod.yml up -d
-# Antes: npm run build (assets) e definir .env com APP_KEY, DB_PASSWORD, etc.
+#
+# Ordem:
+#   1. npm run build
+#   2. Definir no host: APP_KEY (a key atual — key nova invalida sessões),
+#      DB_PASSWORD, MYSQL_ROOT_PASSWORD, TRACKER_DB_PASSWORD
+#   3. docker compose -f docker-compose.prod.yml build
+#   4. docker compose -f docker-compose.prod.yml up -d
+#
+# Obrigatórias: APP_KEY, DB_PASSWORD. Sem APP_KEY o compose recusa interpolar.
+
+x-laravel-env: &laravel-env
+  APP_ENV: production
+  APP_DEBUG: "false"
+  APP_KEY: ${APP_KEY:?APP_KEY is required}
+  APP_URL: https://destinobinacional.com
+  FORCE_HTTPS: "true"
+  LOG_CHANNEL: stack
+  DB_CONNECTION: mysql
+  DB_HOST: mysql
+  DB_PORT: "3306"
+  DB_DATABASE: ${DB_DATABASE:-destino}
+  DB_USERNAME: ${DB_USERNAME:-destino}
+  DB_PASSWORD: ${DB_PASSWORD}
+  TRACKER_DB_HOST: mysql
+  TRACKER_DB_PORT: "3306"
+  TRACKER_DB_DATABASE: tracker
+  TRACKER_DB_USERNAME: tracker
+  TRACKER_DB_PASSWORD: ${TRACKER_DB_PASSWORD:-${DB_PASSWORD}}
+  TRUSTED_PROXIES: ${TRUSTED_PROXIES:-10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,127.0.0.1,::1}
+  QUEUE_CONNECTION: ${QUEUE_CONNECTION:-database}
 
 services:
   app:
@@ -11,31 +40,48 @@ services:
     container_name: destino-binacional-app-prod
     restart: unless-stopped
     environment:
-      - APP_ENV=production
-      - APP_DEBUG=false
-      - APP_URL=https://destinobinacional.com
-      - FORCE_HTTPS=true
-      - LOG_CHANNEL=stack
-      - DB_CONNECTION=mysql
-      - DB_HOST=mysql
-      - DB_PORT=3306
-      - DB_DATABASE=${DB_DATABASE:-destino}
-      - DB_USERNAME=${DB_USERNAME:-destino}
-      - DB_PASSWORD=${DB_PASSWORD}
-      # Tracker: banco "tracker" no mesmo MySQL
-      - TRACKER_DB_HOST=mysql
-      - TRACKER_DB_PORT=3306
-      - TRACKER_DB_DATABASE=tracker
-      - TRACKER_DB_USERNAME=tracker
-      - TRACKER_DB_PASSWORD=${TRACKER_DB_PASSWORD:-${DB_PASSWORD}}
+      <<: *laravel-env
     volumes:
       - destino_storage:/var/www/storage
       - destino_bootstrap_cache:/var/www/bootstrap/cache
       - destino_public:/var/www/public
-    entrypoint: ["/bin/sh", "-c", "cp -r /var/www/public_dist/. /var/www/public/; exec php-fpm"]
     depends_on:
       init_tracker:
         condition: service_completed_successfully
+
+  scheduler:
+    image: destino-binacional-app:prod
+    container_name: destino-binacional-scheduler-prod
+    restart: unless-stopped
+    user: www-data
+    environment:
+      <<: *laravel-env
+    volumes:
+      - destino_storage:/var/www/storage
+      - destino_bootstrap_cache:/var/www/bootstrap/cache
+    entrypoint: ["php", "artisan", "schedule:work"]
+    depends_on:
+      mysql:
+        condition: service_healthy
+      app:
+        condition: service_started
+
+  queue:
+    image: destino-binacional-app:prod
+    container_name: destino-binacional-queue-prod
+    restart: unless-stopped
+    user: www-data
+    environment:
+      <<: *laravel-env
+    volumes:
+      - destino_storage:/var/www/storage
+      - destino_bootstrap_cache:/var/www/bootstrap/cache
+    entrypoint: ["php", "artisan", "queue:work", "--sleep=1", "--tries=3"]
+    depends_on:
+      mysql:
+        condition: service_healthy
+      app:
+        condition: service_started
 
   init_tracker:
     image: mysql:8.0
@@ -80,7 +126,7 @@ services:
     volumes:
       - destino_mysql_data_prod:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD --silent"]
       interval: 5s
       timeout: 5s
       retries: 10

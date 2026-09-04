@@ -1,0 +1,1 @@
+import{a as e}from"./tiptap-fdb4a3d0.js";import{S as a}from"./SelectInput-8ca9961b.js";import"./cropper-00b5dc4a.js";function c({category:l}){return e("div",{className:"w-full",children:e("div",{children:e(a,{label:"",className:"w-full",name:"category",value:"",onChange:()=>{},children:e("option",{value:"",children:"Select"})})})})}export{c as default};

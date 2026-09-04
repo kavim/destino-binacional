@@ -14,7 +14,7 @@ Leia também [AGENTS.md](../../../AGENTS.md). Features não triviais: spec em `s
 
 - **Backend**: PHP 8.2+, Laravel 11, Inertia Laravel, Sanctum, Ziggy (named routes in JS)
 - **Frontend**: React 18, TypeScript, Vite 4, Tailwind 3, Radix UI + shadcn-style components (`resources/js/Components/ui/`)
-- **i18n**: `astrotomic/laravel-translatable` (models/translations on server; `resources/js/Mixins/translations.ts` on client)
+- **i18n**: `astrotomic/laravel-translatable` (models/translations on server; `resources/js/utils.ts` `trans()` on client)
 - **Tooling**: ESLint (`npm run lint`), Vitest (`npm run test`), Laravel Pint (PHP — obrigatório após mudanças PHP antes de commit/PR)
 
 ## Fluxo de trabalho (Git / PR)
@@ -30,7 +30,7 @@ Leia também [AGENTS.md](../../../AGENTS.md). Features não triviais: spec em `s
 | Páginas Inertia | `resources/js/Pages/` (`Dashboard/`, `Site/`, `Auth/`, `Profile/`) |
 | Componentes | `resources/js/Components/`, `resources/js/Shared/` |
 | Entrada SPA | `resources/js/app.tsx`, `resources/js/bootstrap.ts` |
-| Rotas web/API | `routes/web.php`, `routes/api.php` |
+| Rotas web/API | `routes/web.php`, `routes/api.php` — middleware/schedule em `bootstrap/app.php` |
 | Controllers / models | `app/Http/`, `app/Models/` |
 | Build front | `vite.config.js`, `package.json` scripts |
 

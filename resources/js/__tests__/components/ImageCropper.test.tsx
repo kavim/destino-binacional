@@ -1,24 +1,9 @@
-import type React from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 vi.mock("react-easy-crop", () => ({
     default: ({ aspect }: { aspect: number }) => (
         <div data-testid="cropper" data-aspect={String(aspect)} />
-    ),
-}));
-
-vi.mock("@/Components/PrimaryButton", () => ({
-    default: ({
-        children,
-        onClick,
-    }: {
-        children: React.ReactNode;
-        onClick?: () => void;
-    }) => (
-        <button type="button" onClick={onClick}>
-            {children}
-        </button>
     ),
 }));
 
