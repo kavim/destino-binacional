@@ -1,9 +1,7 @@
-import React from "react";
-import TimeRangePicker from "@/Components/TimeRangePicker";
-import type { TimeRangeChangePayload } from "@/Components/TimeRangePicker";
-import moment from "moment";
+import TimeRangePicker from '@/Components/TimeRangePicker';
+import type { TimeRangeChangePayload } from '@/Components/TimeRangePicker';
 import { trans } from '@/utils';
-import Checkbox from "@/Components/Checkbox";
+import Checkbox from '@/Components/Checkbox';
 
 type HourSlot = { start: string; end: string };
 
@@ -24,65 +22,69 @@ export default function WorkingHours({
     handleOnChange,
     workingHours,
 }: WorkingHoursProps) {
-    const handleTimeRangeChange = (event: TimeRangeChangePayload) => {
-        const updatedWorkingHours = workingHours.map(dayInfo => {
-            if (dayInfo.day === event.day) {
-                dayInfo.hours[0].start = event.newStart.format("HH:mm");
-                dayInfo.hours[0].end = event.newEnd.format("HH:mm");
-            }
-            return dayInfo;
-        });
-
-        handleOnChange({ target: { name: "working_hours", value: updatedWorkingHours } });
+    const emit = (value: DayWorkingHours[]) => {
+        handleOnChange({ target: { name: 'working_hours', value } });
     };
-    const handleTimeRangeChange2 = (event: TimeRangeChangePayload) => {
-        const updatedWorkingHours = workingHours.map(dayInfo => {
-            if (dayInfo.day === event.day) {
-                dayInfo.hours[1].start = event.newStart.format("HH:mm");
-                dayInfo.hours[1].end = event.newEnd.format("HH:mm");
-            }
-            return dayInfo;
-        });
 
-        handleOnChange({ target: { name: "working_hours", value: updatedWorkingHours } });
+    const handleTimeRangeChange = (event: TimeRangeChangePayload, slotIndex: number) => {
+        emit(
+            workingHours.map((dayInfo) => {
+                if (dayInfo.day !== event.day) {
+                    return dayInfo;
+                }
+
+                return {
+                    ...dayInfo,
+                    hours: dayInfo.hours.map((slot, index) =>
+                        index === slotIndex
+                            ? { start: event.newStart, end: event.newEnd }
+                            : slot,
+                    ),
+                };
+            }),
+        );
     };
 
     const addHourRange = (day: string) => {
-        const updatedWorkingHours = workingHours.map(dayInfo => {
-            if (dayInfo.day === day) {
-                const newHour = {
-                    start: '14:00',
-                    end: '18:00',
+        emit(
+            workingHours.map((dayInfo) => {
+                if (dayInfo.day !== day) {
+                    return dayInfo;
+                }
+
+                return {
+                    ...dayInfo,
+                    hours: [...dayInfo.hours, { start: '14:00', end: '18:00' }],
                 };
-
-                dayInfo.hours.push(newHour);
-            }
-            return dayInfo;
-        });
-
-        handleOnChange({ target: { name: "working_hours", value: updatedWorkingHours } });
-    }
+            }),
+        );
+    };
 
     const removeHourRange = (day: string) => {
-        const updatedWorkingHours = workingHours.map(dayInfo => {
-            if (dayInfo.day === day) {
-                dayInfo.hours.pop();
-            }
-            return dayInfo;
-        });
+        emit(
+            workingHours.map((dayInfo) => {
+                if (dayInfo.day !== day) {
+                    return dayInfo;
+                }
 
-        handleOnChange({ target: { name: "working_hours", value: updatedWorkingHours } });
-    }
+                return {
+                    ...dayInfo,
+                    hours: dayInfo.hours.slice(0, -1),
+                };
+            }),
+        );
+    };
 
     const checkChange = (event: { target: { name?: string; checked: boolean } }) => {
-        const updatedWorkingHours = workingHours.map(dayInfo => {
-            if (dayInfo.day === event.target.name) {
-                dayInfo.enable = event.target.checked;
-            }
-            return dayInfo;
-        });
+        emit(
+            workingHours.map((dayInfo) => {
+                if (dayInfo.day !== event.target.name) {
+                    return dayInfo;
+                }
 
-        handleOnChange({ target: { name: "working_hours", value: updatedWorkingHours } });
+                return { ...dayInfo, enable: event.target.checked };
+            }),
+        );
     };
 
     return (
@@ -117,36 +119,45 @@ export default function WorkingHours({
                                     <td>
                                         <div className="flex">
                                             <TimeRangePicker
-                                                start={moment(start, "HH:mm")}
-                                                end={moment(end, "HH:mm")}
+                                                start={start}
+                                                end={end}
                                                 day={dayInfo.day}
                                                 minuteStep={10}
-                                                onChange={handleTimeRangeChange}
+                                                onChange={(payload) =>
+                                                    handleTimeRangeChange(payload, 0)
+                                                }
                                             />
                                             {dayInfo.hours.length <= 1 ? (
-                                                <button className="ml-2 font-bold cursor-pointer" type="button" onClick={() => {
-                                                    addHourRange(dayInfo.day);
-                                                }}>
+                                                <button
+                                                    className="ml-2 cursor-pointer font-bold"
+                                                    type="button"
+                                                    onClick={() => {
+                                                        addHourRange(dayInfo.day);
+                                                    }}
+                                                >
                                                     Add
                                                 </button>
                                             ) : (
                                                 <div className="flex">
-
-                                                    <div className="mx-4">
-                                                        -
-                                                    </div>
+                                                    <div className="mx-4">-</div>
 
                                                     <TimeRangePicker
-                                                        start={moment(dayInfo.hours[1].start, "HH:mm")}
-                                                        end={moment(dayInfo.hours[1].end, "HH:mm")}
+                                                        start={dayInfo.hours[1].start}
+                                                        end={dayInfo.hours[1].end}
                                                         day={dayInfo.day}
                                                         minuteStep={10}
-                                                        onChange={handleTimeRangeChange2}
+                                                        onChange={(payload) =>
+                                                            handleTimeRangeChange(payload, 1)
+                                                        }
                                                     />
 
-                                                    <button className="ml-2 font-bold cursor-pointer" type="button" onClick={() => {
-                                                        removeHourRange(dayInfo.day);
-                                                    }}>
+                                                    <button
+                                                        className="ml-2 cursor-pointer font-bold"
+                                                        type="button"
+                                                        onClick={() => {
+                                                            removeHourRange(dayInfo.day);
+                                                        }}
+                                                    >
                                                         remove
                                                     </button>
                                                 </div>
