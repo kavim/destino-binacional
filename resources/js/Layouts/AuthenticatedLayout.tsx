@@ -46,6 +46,8 @@ export default function Authenticated({ header, children }: Props) {
                             </div>
 
                             <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                                {auth.user?.is_staff ? (
+                                    <>
                                 <NavLink href={route('dashboard')} active={route().current('dashboard')}>
                                     <i className="fa-solid fa-house" aria-hidden></i>
                                     <span className="sr-only">{trans('dashboard.nav_home')}</span>
@@ -75,6 +77,15 @@ export default function Authenticated({ header, children }: Props) {
                                 }>
                                     Tours
                                 </NavLink>
+                                    </>
+                                ) : null}
+                                {auth.user?.is_admin ? (
+                                    <>
+                                <NavLink href={route('users.index')} active={
+                                    route().current('users.index') || route().current('users.edit') || route().current('users.create')
+                                }>
+                                    Usuarios
+                                </NavLink>
                                 <NavLink href={route('observability.index')} active={route().current('observability.index')}>
                                     Insights
                                 </NavLink>
@@ -82,6 +93,8 @@ export default function Authenticated({ header, children }: Props) {
                                     <NavLink href={route('tracker.index')} active={route().current('tracker.index')}>
                                         Tracker
                                     </NavLink>
+                                ) : null}
+                                    </>
                                 ) : null}
                             </div>
                         </div>
@@ -152,6 +165,8 @@ export default function Authenticated({ header, children }: Props) {
 
                 <div className={(showingNavigationDropdown ? 'block' : 'hidden') + ' sm:hidden'}>
                     <div className="pt-2 pb-3 space-y-1">
+                        {auth.user?.is_staff ? (
+                            <>
                         <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>
                             Dashboard
                         </ResponsiveNavLink>
@@ -170,6 +185,29 @@ export default function Authenticated({ header, children }: Props) {
                         }>
                             Tags
                         </ResponsiveNavLink>
+                        <ResponsiveNavLink href={route('categories.index')} active={
+                            route().current('categories.index') ||
+                            route().current('categories.edit')
+                        }>
+                            Categorias
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink href={route('tours.index')} active={
+                            route().current('tours.index') ||
+                            route().current('tours.edit')
+                        }>
+                            Tours
+                        </ResponsiveNavLink>
+                            </>
+                        ) : null}
+                        {auth.user?.is_admin ? (
+                            <>
+                        <ResponsiveNavLink href={route('users.index')} active={
+                            route().current('users.index') ||
+                            route().current('users.edit') ||
+                            route().current('users.create')
+                        }>
+                            Usuarios
+                        </ResponsiveNavLink>
                         <ResponsiveNavLink href={route('observability.index')} active={route().current('observability.index')}>
                             Insights
                         </ResponsiveNavLink>
@@ -177,6 +215,8 @@ export default function Authenticated({ header, children }: Props) {
                             <ResponsiveNavLink href={route('tracker.index')} active={route().current('tracker.index')}>
                                 Tracker
                             </ResponsiveNavLink>
+                        ) : null}
+                            </>
                         ) : null}
                     </div>
 

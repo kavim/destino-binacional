@@ -4,30 +4,30 @@ namespace App\Policies\Concerns;
 
 use App\Models\User;
 
-trait AuthorizesAdmin
+trait AuthorizesStaff
 {
     public function viewAny(User $user): bool
     {
-        return $user->isAdmin();
+        return $user->isStaff();
     }
 
     public function view(User $user, mixed $model): bool
     {
-        return $user->isAdmin();
+        return $user->isStaff();
     }
 
     public function create(User $user): bool
     {
-        return $user->isAdmin();
+        return $user->isStaff();
     }
 
     public function update(User $user, mixed $model): bool
     {
-        return $user->isAdmin();
+        return $user->isStaff();
     }
 
     public function delete(User $user, mixed $model): bool
     {
-        return $user->isAdmin();
+        return $user->isStaff();
     }
 }

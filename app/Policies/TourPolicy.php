@@ -2,9 +2,9 @@
 
 namespace App\Policies;
 
-use App\Policies\Concerns\AuthorizesAdmin;
+use App\Policies\Concerns\AuthorizesStaff;
 
 class TourPolicy
 {
-    use AuthorizesAdmin;
+    use AuthorizesStaff;
 }

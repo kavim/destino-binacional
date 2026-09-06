@@ -2,9 +2,9 @@
 
 namespace App\Policies;
 
-use App\Policies\Concerns\AuthorizesAdmin;
+use App\Policies\Concerns\AuthorizesStaff;
 
 class PlacePolicy
 {
-    use AuthorizesAdmin;
+    use AuthorizesStaff;
 }

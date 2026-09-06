@@ -3,6 +3,7 @@
 namespace Tests\Feature\Bootstrap;
 
 use App\Http\Middleware\EnsureUserIsAdmin;
+use App\Http\Middleware\EnsureUserIsStaff;
 use App\Http\Middleware\ForceHttps;
 use App\Http\Middleware\ForceRequestRootUrl;
 use App\Http\Middleware\HandleInertiaRequests;
@@ -56,6 +57,7 @@ class Laravel11BootstrapTest extends TestCase
         $this->assertArrayHasKey('auth', $aliases);
         $this->assertSame(EnsureEmailIsVerified::class, $aliases['verified']);
         $this->assertSame(EnsureUserIsAdmin::class, $aliases['admin']);
+        $this->assertSame(EnsureUserIsStaff::class, $aliases['staff']);
         $this->assertSame(ThrottleRequests::class, $aliases['throttle']);
     }
 

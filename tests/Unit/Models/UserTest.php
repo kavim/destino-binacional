@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Models;
 
+use App\Enums\UserRole;
 use App\Models\User;
 use PHPUnit\Framework\TestCase;
 
@@ -14,6 +15,7 @@ class UserTest extends TestCase
         $this->assertContains('name', $user->getFillable());
         $this->assertContains('email', $user->getFillable());
         $this->assertContains('password', $user->getFillable());
+        $this->assertNotContains('role', $user->getFillable());
         $this->assertNotContains('is_admin', $user->getFillable());
     }
 
@@ -25,14 +27,15 @@ class UserTest extends TestCase
         $this->assertContains('remember_token', $user->getHidden());
     }
 
-    public function test_email_verified_at_is_cast_to_datetime(): void
+    public function test_casts_include_role_enum(): void
     {
         $user = new User;
         $casts = $user->getCasts();
 
         $this->assertArrayHasKey('email_verified_at', $casts);
         $this->assertSame('datetime', $casts['email_verified_at']);
-        $this->assertArrayHasKey('is_admin', $casts);
-        $this->assertSame('boolean', $casts['is_admin']);
+        $this->assertArrayHasKey('role', $casts);
+        $this->assertSame(UserRole::class, $casts['role']);
+        $this->assertArrayNotHasKey('is_admin', $casts);
     }
 }

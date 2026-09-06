@@ -6,7 +6,7 @@ import { Badge } from "@/Components/ui/badge";
 import { cn } from "@/lib/utils";
 
 type DashboardProps = {
-    auth: { user: { name: string } };
+    auth: { user: { name: string; is_admin?: boolean } };
 };
 
 const shortcutCardClass = cn(
@@ -17,6 +17,7 @@ const shortcutCardClass = cn(
 
 export default function Dashboard(props: DashboardProps) {
   const { tracker_enabled } = usePage().props;
+  const isAdmin = Boolean(props.auth.user.is_admin);
   return (
     <AuthenticatedLayout
       header={
@@ -97,6 +98,24 @@ export default function Dashboard(props: DashboardProps) {
                     </CardContent>
                   </Card>
                 </Link>
+                {isAdmin ? (
+                <Link
+                  href={route("users.index")}
+                  className="min-w-[140px] flex-1 sm:max-w-[200px]"
+                >
+                  <Card className={shortcutCardClass}>
+                    <CardContent className="flex flex-col items-center gap-2 p-6 text-center">
+                      <span className="text-3xl" aria-hidden>
+                        👥
+                      </span>
+                      <span className="text-sm font-medium text-foreground">
+                        Usuarios
+                      </span>
+                    </CardContent>
+                  </Card>
+                </Link>
+                ) : null}
+                {isAdmin ? (
                 <Link
                   href={route("observability.index")}
                   className="min-w-[140px] flex-1 sm:max-w-[200px]"
@@ -112,7 +131,8 @@ export default function Dashboard(props: DashboardProps) {
                     </CardContent>
                   </Card>
                 </Link>
-                {tracker_enabled ? (
+                ) : null}
+                {isAdmin && tracker_enabled ? (
                 <Link
                   href={route("tracker.index")}
                   className="min-w-[140px] flex-1 sm:max-w-[200px]"
