@@ -1,13 +1,19 @@
-import { Head } from '@inertiajs/react';
+import SeoHead from '@/Components/SeoHead';
 import SiteLayout from '@/Layouts/SiteLayout';
 import Events from '@/Pages/Site/Home/Events';
 import Categories from '@/Pages/Site/Home/Categories';
 import Hero from '@/Pages/Site/Home/Hero';
+import { trans } from '@/utils';
+import { SEO_FALLBACK_IMAGE } from '@/lib/seo';
 
 export default function Welcome() {
     return (
         <SiteLayout>
-            <Head title="Destino Binacional" />
+            <SeoHead
+                title="Destino Binacional"
+                description={trans('seo.home_description')}
+                image={SEO_FALLBACK_IMAGE}
+            />
             <header className="relative isolate min-h-[50vh] overflow-hidden bg-black sm:min-h-[55vh] md:min-h-[60vh]">
                 <video
                     autoPlay

@@ -8,7 +8,7 @@ import { useCallback, useRef } from 'react';
 import { createGalleryState, submitEntityWithGallery, type GalleryState } from '@/lib/galleryForm';
 
 export default function Create() {
-    const { auth } = usePage().props as unknown as { auth: unknown };
+    const { auth } = usePage().props;
 
     const galleryStateRef = useRef<GalleryState>(createGalleryState());
     const handleGalleryChange = useCallback((state: GalleryState) => {

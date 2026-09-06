@@ -116,7 +116,7 @@ export default function Edit() {
                                 <h2 className='font-bold text-lg'>Agregando una categoria principal</h2>
                             </div>
                         )}
-                        <Form handleOnChange={handleOnChange} submit={submit} data={data} errors={errors} processing={processing} parent={parent} onIconChange={onIconChange}></Form>
+                        <Form handleOnChange={handleOnChange} submit={submit} data={data} errors={errors} processing={processing} parent={parent} onIconChange={onIconChange} onDelete={() => router.delete(`/categories/${category.id}`)}></Form>
                         </CardContent>
                     </Card>
                 </div>

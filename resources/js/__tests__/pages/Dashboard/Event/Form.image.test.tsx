@@ -15,14 +15,6 @@ vi.mock('@/Components/InputLabel', () => ({
   default: ({ value }: { value: string }) => <label>{value}</label>,
 }));
 
-vi.mock('@/Components/PrimaryButton', () => ({
-  default: ({ children }: { children: React.ReactNode }) => <button type="submit">{children}</button>,
-}));
-
-vi.mock('@/Components/TextInput', () => ({
-  default: () => <input />,
-}));
-
 vi.mock('@/Shared/SelectInput', () => ({
   default: () => <select />,
 }));

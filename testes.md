@@ -17,46 +17,14 @@ O projeto possui **dois pipelines de testes** independentes:
 
 ## Estrutura de diretórios
 
-```
-tests/                          # ← Backend (PHPUnit)
-├── Unit/
-│   ├── ExampleTest.php
-│   └── Models/
-│       ├── EventTest.php
-│       ├── TourTest.php
-│       └── UserTest.php
-├── Feature/
-│   ├── ExampleTest.php
-│   ├── ProfileTest.php
-│   ├── PlaceControllerTest.php
-│   ├── Auth/
-│   │   ├── AuthenticationTest.php
-│   │   ├── RegistrationTest.php
-│   │   ├── PasswordConfirmationTest.php
-│   │   ├── PasswordResetTest.php
-│   │   ├── PasswordUpdateTest.php
-│   │   └── EmailVerificationTest.php
-│   ├── Dashboard/
-│   │   ├── DashboardTest.php
-│   │   ├── EventControllerTest.php
-│   │   └── TourControllerTest.php
-│   └── Site/
-│       ├── HomeTest.php
-│       └── EventTest.php
-├── TestCase.php
-└── CreatesApplication.php
+A árvore muda com frequência. Fonte de verdade:
 
-resources/js/__tests__/          # ← Frontend (Vitest)
-├── setup.ts
-├── components/
-│   ├── ApplicationLogo.test.tsx
-│   ├── PrimaryButton.test.tsx
-│   ├── ThemeProvider.test.tsx
-│   └── ui/
-│       ├── button.test.tsx
-│       ├── card.test.tsx
-│       └── input.test.tsx
-```
+- Backend: `tests/Unit/`, `tests/Feature/` (Auth, Dashboard, Site, Api, Security, Inertia, Observability, Tracker, Bootstrap)
+- Frontend: `resources/js/__tests__/` (components, pages, lib)
+
+Exemplos atuais de cobertura PHP: Gallery, Category, Place, Event, EventService, CSRF, headers, sitemap, admin.
+
+Exemplos Vitest: `mapsEmbedUrl`, `galleryForm`, ImageGallery/GalleryManager, CookieConsent, MainNav, SeoHead, ui/button/input, ThemeProvider.
 
 ---
 
@@ -87,13 +55,14 @@ docker compose exec app php artisan test --filter=AuthenticationTest
 # Filtrar por grupo/diretório
 docker compose exec app php artisan test --filter=Dashboard
 
-# Com cobertura (requer Xdebug ou PCOV)
+# Com cobertura (PCOV na imagem local — rebuild após mudar o Dockerfile)
 docker compose exec app php artisan test --coverage
 ```
 
 > **Nota:** O `phpunit.xml` está configurado com **SQLite :memory:** para testes.
 > Isso significa que **não depende** do MySQL estar rodando — os testes criam
-> e destroem o banco em memória a cada suite.
+> e destroem o banco em memória a cada suite. Cobertura PHP usa **PCOV** no
+> `Dockerfile` local (`docker compose build app` depois de puxar esta mudança).
 
 ### 1.2 Testes Frontend (Vitest)
 
@@ -135,26 +104,19 @@ npm run test:watch
 
 ## 3. O que cada grupo testa
 
-### Backend
+Ver `tests/` e `resources/js/__tests__/`. Resumo:
 
 | Grupo | O que cobre |
 |-------|------------|
-| `Unit/Models` | Atributos fillable, casts, accessors dos Models (sem banco) |
-| `Feature/Auth` | Login, registro, reset de senha, confirmação, verificação de e-mail |
-| `Feature/Dashboard` | Acesso autenticado ao painel, CRUD de eventos/tours |
-| `Feature/Site` | Páginas públicas: Home, Eventos, filtros por data |
-| `Feature/PlaceControllerTest` | Edição de locais (Place) com Inertia assertions |
-
-### Frontend
-
-| Grupo | O que cobre |
-|-------|------------|
-| `components/ThemeProvider` | Troca de tema, persistência localStorage, resolvedTheme, sistema |
-| `components/ApplicationLogo` | Duas imagens (claro/escuro), tamanhos, classes dark: |
-| `components/PrimaryButton` | Wrapper do Button, variante default, disabled |
-| `components/ui/button` | Todas as variantes, tamanhos, disabled, merge de classes |
-| `components/ui/card` | Bordas semânticas, rounded-xl, composição Header/Content/Footer |
-| `components/ui/input` | Tipos, placeholder, disabled, tokens dark mode |
+| `Unit/` | Models, services (Event, Gallery), middleware (TrustProxies, ForceHttps) |
+| `Feature/Auth` | Login, registro, reset, confirmação, verificação de e-mail |
+| `Feature/Dashboard` | Painel admin, CRUD Place/Event/Tour/Category/Tag, galeria |
+| `Feature/Site` | Home, eventos, tours, sitemap |
+| `Feature/Security` | CSRF, headers |
+| `Feature/Inertia` | Cache de categorias compartilhadas |
+| `Feature/Observability` | Fila de observabilidade |
+| `Feature/Tracker` | Tracker desligado (sem write, 404 no dashboard) |
+| Vitest | UI (button/input/card), galeria, maps, SEO, MainNav, cookies, ThemeProvider |
 
 ---
 
@@ -179,13 +141,24 @@ resources/js/__tests__/<grupo>/<NomeDoComponente>.test.tsx
 - **PHPUnit:** `test_<ação>_<resultado_esperado>` (snake_case)
 - **Vitest:** `it('descreve o comportamento em português')` dentro de `describe`
 
-### CI rápido
+### CI (GitHub Actions)
 
-Para rodar tudo em sequência (útil em CI):
+O workflow [`.github/workflows/ci.yml`](./.github/workflows/ci.yml) **está desativado** (não dispara em push/PR). Os jobs PHP e JS existem no arquivo; para religar, descomente `push`/`pull_request` no `on:`.
+
+| Job | Comandos |
+|-----|----------|
+| PHP | `composer install` → `./vendor/bin/pint --test` → `php artisan test` (PHP 8.2, SQLite in-memory) |
+| JS | `npm ci` → `npm run lint` → `npm test` (Node 20) |
+
+Localmente:
 
 ```bash
-docker compose exec app php artisan test && npm test
+docker compose exec app ./vendor/bin/pint --test
+docker compose exec app php artisan test
+npm ci && npm run lint && npm test
 ```
+
+Produção com `QUEUE_CONNECTION=database`: o serviço `queue` no `docker-compose.prod.yml` roda `php artisan queue:work`. Sem worker a tabela `jobs` cresce. Em local, `QUEUE_CONNECTION=sync` no `.env.example`.
 
 ---
 

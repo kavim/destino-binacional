@@ -8,6 +8,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ThemeToggle } from "@/Components/ThemeToggle";
 import { useTheme } from "@/Components/ThemeProvider";
+import { trans } from "@/utils";
 
 interface Props {
     header?: React.ReactNode;
@@ -16,21 +17,8 @@ interface Props {
     auth?: unknown;
 }
 
-type AuthenticatedLayoutPageProps = {
-    auth: {
-        user: {
-            name: string;
-            email: string;
-        };
-    };
-    flash: {
-        success?: string;
-        error?: string;
-    };
-};
-
 export default function Authenticated({ header, children }: Props) {
-    const { auth, flash } = usePage().props as unknown as AuthenticatedLayoutPageProps;
+    const { auth, flash, tracker_enabled } = usePage().props;
     const { resolvedTheme } = useTheme();
 
     useEffect(() => {
@@ -59,7 +47,8 @@ export default function Authenticated({ header, children }: Props) {
 
                             <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                                 <NavLink href={route('dashboard')} active={route().current('dashboard')}>
-                                    <i className="fa-solid fa-house"></i>
+                                    <i className="fa-solid fa-house" aria-hidden></i>
+                                    <span className="sr-only">{trans('dashboard.nav_home')}</span>
                                 </NavLink>
                                 <NavLink href={route('places.index')} active={
                                     route().current('places.index') || route().current('places.edit')
@@ -89,9 +78,11 @@ export default function Authenticated({ header, children }: Props) {
                                 <NavLink href={route('observability.index')} active={route().current('observability.index')}>
                                     Insights
                                 </NavLink>
-                                <NavLink href={route('tracker.index')} active={route().current('tracker.index')}>
-                                    Tracker
-                                </NavLink>
+                                {tracker_enabled ? (
+                                    <NavLink href={route('tracker.index')} active={route().current('tracker.index')}>
+                                        Tracker
+                                    </NavLink>
+                                ) : null}
                             </div>
                         </div>
 
@@ -105,7 +96,7 @@ export default function Authenticated({ header, children }: Props) {
                                                 type="button"
                                                 className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-muted-foreground bg-card hover:text-foreground focus:outline-none transition ease-in-out duration-150"
                                             >
-                                                {auth.user.name}
+                                                {auth.user?.name}
 
                                                 <svg
                                                     className="ml-2 -mr-0.5 h-4 w-4"
@@ -182,17 +173,19 @@ export default function Authenticated({ header, children }: Props) {
                         <ResponsiveNavLink href={route('observability.index')} active={route().current('observability.index')}>
                             Insights
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink href={route('tracker.index')} active={route().current('tracker.index')}>
-                            Tracker
-                        </ResponsiveNavLink>
+                        {tracker_enabled ? (
+                            <ResponsiveNavLink href={route('tracker.index')} active={route().current('tracker.index')}>
+                                Tracker
+                            </ResponsiveNavLink>
+                        ) : null}
                     </div>
 
                     <div className="pt-4 pb-1 border-t border-border">
                         <div className="px-4">
                             <div className="font-medium text-base text-foreground">
-                                {auth.user.name}
+                                {auth.user?.name}
                             </div>
-                            <div className="font-medium text-sm text-muted-foreground">{auth.user.email}</div>
+                            <div className="font-medium text-sm text-muted-foreground">{auth.user?.email}</div>
                         </div>
 
                         <div className="mt-3 space-y-1">

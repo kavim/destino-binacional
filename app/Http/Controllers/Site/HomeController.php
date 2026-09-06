@@ -9,7 +9,7 @@ use Inertia\Inertia;
 class HomeController extends Controller
 {
     public function __construct(
-        public EventService $eventService = new EventService,
+        public EventService $eventService,
     ) {}
 
     public function index()

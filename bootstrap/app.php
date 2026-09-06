@@ -1,55 +1,114 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Create The Application
-|--------------------------------------------------------------------------
-|
-| The first thing we will do is create a new Laravel application instance
-| which serves as the "glue" for all the components of Laravel, and is
-| the IoC container for the system binding all of the various parts.
-|
-*/
-
-$app = new Illuminate\Foundation\Application(
-    $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
-);
-
-/*
-|--------------------------------------------------------------------------
-| Bind Important Interfaces
-|--------------------------------------------------------------------------
-|
-| Next, we need to bind some important interfaces into the container so
-| we will be able to resolve them when needed. The kernels serve the
-| incoming requests to this application from both the web and CLI.
-|
-*/
-
-$app->singleton(
-    Illuminate\Contracts\Http\Kernel::class,
-    App\Http\Kernel::class
-);
-
-$app->singleton(
-    Illuminate\Contracts\Console\Kernel::class,
-    App\Console\Kernel::class
-);
-
-$app->singleton(
-    Illuminate\Contracts\Debug\ExceptionHandler::class,
-    App\Exceptions\Handler::class
-);
+use App\Http\Middleware\Authenticate;
+use App\Http\Middleware\EncryptCookies;
+use App\Http\Middleware\EnsureUserIsAdmin;
+use App\Http\Middleware\ForceHttps;
+use App\Http\Middleware\ForceRequestRootUrl;
+use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\Localization;
+use App\Http\Middleware\ObservabilityMiddleware;
+use App\Http\Middleware\PreventRequestsDuringMaintenance;
+use App\Http\Middleware\RedirectIfAuthenticated;
+use App\Http\Middleware\SecurityHeaders;
+use App\Http\Middleware\TrimStrings;
+use App\Http\Middleware\TrustProxies;
+use App\Http\Middleware\ValidateSignature;
+use App\Http\Middleware\VerifyCsrfToken;
+use App\Services\ObservabilityService;
+use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
+use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
+use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
+use Illuminate\Http\Middleware\HandleCors;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Validation\ValidationException;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /*
-|--------------------------------------------------------------------------
-| Return The Application
-|--------------------------------------------------------------------------
-|
-| This script returns the application instance. The instance is given to
-| the calling script so we can separate the building of the instances
-| from the actual running of the application and sending responses.
-|
+| Middleware map (same order as the former app/Http/Kernel.php)
+| -------------------------------------------------------------------------
+| Global: TrustProxies → ForceHttps → ForceRequestRootUrl → HandleCors →
+|         PreventRequestsDuringMaintenance → ValidatePostSize → TrimStrings →
+|         ConvertEmptyStringsToNull
+| web:    EncryptCookies → cookies queue → session → errors → CSRF →
+|         SecurityHeaders → SubstituteBindings → Localization → Inertia →
+|         preload links → Observability
+| api:    throttle:api → SubstituteBindings
+| TrustHosts stays off (commented in the old Kernel — spec 023).
 */
 
-return $app;
+return Application::configure(basePath: dirname(__DIR__))
+    ->withEvents(discover: false)
+    ->withRouting(
+        web: __DIR__.'/../routes/web.php',
+        api: __DIR__.'/../routes/api.php',
+        commands: __DIR__.'/../routes/console.php',
+    )
+    ->withMiddleware(function (Middleware $middleware) {
+        $middleware->use([
+            TrustProxies::class,
+            ForceHttps::class,
+            ForceRequestRootUrl::class,
+            HandleCors::class,
+            PreventRequestsDuringMaintenance::class,
+            ValidatePostSize::class,
+            TrimStrings::class,
+            ConvertEmptyStringsToNull::class,
+        ]);
+
+        $middleware->group('web', [
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartSession::class,
+            ShareErrorsFromSession::class,
+            VerifyCsrfToken::class,
+            SecurityHeaders::class,
+            SubstituteBindings::class,
+            Localization::class,
+            HandleInertiaRequests::class,
+            AddLinkHeadersForPreloadedAssets::class,
+            ObservabilityMiddleware::class,
+        ]);
+
+        $middleware->throttleApi();
+
+        $middleware->alias([
+            'auth' => Authenticate::class,
+            'guest' => RedirectIfAuthenticated::class,
+            'signed' => ValidateSignature::class,
+            'admin' => EnsureUserIsAdmin::class,
+        ]);
+    })
+    ->withSchedule(function (Schedule $schedule) {
+        $schedule->command('observability:prune')->daily()->when(fn () => config('observability.retention_days'));
+    })
+    ->withExceptions(function (Exceptions $exceptions) {
+        $exceptions->dontFlash([
+            'current_password',
+            'password',
+            'password_confirmation',
+        ]);
+
+        $exceptions->reportable(function (\Throwable $e) {
+            if ($e instanceof ValidationException || $e instanceof NotFoundHttpException) {
+                return;
+            }
+
+            $request = request();
+            ObservabilityService::recordError('backend', $e->getMessage(), [
+                'url' => $request ? $request->fullUrl() : null,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'level' => 'error',
+                'exception' => get_class($e),
+                'trace' => collect($e->getTrace())->take(5)->toArray(),
+            ]);
+        });
+    })->create();

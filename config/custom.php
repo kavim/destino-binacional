@@ -131,4 +131,8 @@ return [
             ],
         ],
     ],
+
+    'nav_categories_ttl' => (int) env('NAV_CATEGORIES_TTL', 600),
+
+    'nav_category_locales' => ['es', 'pt'],
 ];

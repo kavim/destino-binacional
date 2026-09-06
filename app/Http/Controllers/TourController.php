@@ -2,24 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Concerns\ValidatesGalleryUpload;
+use App\Http\Requests\StoreTourRequest;
+use App\Http\Requests\UpdateTourRequest;
 use App\Models\Category;
 use App\Models\Tour;
 use App\Services\TourService;
 use App\Support\GalleryPresenter;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use RuntimeException;
 
 class TourController extends Controller
 {
-    use ValidatesGalleryUpload;
-
     public function __construct(
         protected TourService $tourService,
     ) {
-        $this->tourService = new TourService;
+        $this->authorizeResource(Tour::class);
     }
 
     public function index(): \Inertia\Response|\Inertia\ResponseFactory
@@ -60,24 +58,10 @@ class TourController extends Controller
         ]);
     }
 
-    public function store(Request $request): \Illuminate\Http\RedirectResponse
+    public function store(StoreTourRequest $request): \Illuminate\Http\RedirectResponse
     {
-        $request->validate(array_merge([
-            'title' => 'required|max:255',
-            'meeting_point' => 'required|max:255',
-            'start' => 'nullable',
-            'end' => 'nullable',
-            'price' => 'nullable',
-            'currency' => 'nullable|in:BRL,UYU',
-            'description' => 'required|max:9999',
-            'guide' => 'required|max:255',
-            'google_maps_src' => 'nullable',
-            'featured_image' => 'required',
-            'category_ids' => ['nullable'],
-        ], $this->galleryValidationRules()));
-
         try {
-            $this->tourService->store($request->all(), $request);
+            $this->tourService->store($request->validated(), $request);
         } catch (RuntimeException $e) {
             $field = str_contains($e->getMessage(), 'gallery image') ? 'gallery' : 'featured_image';
 
@@ -117,23 +101,9 @@ class TourController extends Controller
         ]);
     }
 
-    public function update(Request $request, Tour $tour): \Illuminate\Http\RedirectResponse
+    public function update(UpdateTourRequest $request, Tour $tour): \Illuminate\Http\RedirectResponse
     {
-        $validated = $request->validate(array_merge([
-            'title' => 'required|max:255',
-            'meeting_point' => 'required|max:255',
-            'start' => 'nullable',
-            'end' => 'nullable',
-            'price' => 'nullable',
-            'currency' => 'nullable',
-            'description' => 'required|max:9999',
-            'guide' => 'required|max:255',
-            'google_maps_src' => 'nullable',
-            'featured_image' => 'nullable',
-            'category_ids' => 'nullable',
-            'recurrence_enabled' => 'nullable|boolean',
-            'recurrence_day_hour' => 'nullable|array',
-        ], $this->galleryValidationRules()));
+        $validated = $request->validated();
 
         try {
             $this->tourService->update($validated, $tour, $request);

@@ -19,7 +19,26 @@ export default defineConfig(({ command }) => {
                     host: process.env.APP_URL,
                 }
             },
-            chunkSizeWarningLimit: 1000000, // set chunk size limit to 1 MB
+            chunkSizeWarningLimit: 500,
+            build: {
+                rollupOptions: {
+                    output: {
+                        manualChunks(id) {
+                            if (id.includes('lottie-react') || id.includes('/lotties/')) {
+                                return 'lottie';
+                            }
+                            if (id.includes('@tiptap') || id.includes('prosemirror')) {
+                                return 'tiptap';
+                            }
+                            if (id.includes('react-easy-crop')) {
+                                return 'cropper';
+                            }
+
+                            return undefined;
+                        },
+                    },
+                },
+            },
         }
     } else {
         // command === 'dev or something else'

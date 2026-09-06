@@ -5,10 +5,11 @@ namespace App\Models;
 use App\Models\Concerns\HasGallery;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Event extends Model
 {
-    use HasFactory, HasGallery;
+    use HasFactory, HasGallery, SoftDeletes;
 
     protected $fillable = [
         'title',

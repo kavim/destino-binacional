@@ -479,7 +479,7 @@ class EventControllerTest extends TestCase
             ->assertRedirect('/events')
             ->assertSessionHas('success');
 
-        $this->assertDatabaseMissing('events', ['id' => $event->id]);
+        $this->assertSoftDeleted('events', ['id' => $event->id]);
     }
 
     public function test_delete_nonexistent_event_returns_404(): void

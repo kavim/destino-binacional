@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Jobs\RecordObservabilityHit;
 use App\Services\ObservabilityService;
 use Closure;
 use Illuminate\Http\Request;
@@ -30,14 +31,16 @@ class ObservabilityMiddleware
             $memoryBytes = null;
         }
 
-        ObservabilityService::recordPageView($request);
-        ObservabilityService::recordPerformance(
-            $request->path(),
-            $request->method(),
-            $request->route()?->getName(),
-            $durationMs,
-            $memoryBytes,
-            $response->getStatusCode()
+        RecordObservabilityHit::dispatch(
+            ObservabilityService::pageViewPayload($request),
+            ObservabilityService::performancePayload(
+                $request->path(),
+                $request->method(),
+                $request->route()?->getName(),
+                $durationMs,
+                $memoryBytes,
+                $response->getStatusCode()
+            )
         );
     }
 }

@@ -12,8 +12,8 @@ use Inertia\Inertia;
 class TourController
 {
     public function __construct(
-        protected TourService $tourService = new TourService,
-        protected CategoryService $categoryService = new CategoryService,
+        protected TourService $tourService,
+        protected CategoryService $categoryService,
     ) {}
 
     public function index(Request $request): \Inertia\Response

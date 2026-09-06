@@ -1,0 +1,1 @@
+import{a}from"./tiptap-dfad8cb3.js";import{L as t,h as m}from"./lottie-d30aa520.js";import"./cropper-498e84a5.js";function e(){return a(t,{animationData:m,className:"mx-auto w-full max-w-[min(22rem,90vw)] sm:max-w-sm","aria-hidden":!0})}export{e as default};

@@ -2,29 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Concerns\ValidatesGalleryUpload;
+use App\Http\Requests\StorePlaceRequest;
+use App\Http\Requests\UpdatePlaceRequest;
 use App\Models\Category;
-use App\Models\CategoryTranslation;
 use App\Models\City;
 use App\Models\Place;
 use App\Models\PlaceType;
 use App\Services\PlaceService;
 use App\Support\GalleryPresenter;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use RuntimeException;
 
 class PlaceController extends Controller
 {
-    use ValidatesGalleryUpload;
-
     public function __construct(
         protected PlaceService $placeService,
     ) {
-        $this->placeService = new PlaceService;
+        $this->authorizeResource(Place::class);
     }
 
     public function index(): \Inertia\Response
@@ -75,23 +71,10 @@ class PlaceController extends Controller
         ]);
     }
 
-    public function store(Request $request): mixed
+    public function store(StorePlaceRequest $request): mixed
     {
-        $request->validate(array_merge([
-            'name' => 'required|max:255',
-            'address' => 'required|max:255',
-            'city_id' => 'required|exists:cities,id',
-            'place_type_id' => 'required|exists:place_types,id',
-            'description_pt' => 'required|max:9999',
-            'description_es' => 'required|max:9999',
-            'google_maps_src' => 'nullable',
-            'featured_image' => 'required',
-            'order' => 'required|numeric|min:0|max:9999',
-            'category_ids' => ['nullable'],
-        ], $this->galleryValidationRules()));
-
         try {
-            $this->placeService->store($request->all(), $request);
+            $this->placeService->store($request->validated(), $request);
         } catch (RuntimeException $e) {
             return back()
                 ->withErrors([
@@ -122,28 +105,10 @@ class PlaceController extends Controller
         ]);
     }
 
-    public function update(Request $request, Place $place): RedirectResponse
+    public function update(UpdatePlaceRequest $request, Place $place): RedirectResponse
     {
-        if (! $request->filled('place_type_id') && $place->place_type_id) {
-            $request->merge(['place_type_id' => $place->place_type_id]);
-        }
-
-        $request->validate(array_merge([
-            'name' => 'required',
-            'address' => 'required',
-            'city_id' => 'required',
-            'place_type_id' => 'required',
-            'description_pt' => 'required',
-            'description_es' => 'required',
-            'google_maps_src' => 'nullable',
-            'featured_image' => 'required_if:current_image,==,null',
-            'image' => 'required_if:featured_image,==,null',
-            'category_ids' => ['required', 'array', 'min:1'],
-            'category_ids.*' => ['required', 'exists:categories,id'],
-        ], $this->galleryValidationRules()));
-
         try {
-            $this->placeService->update($request->all(), $request, $place);
+            $this->placeService->update($request->validated(), $request, $place);
         } catch (RuntimeException $e) {
             return back()
                 ->withErrors([
@@ -156,43 +121,6 @@ class PlaceController extends Controller
 
         return redirect()->route('places.index')
             ->with('success', 'Place created successfully.');
-    }
-
-    public function importPlaces(Request $request): JsonResponse
-    {
-        try {
-            $validated = $request->validate([
-                'name' => 'required',
-                'address' => 'required',
-                'city_id' => 'required',
-                'place_type_id' => 'required',
-                'category_slug' => 'required',
-                'description_pt' => 'required',
-                'description_es' => 'required',
-                'google_maps_src' => 'required',
-                'featured_image' => 'required',
-            ]);
-
-            $cat = CategoryTranslation::where('slug', $validated['category_slug'])->first();
-
-            if ($cat) {
-                $validated['category_id'] = $cat->category_id;
-            } else {
-                $validated['category_id'] = 5;
-            }
-
-            $this->placeService->store($validated, $request);
-        } catch (\Exception $e) {
-            \Log::error($e->getMessage());
-
-            return response()->json([
-                'message' => 'Error importing places.',
-            ]);
-        }
-
-        return response()->json([
-            'message' => 'Places imported successfully.',
-        ]);
     }
 
     public function destroy(Place $place): RedirectResponse

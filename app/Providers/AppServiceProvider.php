@@ -20,13 +20,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Log Viewer: apenas usuários autenticados podem acessar
-        LogViewer::auth(fn ($request) => $request->user() !== null);
+        LogViewer::auth(fn ($request) => (bool) $request->user()?->is_admin);
 
         $migrationsPath = database_path('migrations');
         $paths = $this->getAllSubdirectoriesOptimized($migrationsPath);
 
-        $skipTracker = app()->environment('testing') || ! config('app.tracker_enabled', false);
+        $skipTracker = ! config('tracker.enabled');
 
         $paths = array_filter($paths, function (string $path) use ($skipTracker) {
             if ($skipTracker && str_contains($path, DIRECTORY_SEPARATOR.'tracker')) {

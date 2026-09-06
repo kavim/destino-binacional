@@ -1,5 +1,6 @@
 import MainNav from "@/Components/MainNav";
 import Footer from "@/Components/Footer";
+import CookieConsent from "@/Components/CookieConsent";
 
 interface Props {
     header?: React.ReactNode;
@@ -19,6 +20,7 @@ export default function SiteLayout({ header, children }: Props) {
             )}
             <main className="relative w-full shrink-0 pb-10">{children}</main>
             <Footer />
+            <CookieConsent />
         </div>
     );
 }

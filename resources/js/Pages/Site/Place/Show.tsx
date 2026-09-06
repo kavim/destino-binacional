@@ -1,4 +1,4 @@
-import { Head } from '@inertiajs/react';
+import SeoHead from '@/Components/SeoHead';
 import SiteLayout from '@/Layouts/SiteLayout';
 import GoogleMapsEmbedFrame from '@/Components/site/GoogleMapsEmbedFrame';
 import { cn } from '@/lib/utils';
@@ -53,7 +53,7 @@ export default function Show({ place }: { place: SitePlaceShow }) {
 
     return (
         <SiteLayout>
-            <Head title={place.name} />
+            <SeoHead title={place.name} htmlDescription={place.description} image={place.image} />
             <div className="w-full overflow-hidden">
                 <div className={headerClass} style={{ backgroundImage: `url("${place.image}")` }}>
                     <div className="absolute inset-0 bg-stone-900/80 backdrop-blur-md" />
@@ -94,7 +94,7 @@ export default function Show({ place }: { place: SitePlaceShow }) {
                         <div className="flex w-full justify-center md:w-2/5 md:justify-end">
                             <img
                                 src={place.image}
-                                alt=""
+                                alt={place.name}
                                 className="max-h-[50vh] rounded-xl border border-white/10 object-contain shadow-2xl"
                             />
                         </div>

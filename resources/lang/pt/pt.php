@@ -14,6 +14,19 @@ return [
     'dashboard' => [
         'welcome' => 'Bem vindo ao seu painel de controle',
         'you_are_logged_in' => 'Você está conectado!',
+        'nav_home' => 'Painel',
+    ],
+    'nav' => [
+        'open_menu' => 'Abrir menu',
+        'close_menu' => 'Fechar menu',
+        'categories' => 'Categorias',
+    ],
+    'seo' => [
+        'fallback' => 'Destino Binacional — Rivera e Santana do Livramento.',
+        'home_description' => 'Rivera e Santana do Livramento: destino binacional com cultura, natureza, gastronomia e eventos na fronteira Brasil–Uruguai.',
+        'events_description' => 'Agenda de eventos em Rivera e Santana do Livramento: shows, feiras, cultura e atividades na fronteira.',
+        'tours_description' => 'Tours e roteiros em Rivera e Santana do Livramento: o que fazer na fronteira Brasil–Uruguai.',
+        'privacy_description' => 'Política de privacidade do Destino Binacional: como tratamos dados pessoais e cookies (LGPD).',
     ],
     'working_days' => [
         'mon' => 'Segunda-feira',

@@ -1,7 +1,7 @@
 import { usePage } from '@inertiajs/react';
 import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
+import { Button } from '@/Components/ui/button';
+import { Input } from '@/Components/ui/input';
 import SelectInput from '@/Shared/SelectInput';
 import InputError from '@/Components/InputError';
 import CmsRichTextEditor from '@/Components/CmsRichTextEditor';
@@ -17,6 +17,7 @@ import Tags from './Tags';
 import { Card, CardContent } from '@/Components/ui/card';
 import FormValidationAlert from '@/Components/FormValidationAlert';
 import { EVENT_FORM_FIELD_ORDER } from '@/lib/formValidationFeedback';
+import type { PageProps } from '@/types/inertia';
 
 type EventFormData = {
     title: string;
@@ -60,9 +61,9 @@ export default function Form({
     initialGallery?: GalleryImageDto[];
     onGalleryChange?: (state: GalleryState) => void;
 }) {
-    const { cities } = usePage().props as unknown as {
-        cities: Record<string, { id: string | number; name: string }>;
-    };
+    const { cities = {} } = usePage<
+        PageProps<{ cities?: Record<string, { id: string | number; name: string }> }>
+    >().props;
 
     const onCorte =
         onCorteFromParent ??
@@ -143,7 +144,7 @@ export default function Form({
 
             <div className="my-5" data-validation-field="title">
                 <InputLabel htmlFor="title" value="Title" />
-                <TextInput
+                <Input
                     type="text"
                     name="title"
                     value={data.title}
@@ -234,7 +235,7 @@ export default function Form({
                     <>
                         <div className="my-3" data-validation-field="google_maps_src">
                             <InputLabel htmlFor="google_maps_src" value="Google Maps link" />
-                            <TextInput
+                            <Input
                                 type="text"
                                 name="google_maps_src"
                                 value={data.google_maps_src}
@@ -246,7 +247,7 @@ export default function Form({
 
                         <div className="my-3" data-validation-field="address">
                             <InputLabel htmlFor="address" value="Dirección" />
-                            <TextInput
+                            <Input
                                 type="text"
                                 name="address"
                                 value={data.address}
@@ -281,7 +282,7 @@ export default function Form({
                 ) : (
                     <div className="my-3" data-validation-field="link">
                         <InputLabel htmlFor="link" value="Web del Evento" />
-                        <TextInput
+                        <Input
                             type="text"
                             name="link"
                             value={data.link}
@@ -300,15 +301,15 @@ export default function Form({
                         <DeleteButton type='button' onDelete={onDelete}>
                             Delete
                         </DeleteButton>
-                        <PrimaryButton disabled={processing}>
+                        <Button disabled={processing}>
                             Save
-                        </PrimaryButton>
+                        </Button>
                     </div>
                 ) : (
                     <div className="flex justify-end mt-5">
-                        <PrimaryButton disabled={processing}>
+                        <Button disabled={processing}>
                             Save
-                        </PrimaryButton>
+                        </Button>
                     </div>
                 )
             }

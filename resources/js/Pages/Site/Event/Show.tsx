@@ -1,4 +1,4 @@
-import { Head } from '@inertiajs/react';
+import SeoHead from '@/Components/SeoHead';
 import SiteLayout from '@/Layouts/SiteLayout';
 import GoogleMapsEmbedFrame from '@/Components/site/GoogleMapsEmbedFrame';
 import { cn } from '@/lib/utils';
@@ -62,7 +62,7 @@ export default function Show({ event }: { event: SiteEventShow }) {
 
     return (
         <SiteLayout>
-            <Head title={event.title} />
+            <SeoHead title={event.title} htmlDescription={event.description} image={event.image} />
             <div className="w-full overflow-hidden">
                 <div className={headerClass} style={{ backgroundImage: `url("${event.image}")` }}>
                     <div className="absolute inset-0 bg-stone-900/80 backdrop-blur-md" />

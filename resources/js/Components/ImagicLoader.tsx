@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ImageUpload from "@/Shared/ImageUpload";
 import ImageCropper from "@/Shared/ImageCropper";
-import Modal from "@/Components/Modal";
+import { Dialog, DialogContent } from "@/Components/ui/dialog";
 import { Button } from "@/Components/ui/button";
 import { X } from "lucide-react";
 
@@ -64,7 +64,8 @@ function ImagicLoader({ onCorte }: { onCorte: (dataURL: string) => void }) {
 
     return (
         <div>
-            <Modal show={modalShow} onClose={() => setModalShow(false)}>
+            <Dialog open={modalShow} onOpenChange={setModalShow}>
+                <DialogContent className="max-w-2xl p-0 sm:max-w-2xl">
                 {currentPage === "choose-img" && (
                     <div className='k-gradient' >
                         <div className='w-full flex justify-end px-2 pt-2'>
@@ -84,7 +85,8 @@ function ImagicLoader({ onCorte }: { onCorte: (dataURL: string) => void }) {
                         onCropCancel={onCropCancel}
                     />
                 )}
-            </Modal>
+                </DialogContent>
+            </Dialog>
 
             <ImageUpload setImage={setImage} onImageSelected={onImageSelected} />
 

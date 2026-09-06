@@ -58,6 +58,12 @@ return [
 
     'force_https' => (bool) env('FORCE_HTTPS', false),
 
+    'admin_name' => env('ADMIN_NAME', 'Admin'),
+
+    'admin_email' => env('ADMIN_EMAIL'),
+
+    'admin_password' => env('ADMIN_PASSWORD'),
+
     'asset_url' => env('ASSET_URL'),
 
     /*

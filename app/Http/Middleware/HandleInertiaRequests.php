@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Category;
+use App\Services\CategoryNavCache;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
@@ -36,16 +36,7 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
             ],
             'cats' => [
-                /** Resolved when the Inertia response is built (after Localization middleware). */
-                'categories' => static function () {
-                    return Category::query()
-                        ->whereNull('parent_id')
-                        ->orderBy('id')
-                        ->get()
-                        ->map(fn (Category $category) => $category->toSitePublicPayload())
-                        ->values()
-                        ->all();
-                },
+                'categories' => static fn () => CategoryNavCache::get(),
             ],
             'flash' => [
                 'message' => fn () => $request->session()->get('message'),
@@ -59,6 +50,7 @@ class HandleInertiaRequests extends Middleware
                 ]);
             },
             'csrf_token' => csrf_token(),
+            'tracker_enabled' => (bool) config('tracker.enabled'),
         ]);
     }
 }

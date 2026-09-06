@@ -1,8 +1,8 @@
 import React from 'react';
 import { usePage } from '@inertiajs/react';
 import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
+import { Button } from '@/Components/ui/button';
+import { Input } from '@/Components/ui/input';
 import SelectInput from '@/Shared/SelectInput';
 import InputError from '@/Components/InputError';
 import CmsRichTextEditor from '@/Components/CmsRichTextEditor';
@@ -114,7 +114,7 @@ export default function Form({
 
             <div className="my-3">
                 <InputLabel htmlFor="name" value="Nombre" />
-                <TextInput
+                <Input
                     type="text"
                     name="name"
                     value={data.name}
@@ -153,7 +153,7 @@ export default function Form({
             <hr />
             <div className="my-3">
                 <InputLabel htmlFor="google_maps_src" value="Google Maps link" />
-                <TextInput
+                <Input
                     type="text"
                     name="google_maps_src"
                     value={data.google_maps_src}
@@ -164,7 +164,7 @@ export default function Form({
             </div>
             <div className="my-3">
                 <InputLabel htmlFor="address" value="Dirección" />
-                <TextInput
+                <Input
                     type="text"
                     name="address"
                     value={data.address}
@@ -220,7 +220,7 @@ export default function Form({
             </div>
             <div className="my-3">
                 <InputLabel htmlFor="order" value="Ordem" />
-                <TextInput
+                <Input
                     type="number"
                     name="order"
                     value={data.order}
@@ -240,15 +240,15 @@ export default function Form({
                             <DeleteButton type='button' onDelete={onDelete}>
                                 Delete
                             </DeleteButton>
-                            <PrimaryButton disabled={processing}>
+                            <Button disabled={processing}>
                                 Save
-                            </PrimaryButton>
+                            </Button>
                         </div>
                     ) : (
                         <div className="flex justify-end mt-5">
-                            <PrimaryButton disabled={processing}>
+                            <Button disabled={processing}>
                                 Save
-                            </PrimaryButton>
+                            </Button>
                         </div>
                     )
                 }

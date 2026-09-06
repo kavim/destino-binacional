@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ObservabilityPageView;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,6 +17,10 @@ class TrackerController extends Controller
 
     public function index(Request $request)
     {
+        $this->authorize('viewAny', ObservabilityPageView::class);
+
+        abort_unless((bool) config('tracker.enabled'), 404);
+
         $days = min(max((int) $request->get('days', 14), 1), 90);
         $since = Carbon::today()->subDays($days);
 

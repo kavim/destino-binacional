@@ -30,7 +30,7 @@ trait SeedsTestData
 
     protected function seedTestData(): void
     {
-        $this->user = User::factory()->create();
+        $this->user = User::factory()->admin()->create();
 
         $this->placeType = PlaceType::forceCreate(['name' => 'Atractivo']);
 
