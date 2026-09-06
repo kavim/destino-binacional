@@ -2,8 +2,11 @@ import {
     useCallback,
     useEffect,
     useMemo,
+    useRef,
     useState,
     type FormEvent,
+    type MouseEvent,
+    type TouchEvent,
 } from 'react';
 import { Link, router, usePage } from '@inertiajs/react';
 import dayjs from 'dayjs';
@@ -29,6 +32,10 @@ type HomeEventItem = {
 type GroupedEventsMap = Record<string, HomeEventItem[]>;
 
 const PLACEHOLDER_IMG = '/images/parque.webp';
+const SWIPE_THRESHOLD_PX = 50;
+const NARROW_VIEWPORT_MQ = '(max-width: 639px)';
+const NARROW_CARD_STEP_PX = 160;
+const WIDE_CARD_STEP_PX = 240;
 
 function flattenGrouped(grouped: GroupedEventsMap): HomeEventItem[] {
     const keys = Object.keys(grouped).sort();
@@ -103,6 +110,9 @@ export default function Events() {
     const [searchExpanded, setSearchExpanded] = useState(false);
     const [selectedDateKey, setSelectedDateKey] = useState<string | null>(null);
     const [activeIndex, setActiveIndex] = useState(0);
+    const [isNarrowViewport, setIsNarrowViewport] = useState(false);
+    const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+    const suppressClickRef = useRef(false);
 
     const allFlat = useMemo(() => flattenGrouped(grouped_events), [grouped_events]);
 
@@ -135,6 +145,60 @@ export default function Events() {
                 : 0,
         );
     }, [visibleEvents.length]);
+
+    useEffect(() => {
+        const mq = window.matchMedia(NARROW_VIEWPORT_MQ);
+        const update = () => setIsNarrowViewport(mq.matches);
+        update();
+        mq.addEventListener('change', update);
+        return () => mq.removeEventListener('change', update);
+    }, []);
+
+    const handleCarouselTouchStart = useCallback((event: TouchEvent<HTMLDivElement>) => {
+        suppressClickRef.current = false;
+        const touch = event.touches[0];
+        if (!touch) {
+            return;
+        }
+        touchStartRef.current = { x: touch.clientX, y: touch.clientY };
+    }, []);
+
+    const handleCarouselTouchEnd = useCallback(
+        (event: TouchEvent<HTMLDivElement>) => {
+            const start = touchStartRef.current;
+            touchStartRef.current = null;
+            if (!start || visibleEvents.length <= 1) {
+                return;
+            }
+            const touch = event.changedTouches[0];
+            if (!touch) {
+                return;
+            }
+            const deltaX = touch.clientX - start.x;
+            const deltaY = touch.clientY - start.y;
+            if (
+                Math.abs(deltaX) <= SWIPE_THRESHOLD_PX ||
+                Math.abs(deltaX) <= Math.abs(deltaY)
+            ) {
+                return;
+            }
+            suppressClickRef.current = true;
+            if (deltaX < 0) {
+                goNext();
+            } else {
+                goPrev();
+            }
+        },
+        [goNext, goPrev, visibleEvents.length],
+    );
+
+    const handleCarouselCardClick = useCallback((event: MouseEvent<HTMLAnchorElement>) => {
+        if (!suppressClickRef.current) {
+            return;
+        }
+        event.preventDefault();
+        suppressClickRef.current = false;
+    }, []);
 
     useEffect(() => {
         const onKey = (e: KeyboardEvent) => {
@@ -405,15 +469,20 @@ export default function Events() {
                     </button>
 
                     <div
-                        className="relative mx-auto flex h-[min(22rem,58vw)] items-center justify-center [transform-style:preserve-3d] sm:h-[min(26rem,50vw)] md:h-[28rem]"
+                        className="relative mx-auto flex h-[min(27rem,100vw)] touch-pan-y items-center justify-center [transform-style:preserve-3d] sm:h-[min(26rem,50vw)] md:h-[28rem]"
                         style={{ perspective: '1200px' }}
+                        aria-roledescription="carousel"
+                        onTouchStart={handleCarouselTouchStart}
+                        onTouchEnd={handleCarouselTouchEnd}
                     >
                         {visibleEvents.map((event, i) => {
                             const offset = i - activeIndex;
                             const dist = Math.abs(offset);
                             if (dist > 3) return null;
 
-                            const translateX = offset * 240;
+                            const translateX =
+                                offset *
+                                (isNarrowViewport ? NARROW_CARD_STEP_PX : WIDE_CARD_STEP_PX);
                             const rotateY = -offset * 22;
                             const scale = Math.max(0.72, 1 - dist * 0.11);
                             const opacity = Math.max(0, 1 - dist * 0.28);
@@ -430,8 +499,9 @@ export default function Events() {
                                 <Link
                                     key={event.slug}
                                     href={route('site.events.show', event.slug)}
+                                    onClick={handleCarouselCardClick}
                                     className={cn(
-                                        'absolute left-1/2 top-1/2 w-[min(20rem,85vw)] origin-center overflow-hidden rounded-2xl border border-border/80 bg-card shadow-2xl ring-1 ring-black/[0.04] transition-[transform,opacity,filter] duration-500 ease-out motion-reduce:transition-none dark:ring-white/[0.06] sm:w-[22rem]',
+                                        'absolute left-1/2 top-1/2 w-[min(20rem,75vw)] origin-center overflow-hidden rounded-2xl border border-border/80 bg-card shadow-2xl ring-1 ring-black/[0.04] transition-[transform,opacity,filter] duration-500 ease-out motion-reduce:transition-none dark:ring-white/[0.06] sm:w-[22rem]',
                                         dist === 0 && 'ring-2 ring-primary/30',
                                     )}
                                     style={{
