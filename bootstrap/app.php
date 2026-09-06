@@ -3,6 +3,7 @@
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\EnsureUserIsAdmin;
+use App\Http\Middleware\EnsureUserIsStaff;
 use App\Http\Middleware\ForceHttps;
 use App\Http\Middleware\ForceRequestRootUrl;
 use App\Http\Middleware\HandleInertiaRequests;
@@ -84,6 +85,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'guest' => RedirectIfAuthenticated::class,
             'signed' => ValidateSignature::class,
             'admin' => EnsureUserIsAdmin::class,
+            'staff' => EnsureUserIsStaff::class,
         ]);
     })
     ->withSchedule(function (Schedule $schedule) {

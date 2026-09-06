@@ -20,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        LogViewer::auth(fn ($request) => (bool) $request->user()?->is_admin);
+        LogViewer::auth(fn ($request) => (bool) $request->user()?->isAdmin());
 
         $migrationsPath = database_path('migrations');
         $paths = $this->getAllSubdirectoriesOptimized($migrationsPath);
