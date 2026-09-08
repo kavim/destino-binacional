@@ -19,6 +19,7 @@ class CategoryService
     public function __construct(
         protected CategoryRepository $categoryRepository = new CategoryRepository,
         protected FeaturedImageStorage $featuredImageStorage = new FeaturedImageStorage,
+        protected DashboardActivityLogger $activityLogger = new DashboardActivityLogger,
     ) {}
 
     public function index(): Collection
@@ -69,6 +70,7 @@ class CategoryService
         });
 
         CategoryNavCache::flush();
+        $this->activityLogger->created($category);
 
         return $category;
     }
@@ -157,6 +159,7 @@ class CategoryService
         });
 
         CategoryNavCache::flush();
+        $this->activityLogger->updated($category);
 
         return $category;
     }
@@ -171,6 +174,7 @@ class CategoryService
             throw new RuntimeException('Cannot delete a category that is still linked to places or tours.');
         }
 
+        $this->activityLogger->deleted($category);
         $category->delete();
         CategoryNavCache::flush();
     }

@@ -18,6 +18,7 @@ class PlaceService
         protected PlaceRepository $placeRepository = new PlaceRepository,
         protected FeaturedImageStorage $featuredImageStorage = new FeaturedImageStorage,
         protected GallerySyncService $gallerySyncService = new GallerySyncService,
+        protected DashboardActivityLogger $activityLogger = new DashboardActivityLogger,
     ) {}
 
     public function index()
@@ -67,6 +68,8 @@ class PlaceService
                 $request,
                 $this->gallerySyncService->mapNewFilesFromRequest($request),
             );
+
+            $this->activityLogger->created($place);
 
             return $place;
         });
@@ -126,6 +129,8 @@ class PlaceService
                 $this->gallerySyncService->mapNewFilesFromRequest($request),
             );
 
+            $this->activityLogger->updated($place);
+
             return $place;
         });
     }
@@ -134,6 +139,7 @@ class PlaceService
     {
         DB::transaction(function () use ($place) {
             $this->gallerySyncService->deleteAllFor($place);
+            $this->activityLogger->deleted($place);
             $place->delete();
         });
     }

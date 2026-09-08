@@ -102,6 +102,7 @@ describe('AuthenticatedLayout nav', () => {
     expect(screen.getAllByText('Usuarios').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Insights').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Locales').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Actividad').length).toBeGreaterThan(0);
   });
 
   it('mostra CMS e esconde Usuarios/Insights para editor', () => {
@@ -120,6 +121,7 @@ describe('AuthenticatedLayout nav', () => {
     );
 
     expect(screen.getAllByText('Locales').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Actividad').length).toBeGreaterThan(0);
     expect(screen.queryByText('Usuarios')).not.toBeInTheDocument();
     expect(screen.queryByText('Insights')).not.toBeInTheDocument();
     expect(screen.queryByText('Tracker')).not.toBeInTheDocument();
