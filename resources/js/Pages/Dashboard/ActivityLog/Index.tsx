@@ -227,6 +227,7 @@ export default function Index() {
                                 <Pagination links={links} />
                             </div>
                         </CardContent>
+                    </Card>
                 </div>
             </div>
         </AuthenticatedLayout>
