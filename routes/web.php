@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ObservabilityController;
@@ -37,6 +38,7 @@ Route::middleware(['auth', 'staff'])->group(function () {
     Route::resource('tags', TagController::class)->only(['index']);
     Route::resource('tours', TourController::class);
     Route::resource('categories', CategoryController::class);
+    Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {

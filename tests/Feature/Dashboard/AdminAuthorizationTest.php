@@ -18,6 +18,7 @@ class AdminAuthorizationTest extends TestCase
         $this->get('/observability')->assertRedirect('/login');
         $this->get('/dashboard')->assertRedirect('/login');
         $this->get('/users')->assertRedirect('/login');
+        $this->get('/activity-logs')->assertRedirect('/login');
     }
 
     public function test_non_staff_receives_403_on_cms_and_observability(): void
@@ -30,6 +31,7 @@ class AdminAuthorizationTest extends TestCase
         $this->actingAs($user)->get('/tracker')->assertForbidden();
         $this->actingAs($user)->get('/log-viewer')->assertForbidden();
         $this->actingAs($user)->get('/users')->assertForbidden();
+        $this->actingAs($user)->get('/activity-logs')->assertForbidden();
     }
 
     public function test_editor_can_view_cms_but_not_analytics_or_users(): void
@@ -42,6 +44,7 @@ class AdminAuthorizationTest extends TestCase
         $this->actingAs($editor)->get('/categories')->assertOk();
         $this->actingAs($editor)->get('/tags')->assertOk();
         $this->actingAs($editor)->get('/tours')->assertOk();
+        $this->actingAs($editor)->get('/activity-logs')->assertOk();
 
         $this->actingAs($editor)->get('/observability')->assertForbidden();
         $this->actingAs($editor)->get('/tracker')->assertForbidden();
@@ -58,6 +61,7 @@ class AdminAuthorizationTest extends TestCase
         $this->actingAs($admin)->get('/observability')->assertOk();
         $this->actingAs($admin)->get('/dashboard')->assertOk();
         $this->actingAs($admin)->get('/users')->assertOk();
+        $this->actingAs($admin)->get('/activity-logs')->assertOk();
     }
 
     public function test_non_staff_can_still_edit_profile(): void

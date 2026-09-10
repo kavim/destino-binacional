@@ -35,6 +35,7 @@ describe('Dashboard shortcuts', () => {
     expect(screen.getByText('Insights')).toBeInTheDocument();
     expect(screen.getByText('Tracker')).toBeInTheDocument();
     expect(screen.getByText('Locales')).toBeInTheDocument();
+    expect(screen.getByText('Actividad')).toBeInTheDocument();
   });
 
   it('esconde analytics e usuarios para editor', () => {
@@ -48,5 +49,6 @@ describe('Dashboard shortcuts', () => {
     expect(screen.getByText('Locales')).toBeInTheDocument();
     expect(screen.getByText('Eventos')).toBeInTheDocument();
     expect(screen.getByText('Tours')).toBeInTheDocument();
+    expect(screen.getByText('Actividad')).toBeInTheDocument();
   });
 });

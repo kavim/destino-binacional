@@ -17,6 +17,7 @@ class TourService
         protected TourRepository $tourRepository = new TourRepository,
         protected FeaturedImageStorage $featuredImageStorage = new FeaturedImageStorage,
         protected GallerySyncService $gallerySyncService = new GallerySyncService,
+        protected DashboardActivityLogger $activityLogger = new DashboardActivityLogger,
     ) {}
 
     public function index()
@@ -68,6 +69,8 @@ class TourService
                     $this->gallerySyncService->mapNewFilesFromRequest($request),
                 );
             }
+
+            $this->activityLogger->created($tour);
 
             return $tour;
         });
@@ -122,6 +125,8 @@ class TourService
                 );
             }
 
+            $this->activityLogger->updated($tour);
+
             return $tour;
         });
     }
@@ -130,6 +135,7 @@ class TourService
     {
         DB::transaction(function () use ($tour) {
             $this->gallerySyncService->deleteAllFor($tour);
+            $this->activityLogger->deleted($tour);
             $tour->delete();
         });
     }

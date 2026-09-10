@@ -18,6 +18,7 @@ class EventService
         protected EventRepository $eventRepository = new EventRepository,
         protected FeaturedImageStorage $featuredImageStorage = new FeaturedImageStorage,
         protected GallerySyncService $gallerySyncService = new GallerySyncService,
+        protected DashboardActivityLogger $activityLogger = new DashboardActivityLogger,
     ) {}
 
     public function index()
@@ -67,6 +68,8 @@ class EventService
                     $this->gallerySyncService->mapNewFilesFromRequest($request),
                 );
             }
+
+            $this->activityLogger->created($event);
 
             return $event;
         });
@@ -122,6 +125,8 @@ class EventService
                 );
             }
 
+            $this->activityLogger->updated($event);
+
             return $event;
         });
     }
@@ -130,6 +135,7 @@ class EventService
     {
         DB::transaction(function () use ($event) {
             $this->gallerySyncService->deleteAllFor($event);
+            $this->activityLogger->deleted($event);
             $event->delete();
         });
     }

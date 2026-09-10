@@ -6,6 +6,7 @@ use App\Enums\UserRole;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
+use App\Services\DashboardActivityLogger;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -14,8 +15,9 @@ use Inertia\Response;
 
 class UserController extends Controller
 {
-    public function __construct()
-    {
+    public function __construct(
+        protected DashboardActivityLogger $activityLogger,
+    ) {
         $this->authorizeResource(User::class);
     }
 
@@ -55,6 +57,7 @@ class UserController extends Controller
         $user->role = UserRole::from($data['role']);
         $user->email_verified_at = now();
         $user->save();
+        $this->activityLogger->created($user);
 
         return redirect()->route('users.index')
             ->with('success', 'Usuario creado.');
@@ -87,6 +90,7 @@ class UserController extends Controller
         }
 
         $user->save();
+        $this->activityLogger->updated($user);
 
         return redirect()->route('users.index')
             ->with('success', 'Usuario actualizado.');
@@ -98,6 +102,7 @@ class UserController extends Controller
             return back()->with('error', 'No puedes eliminar tu propia cuenta desde aquí.');
         }
 
+        $this->activityLogger->deleted($user);
         $user->delete();
 
         return redirect()->route('users.index')

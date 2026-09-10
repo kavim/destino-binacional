@@ -98,6 +98,21 @@ export default function Dashboard(props: DashboardProps) {
                     </CardContent>
                   </Card>
                 </Link>
+                <Link
+                  href={route("activity-logs.index")}
+                  className="min-w-[140px] flex-1 sm:max-w-[200px]"
+                >
+                  <Card className={shortcutCardClass}>
+                    <CardContent className="flex flex-col items-center gap-2 p-6 text-center">
+                      <span className="text-3xl" aria-hidden>
+                        📋
+                      </span>
+                      <span className="text-sm font-medium text-foreground">
+                        Actividad
+                      </span>
+                    </CardContent>
+                  </Card>
+                </Link>
                 {isAdmin ? (
                 <Link
                   href={route("users.index")}

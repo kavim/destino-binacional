@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\ActivityLog;
 use App\Models\Category;
 use App\Models\Event;
 use App\Models\ObservabilityPageView;
@@ -9,6 +10,7 @@ use App\Models\Place;
 use App\Models\Tag;
 use App\Models\Tour;
 use App\Models\User;
+use App\Policies\ActivityLogPolicy;
 use App\Policies\CategoryPolicy;
 use App\Policies\EventPolicy;
 use App\Policies\ObservabilityPageViewPolicy;
@@ -24,6 +26,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
+        ActivityLog::class => ActivityLogPolicy::class,
         Place::class => PlacePolicy::class,
         Event::class => EventPolicy::class,
         Tour::class => TourPolicy::class,

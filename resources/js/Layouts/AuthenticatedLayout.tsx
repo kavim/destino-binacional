@@ -77,6 +77,9 @@ export default function Authenticated({ header, children }: Props) {
                                 }>
                                     Tours
                                 </NavLink>
+                                <NavLink href={route('activity-logs.index')} active={route().current('activity-logs.index')}>
+                                    Actividad
+                                </NavLink>
                                     </>
                                 ) : null}
                                 {auth.user?.is_admin ? (
@@ -196,6 +199,9 @@ export default function Authenticated({ header, children }: Props) {
                             route().current('tours.edit')
                         }>
                             Tours
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink href={route('activity-logs.index')} active={route().current('activity-logs.index')}>
+                            Actividad
                         </ResponsiveNavLink>
                             </>
                         ) : null}
