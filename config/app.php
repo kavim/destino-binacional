@@ -58,6 +58,8 @@ return [
 
     'force_https' => (bool) env('FORCE_HTTPS', false),
 
+    'home_temporary_redirect_url' => env('HOME_TEMPORARY_REDIRECT_URL'),
+
     'admin_name' => env('ADMIN_NAME', 'Admin'),
 
     'admin_email' => env('ADMIN_EMAIL'),
