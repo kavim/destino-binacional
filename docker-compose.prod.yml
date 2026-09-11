@@ -16,6 +16,7 @@ x-laravel-env: &laravel-env
   APP_KEY: ${APP_KEY:?APP_KEY is required}
   APP_URL: https://destinobinacional.com
   FORCE_HTTPS: "true"
+  HOME_TEMPORARY_REDIRECT_URL: ${HOME_TEMPORARY_REDIRECT_URL:-}
   LOG_CHANNEL: stack
   DB_CONNECTION: mysql
   DB_HOST: mysql

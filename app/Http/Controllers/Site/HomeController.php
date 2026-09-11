@@ -14,6 +14,12 @@ class HomeController extends Controller
 
     public function index()
     {
+        $redirectUrl = config('app.home_temporary_redirect_url');
+
+        if (is_string($redirectUrl) && $redirectUrl !== '') {
+            return redirect()->away($redirectUrl, 302);
+        }
+
         $events = $this->eventService->groupedByStartDate();
 
         return Inertia::render('Site/Home/Home', [
